@@ -31,20 +31,20 @@ def analisiprova(request):
             out=run([sys.executable,'script/#',inp1,inp2,inp3],shell=False, stdout=PIPE)
             print(out)
             
-            dir='/home/chiara/webserver/rolls/static/media/saveanalisi/'+inp3+'/'
+            dir='rolls/static/media/saveanalisi/'+inp3+'/'
             files=os.listdir(dir)
             for file in files:
                 if file[-3:]=='png':
                     image='/media/saveanalisi/'+inp3+'/'+file
             form=Analisiform()
-            return render(request, '/home/chiara/webserver/rolls/templates/rolls/form.html', {
+            return render(request, 'rolls/form.html', {
                 'form':form, 
                 'formresult': out.stdout.decode('ascii'),
                 'image': image,
                 'go':True,})
 
     form=Analisiform()
-    return render(request, '/home/chiara/webserver/rolls/templates/rolls/form.html', {'form':form})
+    return render(request, 'rolls/form.html', {'form':form})
 
 
 ####### analisi espressione differenziale #############
@@ -62,20 +62,20 @@ def differential_expression(request):
             out=run([sys.executable,'script/boxplot_all_tumor_giusto.py',inp1,inp2,inp3],shell=False, stdout=PIPE)
             print(out)
             
-            dir='/home/chiara/webserver/rolls/static/media/saveanalisi/'+inp3+'/'
+            dir='rolls/static/media/saveanalisi/'+inp3+'/'
             files=os.listdir(dir)
             for file in files:
                 if file[-3:]=='png':
                     image='/media/saveanalisi/'+inp3+'/'+file
             form=Analisiformprova()
-            return render(request, '/home/chiara/webserver/rolls/templates/rolls/differential_expression.html', {
+            return render(request, 'rolls/differential_expression.html', {
                 'form':form, 
                 'formresult': out.stdout.decode('ascii'),
                 'image': image,
                 'go':True,})
 
     form=Analisiformprova()
-    return render(request, '/home/chiara/webserver/rolls/templates/rolls/differential_expression.html', {'form':form})
+    return render(request, 'rolls/differential_expression.html', {'form':form})
 
 
 
@@ -93,13 +93,13 @@ def overall_survival(request):
             out=run([sys.executable,'script/overall_survival.py',gene,tumor,inp3],shell=False, stdout=PIPE)
             print(out)
             
-            dir='/home/chiara/webserver/rolls/static/media/saveanalisi/overall_survival/'+inp3+'/'
+            dir='rolls/static/media/saveanalisi/overall_survival/'+inp3+'/'
             files=os.listdir(dir)
             for file in files:
                 if file[-3:]=='png':
                     image='/media/saveanalisi/overall_survival/'+inp3+'/'+file
             form=Analisiform1()
-            return render(request, '/home/chiara/webserver/rolls/templates/rolls/overall_survival.html', {
+            return render(request, 'rolls/overall_survival.html', {
                 'form':form, 
                 'formresult': out.stdout.decode('ascii'),
                 'image': image,
@@ -108,7 +108,7 @@ def overall_survival(request):
                 'tumor':tumor,})
 
     form=Analisiform1()
-    return render(request, '/home/chiara/webserver/rolls/templates/rolls/overall_survival.html', {'form':form})
+    return render(request, 'rolls/overall_survival.html', {'form':form})
 
 
 ####### DESEQ2 analisi###############
@@ -169,7 +169,7 @@ def downloadfileszip(request, file_name=''):
     Returns:
       A downloadable Http response
     """
-    files_path = "/home/chiara/webserver/rolls/static/media/deseq2/gender/result/KIRP"
+    files_path = "rolls/static/media/deseq2/gender/result/KIRP"
     path_to_zip = make_archive(files_path, "zip", files_path)
     response = HttpResponse(FileWrapper(open(path_to_zip,'rb')), content_type='application/zip')
     response['Content-Disposition'] = 'attachment; filename="{filename}.zip"'.format(
