@@ -71,7 +71,7 @@ def overall_survival_analysis(m,tumor,feature,cartella,df1,OS1):
         results = logrank_test((OS1[i1]), (OS1[i2]),list(df1.loc[m,i1]),list(df1.loc[m,i2]), alpha=.95)
         
         if results.p_value < 1:
-            os.mkdir("/home/chiara/webserver/rolls/static/media/saveanalisi/overall_survival/"+cartella)
+            os.mkdir("/mnt/data/notturno/web_app/webserver/rolls/static/media/saveanalisi/overall_survival/"+cartella)
             print("p-value:",results.p_value)
             #mirna.append(m)
             kmf.fit((OS1[i1]), list(df1.loc[m,i1]), label="Higher expression")
@@ -79,7 +79,7 @@ def overall_survival_analysis(m,tumor,feature,cartella,df1,OS1):
     
             kmf.fit((OS1[i2]),list(df1.loc[m,i2]) , label="Lower expression")
             kmf.plot(ax=a1)
-            plt.savefig("/home/chiara/webserver/rolls/static/media/saveanalisi/overall_survival/"+cartella+"/overallsurvival_"+gene+"_"+tumor+".png")
+            plt.savefig("/mnt/data/notturno/web_app/webserver/rolls/static/media/saveanalisi/overall_survival/"+cartella+"/overallsurvival_"+gene+"_"+tumor+".png")
             #plt.show()
         else:
             print("pvalue>1")

@@ -47,34 +47,30 @@ def analisiprova(request):
     return render(request, 'rolls/form.html', {'form':form})
 
 
-####### analisi espressione differenziale #############
+####### differential expression analisys with all tumor for feature #############
 def differential_expression(request):
     if request.method == 'POST':
-        form = Analisiformprova(request.POST)
+        form = Analisiform(request.POST)
         if form.is_valid():
             gene=form.cleaned_data['gene']
-            tumor=form.cleaned_data['tumor']
+            feature=form.cleaned_data['feature']
             
-            print(gene, tumor)
-            inp1=gene
-            inp2=tumor
             inp3=(time.strftime("%H%M%S%m"))
-            out=run([sys.executable,'script/boxplot_all_tumor_giusto.py',inp1,inp2,inp3],shell=False, stdout=PIPE)
+            out=run([sys.executable,'script/boxplot_all_tumor_giusto.py',gene,feature,inp3],shell=False, stdout=PIPE)
             print(out)
-            
-            dir='rolls/static/media/saveanalisi/'+inp3+'/'
+            dir='rolls/static/media/saveanalisi/boxplot_all_tumor/'+inp3+'/'
             files=os.listdir(dir)
             for file in files:
                 if file[-3:]=='png':
                     image='/media/saveanalisi/'+inp3+'/'+file
-            form=Analisiformprova()
+            form=Analisiform()
             return render(request, 'rolls/differential_expression.html', {
                 'form':form, 
                 'formresult': out.stdout.decode('ascii'),
                 'image': image,
                 'go':True,})
 
-    form=Analisiformprova()
+    form=Analisiform()
     return render(request, 'rolls/differential_expression.html', {'form':form})
 
 
@@ -114,7 +110,7 @@ def overall_survival(request):
 ####### DESEQ2 analisi###############
 
 def choseimage(feature,tumor):
-    pathfiles='/home/chiara/webserver/rolls/static/media/deseq2/'+feature+'/result/'+tumor+'/'
+    pathfiles='rolls/static/media/deseq2/'+feature+'/result/'+tumor+'/'
     files=os.listdir(pathfiles)
     filelist=[]
     for file in files:
