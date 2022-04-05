@@ -1,0 +1,57 @@
+{%extends 'rolls/layoutpagine.html' %}
+{%load crispy_forms_tags%}
+{%block content%}
+{% load static %}
+
+  <h2>Analisi di espressione differenziale</h2>
+      <p>
+        <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+          Description
+        </a>
+        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+          help
+        </button>
+      </p>
+      <div class="collapse" id="collapseExample">
+        <div class="card card-body">
+          Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+        </div>
+      </div>
+        
+      <div class="row my-3">
+          <div class="col-sm-3 my-3">
+              <form method="post" >
+                  {%csrf_token%}
+                  {{form|crispy}}
+                  <br>
+                  <div class="d-grid gap-2 d-md-flex justify-content-md">
+                      <button class="btn btn-primary me-md-2 my-3" type="submit">Submit</button>
+                  </div>
+              
+              </form>
+          </div>
+              <div class="col mx-3" style="border:1px; border-left-style: solid; border-color:rgba(0, 0, 128, 0.301)">
+                  
+                  {%if go %}
+                  
+                  <h3>Results: <a href="{%url 'downloadfileszip'%}" ><button class="btn"> Download files <i class="fa-solid fa-download"></i></button></a></h3>
+                  <hr>
+                  {{formresult}}
+                  <div class="row">
+                   
+                    <div class="zoom col shadow mb-3 bg-body rounded" style="max-width: 450px;">
+                      <img src= '{%static image %}' width="400">
+                  </div>
+                  </div>
+                </div>
+                  {%endif%}
+           
+            
+              
+            </div>
+      
+      </div>
+      
+
+{%endblock%}
+    

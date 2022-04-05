@@ -2,15 +2,13 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from subprocess import run,PIPE
 import sys
-
 from matplotlib import image
-from rolls.forms import Analisiform, Deseq2form, Analisiform1
+from rolls.forms import Analisiform, Deseq2form, Analisiform1, Analisiformprova
 import os
 from django.http import StreamingHttpResponse
 from wsgiref.util import FileWrapper
 import mimetypes
 from shutil import make_archive
-
 import time
 
 # Create your views here.
@@ -29,8 +27,8 @@ def analisiprova(request):
             print(gene, tumor, feature)
             inp1=gene
             inp2=tumor
-            inp3=(time.strftime("%H%M%S"))
-            out=run([sys.executable,'script/overall_survival.py',inp1,inp2,inp3],shell=False, stdout=PIPE)
+            inp3=(time.strftime("%H%M%S%m"))
+            out=run([sys.executable,'script/#',inp1,inp2,inp3],shell=False, stdout=PIPE)
             print(out)
             
             dir='/home/chiara/webserver/rolls/static/media/saveanalisi/'+inp3+'/'
@@ -48,6 +46,40 @@ def analisiprova(request):
     form=Analisiform()
     return render(request, '/home/chiara/webserver/rolls/templates/rolls/form.html', {'form':form})
 
+
+####### analisi espressione differenziale #############
+def differential_expression(request):
+    if request.method == 'POST':
+        form = Analisiformprova(request.POST)
+        if form.is_valid():
+            gene=form.cleaned_data['gene']
+            tumor=form.cleaned_data['tumor']
+            
+            print(gene, tumor)
+            inp1=gene
+            inp2=tumor
+            inp3=(time.strftime("%H%M%S%m"))
+            out=run([sys.executable,'script/boxplot_all_tumor_giusto.py',inp1,inp2,inp3],shell=False, stdout=PIPE)
+            print(out)
+            
+            dir='/home/chiara/webserver/rolls/static/media/saveanalisi/'+inp3+'/'
+            files=os.listdir(dir)
+            for file in files:
+                if file[-3:]=='png':
+                    image='/media/saveanalisi/'+inp3+'/'+file
+            form=Analisiformprova()
+            return render(request, '/home/chiara/webserver/rolls/templates/rolls/differential_expression.html', {
+                'form':form, 
+                'formresult': out.stdout.decode('ascii'),
+                'image': image,
+                'go':True,})
+
+    form=Analisiformprova()
+    return render(request, '/home/chiara/webserver/rolls/templates/rolls/differential_expression.html', {'form':form})
+
+
+
+
 ######### OVERALL SURVIVAL ################
 def overall_survival(request):
     if request.method == 'POST':
@@ -56,17 +88,16 @@ def overall_survival(request):
             gene=form.cleaned_data['gene']
             tumor=form.cleaned_data['tumor']
             print(gene, tumor)
-            inp1=gene
-            inp2=tumor
+            
             inp3=(time.strftime("%H%M%S%m"))
-            out=run([sys.executable,'script/overall_survival.py',inp1,inp2,inp3],shell=False, stdout=PIPE)
+            out=run([sys.executable,'script/overall_survival.py',gene,tumor,inp3],shell=False, stdout=PIPE)
             print(out)
             
-            dir='/home/chiara/webserver/rolls/static/media/saveanalisi/'+inp3+'/'
+            dir='/home/chiara/webserver/rolls/static/media/saveanalisi/overall_survival/'+inp3+'/'
             files=os.listdir(dir)
             for file in files:
                 if file[-3:]=='png':
-                    image='/media/saveanalisi/'+inp3+'/'+file
+                    image='/media/saveanalisi/overall_survival/'+inp3+'/'+file
             form=Analisiform1()
             return render(request, '/home/chiara/webserver/rolls/templates/rolls/overall_survival.html', {
                 'form':form, 
@@ -128,6 +159,7 @@ def deseq2(request):
 
 
 
+#####download file zip ################
 def downloadfileszip(request, file_name=''):
     """
     A django view to zip files in directory and send it as downloadable response to the browser.
