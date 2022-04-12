@@ -16,11 +16,12 @@ import os
 import sys
 
 
-# In[9]:
+# In[2]:
 
 
 
-def gene_mirna_proteina(gene):
+def gene_mirna_proteina(gene, cartella):
+    os.mkdir(cartella)
     if gene in open("/mnt/data/notturno/miRNA/namemirna.txt").read().split("\n"):
         return(['miRNA',"miRNA_ID",'/mnt/data/notturno/miRNA/DataFrameTCGA_miRNA.csv'])
     
@@ -29,6 +30,7 @@ def gene_mirna_proteina(gene):
         posizione="-e "+str(listageni.index(gene)+1)+"p"
         
         #creiamo un dataframe piu piccolo dove c'è solo la riga del gene che è stato selezionato
+       
         path=cartella+'/'+gene+"_df.txt"
         out_file=open(path,"w")
         subprocess.call(["sed","-n", "-e 1p", posizione, "/mnt/data/notturno/gene_expression/DataFrameTCGA_gene.csv"],stdout=out_file)
@@ -64,20 +66,21 @@ def open_dataframe_gene(gene,listanomi01, path_dataframe):
         return 0
 
 
-# In[13]:
+# In[4]:
 
 
-def box_plot(df1, cartella):
-    os.mkdir(cartella)
+def box_plot(df1, cartella, gene, feature, ogg_analisi):
+    
     sns.set(rc={'figure.figsize':(25.7,8.27)})
     sns.set_style("white")
 
     my_order = df1.groupby(by=["tumor"])[gene].median().iloc[::-1].sort_values().index
 
     ax=sns.boxplot(x="tumor", y=gene, hue=feature, data=df1, palette="Set2", width=0.7, order=my_order)
+    
     ax.set_yscale("log")
-
-    plt.savefig(cartella+'/'+gene+'_'+feature+'.png')
+    
+    plt.savefig(cartella+'/'+gene+'_'+feature+'.jpg')
 
 
 # In[5]:
@@ -87,23 +90,23 @@ def pulizia_df(df):
     return(df.dropna())
 
 
-# In[19]:
+# In[8]:
 
 
 
 path="/mnt/data/notturno/"
 
-gene=sys.argv[1]
-feature=sys.argv[2]
+gene= sys.argv[1]
+feature= sys.argv[2]
 
-cartella=path+'web_app/webserver/rolls/static/media/saveanalisi/boxplot_all_tumor/'+ sys.argv[3]
+cartella='/mnt/data/notturno/web_app/webserver/rolls/static/media/saveanalisi/'+sys.argv[3]
 
 x=pd.read_csv("/mnt/data/notturno/clinical_PANCAN_patient_with_followup_modificato.csv")
 x1=x.set_index("bcr_patient_barcode")
 
 
 #aprire df
-ogg_analisi=gene_mirna_proteina(gene)
+ogg_analisi=gene_mirna_proteina(gene, cartella)
 print(ogg_analisi)
 
 d=pd.read_csv(ogg_analisi[2],nrows=1)
@@ -133,7 +136,7 @@ colonna3=list(x1.loc[listanomi, feature])
 df=pd.DataFrame({gene:colonna1, 'tumor':colonna2, feature:colonna3})
 df=pulizia_df(df)
 
-box_plot(df, cartella, gene, feature)
+box_plot(df, cartella, gene, feature, ogg_analisi[0])
 
 
 # In[ ]:

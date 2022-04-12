@@ -1,0 +1,64 @@
+{%extends 'rolls/layoutpagine.html' %}
+{%load crispy_forms_tags%}
+{%block content%}
+{% load static %}
+
+<h2> Overall survival miRNA-mRNA interaction </h2>
+      <p>
+        <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+          Description
+        </a>
+        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+          help
+        </button>
+      </p>
+      <div class="collapse" id="collapseExample">
+        <div class="card card-body">
+          Try with gene= "CCND2" and miRNA="hsa-let-7a-5p"
+        </div>
+      </div>
+        
+      <div class="row my-3">
+          <div class="col-sm-3 my-3">
+              <form method="post" >
+                  {%csrf_token%}
+                  {{form|crispy}}
+                  <br>
+                  <div class="d-grid gap-2 d-md-flex justify-content-md">
+                      <button class="btn btn-primary me-md-2 my-3" type="submit">Submit</button>
+                  </div>
+              
+              </form>
+          </div>
+          <div class="col mx-3" style="border:1px; border-left-style: solid; border-color:rgba(0, 0, 128, 0.301)">   
+            {%if go == 'Valid' %}
+                
+                <h3>Results: <a href="#" download ><button class="btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Graphs and results"> Download files <i class="fa-solid fa-download"></i></button></a></h3>
+                <hr>
+                <div class="row">
+                  <div class="col-sm-3">
+                    <p><b>Gene:</b> {{gene}}</p>
+                    <p><b>miRNA: </b> {{miRNA}}</p>
+                    <p><b>Tumor: </b>{{tumor}}</p>
+                  </div>
+
+                  <div class="col-fluid text-center">
+                    {% for img in image%}
+                        <img src= '{%static img %}' width="400">
+                    {%endfor%}
+                  </div>
+                </div>               
+            </div>
+            {%endif%}
+
+            {%if go == 'error' %}
+            <div class="alert alert-danger text-center" role="alert">
+              <h5>Non esistono risultati per {{gene}} - {{miRNA}}</h5>
+             
+            </div> 
+            {%endif%}
+      </div>
+      
+
+{%endblock%}
+    

@@ -3,19 +3,74 @@ from django.http import HttpResponse
 from subprocess import run,PIPE
 import sys
 from matplotlib import image
-from rolls.forms import Analisiform, Deseq2form, Analisiform1, Analisiformprova
+from rolls.forms import Analisiform, Deseq2form, Analisiform1, Analisiformprova, AnalisiOSinteraction
 import os
 from django.http import StreamingHttpResponse
 from wsgiref.util import FileWrapper
 import mimetypes
 from shutil import make_archive
 import time
+import os.path
 
-# Create your views here.
 
 
 def rolls(request):
     return render(request, 'rolls/home.html')
+
+def documentation(request):
+    return render(request, 'rolls/documentation.html')
+
+def table(request):
+    return render(request, 'rolls/table.html')
+
+
+def os_pathway(request):
+    return render(request, 'rolls/OS_pathway.html')
+
+#############Overall survival con dati interazione miRNA-mRNA ############
+def os_interaction(request):
+    if request.method == 'POST':
+        form = AnalisiOSinteraction(request.POST)
+        if form.is_valid():
+            gene=form.cleaned_data['gene']
+            miRNA=form.cleaned_data['miRNA']
+            tumor= form.cleaned_data['tumor']
+
+            inp3=(time.strftime("%H%M%S%m"))
+            out=run([sys.executable,'script/overall_survival_interaction.py',gene,miRNA,tumor,inp3],shell=False, stdout=PIPE)
+            print(out)
+            dir='rolls/static/media/saveanalisi/'+inp3+'/'
+            if os.path.isdir(dir): 
+                #dir='rolls/static/media/saveanalisi/'+inp3+'/'
+                files=os.listdir(dir)
+                images=[]
+                for file in files:
+                    if file[-3:]=='jpg':
+                        images.append('/media/saveanalisi/'+inp3+'/'+file)
+
+                form=AnalisiOSinteraction()
+                return render(request, 'rolls/OS_interaction.html', {
+                    'form':form, 
+                    'formresult': out.stdout.decode('ascii'),
+                    'image': images,
+                    'go':'Valid',
+                    'gene':gene,
+                    'tumor':tumor,
+                    'miRNA':miRNA,
+                    })
+            else:
+                form=AnalisiOSinteraction()
+                return render(request, 'rolls/OS_interaction.html', {'form':form,
+                'miRNA':miRNA,
+                'gene':gene,
+                'tumor':tumor, 
+                'go':'error'})
+                
+
+    form=AnalisiOSinteraction()
+    return render(request, 'rolls/OS_interaction.html', {'form':form})
+    
+
 
 def analisiprova(request):
     if request.method == 'POST':
@@ -58,21 +113,22 @@ def differential_expression(request):
             inp3=(time.strftime("%H%M%S%m"))
             out=run([sys.executable,'script/boxplot_all_tumor_giusto.py',gene,feature,inp3],shell=False, stdout=PIPE)
             print(out)
-            dir='rolls/static/media/saveanalisi/boxplot_all_tumor/'+inp3+'/'
+            dir='rolls/static/media/saveanalisi/'+inp3+'/'
             files=os.listdir(dir)
             for file in files:
-                if file[-3:]=='png':
+                if file[-3:]=='jpg':
                     image='/media/saveanalisi/'+inp3+'/'+file
             form=Analisiform()
             return render(request, 'rolls/differential_expression.html', {
                 'form':form, 
                 'formresult': out.stdout.decode('ascii'),
                 'image': image,
-                'go':True,})
+                'go':True,
+                'gene':gene,
+                'feature':feature,})
 
     form=Analisiform()
     return render(request, 'rolls/differential_expression.html', {'form':form})
-
 
 
 
@@ -89,11 +145,11 @@ def overall_survival(request):
             out=run([sys.executable,'script/overall_survival.py',gene,tumor,inp3],shell=False, stdout=PIPE)
             print(out)
             
-            dir='rolls/static/media/saveanalisi/overall_survival/'+inp3+'/'
+            dir='rolls/static/media/saveanalisi/'+inp3+'/'
             files=os.listdir(dir)
             for file in files:
                 if file[-3:]=='png':
-                    image='/media/saveanalisi/overall_survival/'+inp3+'/'+file
+                    image='/media/saveanalisi/'+inp3+'/'+file
             form=Analisiform1()
             return render(request, 'rolls/overall_survival.html', {
                 'form':form, 
@@ -110,12 +166,12 @@ def overall_survival(request):
 ####### DESEQ2 analisi###############
 
 def choseimage(feature,tumor):
-    pathfiles='rolls/static/media/deseq2/'+feature+'/result/'+tumor+'/'
+    pathfiles='rolls/static/media/deseq2/'+feature+'/'+tumor+'/'
     files=os.listdir(pathfiles)
     filelist=[]
     for file in files:
         if tumor in file:
-            path='/media/deseq2/'+feature+'/result/'+tumor+'/'+file
+            path='/media/deseq2/'+feature+'/'+tumor+'/'+file
             if 'jpg' in file:
                 if 'EnhancedVolcano' in file:
                     enhancedimage=path
@@ -127,35 +183,75 @@ def choseimage(feature,tumor):
     else:
         return()
 
+parametri={
+    'patient_status':'Tumor vs Ctrl',
+    'gender':'Female vs Male',
+    'pathologic_stage': 'StageIII_IV vs StageI_II',
+    'radiation_therapy': 'YES vs NO',
+    'diabetes': 'YES vs NO',
+    'tobacco_smoking_history': 'Smoker vs Non_Smoker',
+    'menopause_status':'Post-menopause vs Pre-menopause',
+    'alcohol_history_documented': 'YES vs NO',
+    'age_at_initial_pathologic_diagnosis': 'Above the median vs Below the median' ,
+}
 
 def deseq2(request):
     if request.method == 'POST':
         form = Deseq2form(request.POST)
         if form.is_valid():
+            
             tumor=form.cleaned_data['tumor']
             feature=form.cleaned_data['feature']
-
-            images=choseimage(feature,tumor)
             
-            form=Deseq2form()
-            print(images)
-            
-            return render(request, 'rolls/deseq2.html', {'form':form, 
-            'feature': feature,
-            'tumor':tumor,
-            'enhancedimage': images[0],
-            'images1': images[1][0],
-            'images2': images[1][1],
-            'images3': images[1][2],
-            'go':True,
-            })
-
+            cartella='rolls/static/media/deseq2/'+feature+'/'+tumor
+            if os.path.isdir(cartella): 
+                images=choseimage(feature,tumor)
+                
+                form=Deseq2form()
+                print(images)
+                
+                downloadfileszip(tumor)
+                
+                
+                return render(request, 'rolls/deseq2.html', {'form':form, 
+                'feature': feature,
+                'tumor':tumor,
+                'enhancedimage': images[0],
+                'images1': images[1][0],
+                'images2': images[1][1],
+                'images3': images[1][2],
+                'go':'Valid',
+                'parametri': parametri[feature],
+                })
+            else:
+                form=Deseq2form()
+                return render(request, 'rolls/deseq2.html', {'form':form,
+                'feature': feature,
+                'tumor':tumor, 
+                'go':'error'})
+        
+    
     form=Deseq2form()
     return render(request, 'rolls/deseq2.html', {'form':form})
 
 
 
+#cartella='rolls/static/media/deseq2/gender/'+tumor
 #####download file zip ################
+def downloadfileszip(request,tumor):
+    file_name=tumor
+    files_path = 'rolls/static/media/deseq2/gender/'+tumor
+    path_to_zip = make_archive(files_path, "zip", files_path)
+    response = HttpResponse(FileWrapper(open(path_to_zip,'rb')), content_type='application/zip')
+    response['Content-Disposition'] = 'attachment; filename="{filename}.zip"'.format(
+        filename = file_name.replace(" ", "_")
+    )
+    return response
+
+
+
+
+'''
 def downloadfileszip(request, file_name=''):
     """
     A django view to zip files in directory and send it as downloadable response to the browser.
@@ -165,14 +261,15 @@ def downloadfileszip(request, file_name=''):
     Returns:
       A downloadable Http response
     """
-    files_path = "rolls/static/media/deseq2/gender/result/KIRP"
+    #file_name=tumor
+    files_path = 'rolls/static/media/deseq2/gender/'+tumor
     path_to_zip = make_archive(files_path, "zip", files_path)
     response = HttpResponse(FileWrapper(open(path_to_zip,'rb')), content_type='application/zip')
     response['Content-Disposition'] = 'attachment; filename="{filename}.zip"'.format(
         filename = file_name.replace(" ", "_")
     )
     return response
-
+'''
 
 
 #download button

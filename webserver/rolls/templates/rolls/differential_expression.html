@@ -3,7 +3,7 @@
 {%block content%}
 {% load static %}
 
-  <h2>Analisi di espressione differenziale</h2>
+  <h2>Differential expression analysis with all tumor</h2>
       <p>
         <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
           Description
@@ -14,7 +14,7 @@
       </p>
       <div class="collapse" id="collapseExample">
         <div class="card card-body">
-          Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+          #
         </div>
       </div>
         
@@ -36,11 +36,11 @@
                   
                   <h3>Results: <a href="{%url 'downloadfileszip'%}" ><button class="btn"> Download files <i class="fa-solid fa-download"></i></button></a></h3>
                   <hr>
-                  {{formresult}}
+                  <p>Gene: {{gene}}</p>
+                  <p>Feature: {{feature}}</p>
                   <div class="row">
-                   
-                    <div class="zoom col shadow mb-3 bg-body rounded" style="max-width: 450px;">
-                      <img src= '{%static image %}' width="400">
+                    <div class="zoom shadow mb-3 bg-body rounded" style="max-width: 700px;">
+                      <img src= '{%static image %}' width="700">
                   </div>
                   </div>
                 </div>

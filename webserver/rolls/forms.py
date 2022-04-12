@@ -29,10 +29,14 @@ class Deseq2form(forms.ModelForm):
 
     class Meta:
         model=Analisi
-        fields=('feature','tumor')
+        fields=('tumor','feature')
 
    
-    
+class AnalisiOSinteraction(forms.ModelForm):
+    gene=forms.CharField(widget=forms.TextInput(attrs={"placeHolder":"ENSG/gene symbol"}))
+    class Meta:
+        model=Analisi
+        fields=('gene','miRNA', 'tumor')
 
 
    

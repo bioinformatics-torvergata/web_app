@@ -40,7 +40,7 @@ TUMOR=[
 FEATURES=[
     (None,'Choice..'),
     ('gender','Gender'),
-    ('age','Age'),
+    ('age_at_initial_pathologic_diagnosis','Age'),
     ('radiation_therapy','Radiation therapy'),
     ('patient_status','Patient status'),
     ('diabetes', 'Diabetes'),
@@ -62,6 +62,9 @@ CHOICE_FEATURE =[
 class Analisi(models.Model):
     gene= models.CharField(
         max_length=20,)
+    
+    miRNA= models.CharField(
+        max_length=20,)
 
     tumor=models.CharField(
         max_length=10,
@@ -75,4 +78,5 @@ class Analisi(models.Model):
         
         
         
-        
+#class Downloadfileszip(models.Model)
+

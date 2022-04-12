@@ -9,16 +9,25 @@
     <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
       Description
     </a>
-    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#helpExample" aria-expanded="false" aria-controls="collapseExample">
       help
     </button>
   </p>
-
   <div class="collapse" id="collapseExample">
     <div class="card card-body">
-      Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+      <p>Differential gene expression analysis based on the negative binomial distribution</p>
     </div>
   </div>
+
+
+
+
+  <div class="collapse" id="helpExample">
+    <div class="card card-body">  
+        <p> click <a href="{%url 'table'%}" >table</a> to check which analyses are available</p>
+    </div>
+  </div>
+
   <div class="row my-3">
     <div class="col-sm-3 my-3">
         <form method="post" >
@@ -31,18 +40,19 @@
         
         </form>
     </div>
-        <div class="col mx-3" style="border:1px; border-left-style: solid; border-color:rgba(0, 0, 128, 0.301)">
+        <div class="col-sm mx-3" style="border:1px; border-left-style: solid; border-color:rgba(0, 0, 128, 0.301)">
           <div>
       
           </div>
-          {%if go %}
-          <h3>Results: <a href="{%url 'downloadfileszip'%}" ><button class="btn"> Download files <i class="fa-solid fa-download"></i></button></a></h3>
+          {%if go == 'Valid' %}
+          <h3>Results: <a href="#" download ><button class="btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Graphs and results"> Download files <i class="fa-solid fa-download"></i></button></a></h3>
           <hr>
           <div class="row">
-            <div class="col-sm-3 mx-3">
+            <div class="col mx-3">
               
-              <p>Feature: {{feature}}</p>
-              <p>Tumor: {{tumor}}</p>
+              <p><b>Feature:</b> {{feature}}</p>
+              <p><b>Tumor:</b> {{tumor}}</p>
+              <p><b>Parameters compared:</b> {{parametri}}</p>
             </div>
             <div class="zoom col shadow mb-3 bg-body rounded" style="max-width: 450px;">
               <img src= '{%static enhancedimage %}' width="400">
@@ -64,8 +74,15 @@
           
            <br>
             
-            {%endif%}
-           
+
+          {%endif%}
+
+          {%if go == 'error' %}
+          <div class="alert alert-danger text-center" role="alert">
+            <h5>Non esistono risultati per {{tumor}} - {{feature}}</h5>
+            <p> controlla la <a href="{%url 'table'%}" >tabella</a>  per verificare quali possibili analisi si possono effettuare</p>
+          </div> 
+          {%endif%}
             
         </div>
       </div>
