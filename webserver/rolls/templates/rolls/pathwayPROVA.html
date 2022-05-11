@@ -9,13 +9,13 @@
 
   
   <h3>Pathways</h3>
-  <div class="menu-container" style="height: 320px;overflow-y: scroll;">
+  <div class="menu-container" style="height: 100%;overflow-y: scroll; background-color: aliceblue; width: 70%;">
     <ul class="menu">
       <li><a href='#'><i class="fa-solid fa-angle-down"></i> REACTOME </i></a>
-        <ul class="submenu" style="height: 240px ; overflow-y: scroll; overflow:visible; width:350px;">
+        <ul class="submenu" style="height: 100% ; overflow-y: scroll; width:100%;">
           {% for key, value in dizionario.items %} 
-            <li><a href="#"><i class="fa-solid fa-angle-down"></i> {{key}}</a>
-              <ul class="submenu2" style="height: 500px ; overflow-y: scroll; width:350px;">
+            <li><a href="#"><i class="fa-solid fa-angle-down"></i><b> {{key}}</b> </a>
+              <ul class="submenu2" style="height: 100% ; overflow-y: scroll; width:100%;">
                 {%for v in value%}
                 <li><a href="#">{{v}}</a></li>
                 {%endfor%}
@@ -28,24 +28,34 @@
       </li>
 
       <li><a href="#"><i class="fa-solid fa-angle-down"></i> KEGG </a>
-        <ul class="submenu" style="height: 240px ; overflow-y: scroll; overflow-x: hidden; width:350px;">
-          
-          {%for chiave in listachiavi%}
-            <li><a href="#"><i class="fa-solid fa-angle-down"></i> {{chiave}}</a>
+        <ul class="submenu" style="height: 100% ; overflow-y: scroll; width:100%;">
+        {% for key, value in dizionario.items %} 
+            <li><a href="#"><i class="fa-solid fa-angle-down"></i> {{key}}</a>
+                <select class="form-select submenu2"  size="8">
+                {%for v in value%}
+                <option value="1">{{v}}</option>
+                {%endfor%}
+              </select>
+            </li>
           {%endfor%}
-     
-        </ul>
+          </ul>
         </li>
-        <li><a href="#"><i class="fa-solid fa-angle-down"></i> BIOCARTA </a></li>
+        <li><a href="#"><i class="fa-solid fa-angle-down"></i> BIOCARTA </a>
+          <ul class="submenu" style="height: 100% ; overflow-y: scroll; width:100%;">
+            <li><a href="#" data-value="1">ciao</a></li>
+            <li><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">4</a></li>
+          </ul>
+        </li>
         <li><a href="#"><i class="fa-solid fa-angle-down"></i> PID </a></li>
         <li><a href="#"><i class="fa-solid fa-angle-down"></i> WIKIPATHWAYS </a></li>
     </ul>
    
   
   </div>
-
-</div>
-
+  
 {%endblock%}
   
 

@@ -43,18 +43,19 @@ def contact(request):
 def pathwayPROVA(request):
     #menu
     f=open('/mnt/data/notturno/gsva/pathway/name_group_REACTOME.txt').read().rstrip().split('\n')
-    print(f)
 
+    #dizionario submenu: submenu2
     tf = open("/mnt/data/notturno/gsva/pathway/Dictionary_name_reactome.json", "r")
-    dictionary = json.load(tf)
+    dizionario = json.load(tf)
 
-    dizionario={'chiave1':['v','v2'], 'chiave2':['v1','v2']}
+    #dizionario submenu2: valore msigdb da passare allo script
+    dictionary={'chiave1':['v','v2'], 'chiave2':['v1','v2']}
 
 
     return render(request, 'rolls/pathwayPROVA.html', {
         'listachiavi':f,
-        'dizionary':dizionario,
-        'dizionario':dictionary,
+        'dizionary':dictionary,
+        'dizionario':dizionario,
     })
 
 
@@ -113,7 +114,7 @@ def os_interaction(request):
                 out=run([sys.executable,'script/search_interactor.py',gene],shell=False, stdout=PIPE)
                 stringa=(out.stdout.decode('ascii')).strip()
                 lista=stringa.split(',')
-                  
+                
 
                 return render(request, 'rolls/OS_interaction.html', {
                     'form':form,
