@@ -181,26 +181,26 @@ def overall_survival_analysis(mrna, mirna, tumor, dfmrna, dfmirna, OS1, cartella
                 
                 kmf = KaplanMeierFitter()
 
-                if np.mean(list(dfmrna.loc[mrna,i2]))>0:
-                    results = logrank_test((OSgroup1['OS.time']), (OSgroup2['OS.time']), alpha=.95)
-                                     
-                    if results.p_value < 1:
-                        number+=1
-                        f.write(str(number)+'\tp-value: '+str(results.p_value)+'\n')
-                        
-                        kmf.fit((OSgroup1), label="mRNA "+labelmrna[el]+" and miRNA "+labelmirna[el])
-                        a1 = kmf.plot()
+                #if np.mean(list(dfmrna.loc[mrna,i2]))>0:
+                results = logrank_test((OSgroup1['OS.time']), (OSgroup2['OS.time']), alpha=.95)
+                                    
+                if results.p_value < 1:
+                    number+=1
+                    f.write(str(number)+'\tp-value: '+str(results.p_value)+'\n')
+                    
+                    kmf.fit((OSgroup1), label="mRNA "+labelmrna[el]+" and miRNA "+labelmirna[el])
+                    a1 = kmf.plot()
 
-                        kmf.fit((OSgroup2), label="mRNA "+labelmrna[ely]+" and miRNA "+labelmirna[ely])
-                        kmf.plot(ax=a1)
+                    kmf.fit((OSgroup2), label="mRNA "+labelmrna[ely]+" and miRNA "+labelmirna[ely])
+                    kmf.plot(ax=a1)
 
-                        plt.savefig(cartella+"overallsurvival_"+gene+"_"+tumor+"_"+str(number)+".jpg")
-                        plt.clf()
-                        
-                    else:
-                        f.write(str(number)+"\tpvalue > 1")
-                else: 
-                    print("MEDIA <0 ??")
+                    plt.savefig(cartella+"overallsurvival_"+gene+"_"+tumor+"_"+str(number)+".jpg")
+                    plt.clf()
+                    
+                else:
+                    f.write(str(number)+"\tpvalue > 1")
+               # else: 
+                #    print("MEDIA <0 ??")
 
 
 # In[7]:

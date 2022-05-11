@@ -31,7 +31,32 @@
               </form>
           </div>
               <div class="col mx-3" style="border:1px; border-left-style: solid; border-color:rgba(0, 0, 128, 0.301)">
-                  
+                {%if go == 'Valid' %}
+                
+                <h3>Results: </h3>
+                <hr>
+                <p><b>Pathway: </b> {{pathway}}</p>
+                <p><b>Tumor: </b> {{tumor}}</p>
+
+                {{formresult}}
+
+                <br><br>
+                <div class="row">
+                 
+                  <div class="zoom col shadow mb-3 bg-body rounded text-center" style="max-width: 500px;">
+                    <a href="{%static image%}" target="_blank"><img src= '{%static image %}' width="500"></a>
+                </div>
+                </div>
+              </div>
+                {%endif%}
+                
+                {%if go == "error" %}
+                <div class="alert alert-danger text-center" role="alert">
+                  <h5>Non esistono risultati per {{pathway}} - {{tumor}}</h5>
+                  {{formresult}}
+                </div> 
+                {%endif%}
+
             
               
             </div>

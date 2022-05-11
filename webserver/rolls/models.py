@@ -80,3 +80,5 @@ class Analisi(models.Model):
         
 #class Downloadfileszip(models.Model)
 
+#class link(models.Model):
+#    url=models.TextField()

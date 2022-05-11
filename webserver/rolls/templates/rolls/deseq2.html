@@ -5,12 +5,12 @@
 {%block content%}
 
    <h2> DESeq2: Analisi di espressione differenziale</h2>
-   <p>
+   
     <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
       Description
     </a>
-    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#helpExample" aria-expanded="false" aria-controls="collapseExample">
-      help
+    <button class="btn btn-primary" type="button" data-toggle="tooltip" data-placement="right" title="Click here for Example">
+      Example
     </button>
   </p>
   <div class="collapse" id="collapseExample">
@@ -19,23 +19,23 @@
     </div>
   </div>
 
-
-
-
-  <div class="collapse" id="helpExample">
-    <div class="card card-body">  
-        <p> click <a href="{%url 'table'%}" >table</a> to check which analyses are available</p>
-    </div>
-  </div>
-
   <div class="row my-3">
     <div class="col-sm-3 my-3">
         <form method="post" >
             {%csrf_token%}
             {{form|crispy}}
-            <br>
             <div class="d-grid gap-2 d-md-flex justify-content-md">
-                <button class="btn btn-primary me-md-2 my-3" type="submit">Submit</button>
+              <button class="btn btn-primary me-md-2 my-3" data-toggle="tooltip" data-placement="right" title="Click here for search features" type="submit" name="features"><i class="fa-solid fa-magnifying-glass"></i> Features</button>
+          </div>
+          <label class="mr-sm-2" for="inlineFormCustomSelect">Select feature:*</label>
+          <select name='feature' class="custom-select mr-sm-2" id="inlineFormCustomSelect">
+              {%for el in lista%}
+              <option value={{el}}>{{el}}</option>    
+              {%endfor%}
+                     
+          </select>
+            <div class="d-grid gap-2 d-md-flex justify-content-md">
+                <button class="btn btn-primary me-md-2 my-3" type="Submit" name="Submit">Submit</button>
             </div>
         
         </form>
@@ -45,30 +45,29 @@
       
           </div>
           {%if go == 'Valid' %}
-          <h3>Results: <a href="#" download ><button class="btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Graphs and results"> Download files <i class="fa-solid fa-download"></i></button></a></h3>
+          <h3>Results:</h3> You can download the log2FoldChange of this analisys <a href="{{dir}}/result_{{tumor}}.txt" download target="blank" ><button class="btn"><i class="fa-solid fa-download"></i></button></a></h3>
+          
           <hr>
           <div class="row">
             <div class="col mx-3">
-              
-              <p><b>Feature:</b> {{feature}}</p>
               <p><b>Tumor:</b> {{tumor}}</p>
+              <p><b>Feature:</b> {{feature}}</p>
               <p><b>Parameters compared:</b> {{parametri}}</p>
             </div>
             <div class="zoom col shadow mb-3 bg-body rounded" style="max-width: 450px;">
-              <img src= '{%static enhancedimage %}' width="400">
+              <a href="{%static enhancedimage%}" target="_blank"><img src= '{%static enhancedimage %}' width="350px"></a>
            </div>
           </div>
           
             <div class="card-group my-3 shadow mb-3 bg-body rounded">
               <div class="card zoom">
-                <img src='{%static images1%}' class="card-img-top" alt="...">
-               
+                <a href="{%static images1%}" target="_blank"><img src='{%static images1%}' class="card-img-top" alt="..."></a>
               </div>
               <div class="card zoom">
-                <img src='{%static images2%}' class="card-img-top" alt="...">
+                <a href="{%static images2%}" target="_blank"><img src='{%static images2%}' class="card-img-top" alt="..."></a>
               </div>
               <div class="card zoom">
-                <img src='{%static images3%}' class="card-img-top" alt="...">
+                <a href="{%static images3%}" target="_blank"><img src='{%static images3%}' class="card-img-top" alt="..."></a>
               </div>
             </div>
           
@@ -79,8 +78,8 @@
 
           {%if go == 'error' %}
           <div class="alert alert-danger text-center" role="alert">
-            <h5>Non esistono risultati per {{tumor}} - {{feature}}</h5>
-            <p> controlla la <a href="{%url 'table'%}" >tabella</a>  per verificare quali possibili analisi si possono effettuare</p>
+            <h5><b>Non esistono risultati per {{tumor}} - {{feature}}</b></h5>
+            <p> Dopo aver inserito il tumore di interesse premere su "<i class="fa-solid fa-magnifying-glass"></i> Features" per selezionare una feature tra quelle disponibili</p>
           </div> 
           {%endif%}
             

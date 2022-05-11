@@ -30,23 +30,33 @@
               
               </form>
           </div>
+          
               <div class="col mx-3" style="border:1px; border-left-style: solid; border-color:rgba(0, 0, 128, 0.301)">
                   
-                  {%if go %}
+                  {%if go == 'Valid' %}
                   
-                  <h3>Results: <a href="{%url 'downloadfileszip'%}" ><button class="btn"> Download files <i class="fa-solid fa-download"></i></button></a></h3>
+                  <h3>Results:</h3> You can download the p-value results calculated for this analysis <a href="http://160.80.35.91:7000/static/media/saveanalisi/{{dir}}/result.txt" download target="blank" ><button class="btn"><i class="fa-solid fa-download"></i></button></a>
+                   
                   <hr>
                   <p>Gene: {{gene}}</p>
                   <p>Feature: {{feature}}</p>
+                  <br>
                   <div class="row">
-                    <div class="zoom shadow mb-3 bg-body rounded" style="max-width: 700px;">
-                      <img src= '{%static image %}' width="700">
+                    <div class="zoom shadow mb-3 bg-body rounded" style="max-width: 800px;">
+                      <a href="{%static image%}" target="_blank"><img src= '{%static image %}' width="800"></a>
                   </div>
                   </div>
                 </div>
                   {%endif%}
            
-            
+                  {%if go == 'error'%}
+                  <div class="alert alert-danger text-center" role="alert">
+                    <h5>Non esistono risultati per {{gene}} - {{feature}}</h5>
+                    <p> Errore: {{formresult}} </p>
+                    
+                  </div> 
+
+                  {%endif%}
               
             </div>
       

@@ -29,7 +29,7 @@ def open_dataframe_gene(gene,tumor):
         df=df.set_index('miRNA_ID')
         return(df)
     if gene in open("/mnt/data/notturno/gene_expression/ENSG.txt").read().split("\n"):
-        df=pd.read_csv("/mnt/data/notturno/Dataframe_tumorgene/Dataframe_FPKM/Dataframe_FPKM"+tumor+".csv")
+        df=pd.read_csv("/mnt/data/notturno/Dataframe_tumorgene/Dataframe_FPKM/Dataframe_FPKM_"+tumor+".csv")
         df=df.set_index("gene_id")
         return (df)
     if gene in open("/mnt/data/notturno/protein/namepeptide.csv").read().split("\n"):
@@ -60,31 +60,31 @@ def dataframe_OStime(dfclinic):
 
 def overall_survival_analysis(m,tumor,feature,cartella,df1,OS1):
     
-    print(m)   
+    
     i1=df1.loc[m,:] > df1.loc[m,:].median()
     i2 = df1.loc[m,:] < df1.loc[m,:].median() 
     
     kmf = KaplanMeierFitter()
     
 
-    if np.mean(list(df1.loc[m,i2]))>0:
-        results = logrank_test((OS1[i1]), (OS1[i2]),list(df1.loc[m,i1]),list(df1.loc[m,i2]), alpha=.95)
-        
-        if results.p_value < 1:
-            os.mkdir("/mnt/data/notturno/web_app/webserver/rolls/static/media/saveanalisi/"+cartella)
-            print("p-value:",results.p_value)
-            #mirna.append(m)
-            kmf.fit((OS1[i1]), list(df1.loc[m,i1]), label="Higher expression")
-            a1 = kmf.plot()
+    #if np.mean(list(df1.loc[m,i2]))>0:
+    results = logrank_test((OS1[i1]), (OS1[i2]),list(df1.loc[m,i1]),list(df1.loc[m,i2]), alpha=.95)
     
-            kmf.fit((OS1[i2]),list(df1.loc[m,i2]) , label="Lower expression")
-            kmf.plot(ax=a1)
-            plt.savefig("/mnt/data/notturno/web_app/webserver/rolls/static/media/saveanalisi/"+cartella+"/overallsurvival_"+gene+"_"+tumor+".png")
-            #plt.show()
-        else:
-            print("ANALISI NON VALIDA pvalue>1")
-    else: 
-        print("ANALISI NON VALIDA MEDIA <0 ??")
+    if results.p_value < 1:
+        os.mkdir("/mnt/data/notturno/web_app/webserver/rolls/static/media/saveanalisi/"+cartella)
+        print("p-value:",results.p_value)
+        
+        kmf.fit((OS1[i1]), list(df1.loc[m,i1]), label="Higher expression")
+        a1 = kmf.plot()
+
+        kmf.fit((OS1[i2]),list(df1.loc[m,i2]) , label="Lower expression")
+        kmf.plot(ax=a1)
+        plt.savefig("/mnt/data/notturno/web_app/webserver/rolls/static/media/saveanalisi/"+cartella+"/overallsurvival_"+gene+"_"+tumor+".png")
+        
+    else:
+        print("ANALISI NON VALIDA pvalue>1")
+    #else: 
+     #   print("ANALISI NON VALIDA MEDIA <0 ??")
 
 
 # In[ ]:

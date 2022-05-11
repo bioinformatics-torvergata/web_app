@@ -1,0 +1,69 @@
+{%extends 'rolls/layoutpagine.html' %}
+{%load crispy_forms_tags%}
+{%block content%}
+{% load static %}
+
+  <h2>Differential expression analysis</h2>
+      <p>
+        <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+          Description
+        </a>
+        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+          help
+        </button>
+      </p>
+      <div class="collapse" id="collapseExample">
+        <div class="card card-body">
+          #
+        </div>
+      </div>
+        
+      <div class="row my-3">
+          <div class="col-sm-3 my-3">
+              <form method="post" >
+                  {%csrf_token%}
+                  {{form|crispy}}
+                  <br>
+                  <div class="d-grid gap-2 d-md-flex justify-content-md">
+                      <button class="btn btn-primary me-md-2 my-3" type="submit">Submit</button>
+                  </div>
+              
+              </form>
+          </div>
+              <div class="col mx-3" style="border:1px; border-left-style: solid; border-color:rgba(0, 0, 128, 0.301)">
+                  
+                  {%if go == 'Valid' %}
+                  
+                  <h3>Results:</h3> 
+                  <hr>
+                  <p><b>Tumor: </b>{{tumor}}</p>
+                  <p><b>Feature: </b>{{feature}}</p>
+                  <p><b>Gene: </b> {{gene}}</p>
+                
+                  <p><b>P-value: </b>{{formresult}}</p>
+                  <br><br>
+                  <div class="row">
+                    <div class="zoom shadow mb-3 bg-body rounded" style="max-width: 500px;">
+                      <a href="{%static image%}" target="_blank"><img src= '{%static image %}' width="500"></a>
+                  </div>
+                  </div>
+                </div>
+                  {%endif%}
+
+                  {%if go == 'error'%}
+                  <div class="alert alert-danger text-center" role="alert">
+                    <h5>Non esistono risultati per {{gene}} - {{tumor}} - {{feature}}</h5>
+                    <p> Errore </p>
+                  </div> 
+
+                  {%endif%}
+           
+            
+              
+            </div>
+      
+      </div>
+      
+
+{%endblock%}
+    

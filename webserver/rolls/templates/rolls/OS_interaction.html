@@ -3,62 +3,97 @@
 {%block content%}
 {% load static %}
 
-<h2> Overall survival miRNA-mRNA interaction </h2>
+<h2>Overall survival miRNA-mRNA interaction  </h2>
       <p>
         <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
           Description
         </a>
-        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-          help
+        <button class="btn btn-primary" type="button">
+          Example
         </button>
       </p>
       <div class="collapse" id="collapseExample">
         <div class="card card-body">
-          Try with gene= "CCND2" and miRNA="hsa-let-7a-5p"
+          Per svolgere questa analisi bisogna fornire in input: 
+          <ul>
+          <li>- un gene che puo essere un ENSG o gene symbol</li>
+          <li>- un tumore <li>
+          </ul>
+          Premendo sul tasto di "ricerca degli interattori", avrai la possibilità di visualizzare tutti i miRNA interattori con quel mRNA. Scegliere con quale miRNA fare l'analisi e premere "Submit".
+          <br>
+          (immagine esplicativa)
+          <br><br>
+          L'analisi restituirà sei grafici dell'overall survival con il relativo p-value che sono stati calcolati andando ad utilizzare i campioni forniti da TCGA per cui sono disponibili i dati temporali (OS.time).
+          <br><br>
+          I gruppi di campioni confrontati sono stati proposti sulla base dei dati di espressione del gene(Gene Expression Quantification HTSeq - FPKM) e del miRNA(miRNA Expression Quantification) forniti da TCGA.
+          <br>(immagine tabella combinazioni di espressione)<br>
+          Try with gene= "CCND2" 
         </div>
       </div>
         
       <div class="row my-3">
           <div class="col-sm-3 my-3">
               <form method="post" >
-                  {%csrf_token%}
-                  {{form|crispy}}
-                  <br>
-                  <div class="d-grid gap-2 d-md-flex justify-content-md">
-                      <button class="btn btn-primary me-md-2 my-3" type="submit">Submit</button>
-                  </div>
-              
+                {% csrf_token %}
+                {{form|crispy}} 
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md">
+                    <button class="btn btn-primary me-md-2 my-3" data-toggle="tooltip" data-placement="right" title="Click here for search interactors" type="submit" name="interactor"><i class="fa-solid fa-magnifying-glass"></i> Interactors</button>
+                </div>
+
+                <label class="mr-sm-2" for="inlineFormCustomSelect">Select miRNA interactor:*</label>
+                <select name='miRNA' class="custom-select mr-sm-2" id="inlineFormCustomSelect">
+                    {%for el in lista%}
+                    <option value={{el}}>{{el}}</option>    
+                    {%endfor%}
+                           
+                </select>
+                <div class="d-grid gap-2 d-md-flex justify-content-md">
+                  <button class="btn btn-primary me-md-2 my-3" type="submit" name="Submit">Submit</button>
+                </div>
+
               </form>
           </div>
+
           <div class="col mx-3" style="border:1px; border-left-style: solid; border-color:rgba(0, 0, 128, 0.301)">   
-            {%if go == 'Valid' %}
+            {%if go == 'Selected' %}
+            <h3>Results: <a href="{{dir}}/result.txt" download target="blank" ><button class="btn"> Download results <i class="fa-solid fa-download"></i></button></a></h3>
+            <hr>
+            <div class="row">
+              <div class="col">
+                <p><b>Tumor: </b>{{tumor}}</p>
+                <p><b>Gene:</b> {{gene}}</p>
+                <p><b>miRNA: </b> {{miRNA}}</p>
                 
-                <h3>Results: <a href="#" download ><button class="btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Graphs and results"> Download files <i class="fa-solid fa-download"></i></button></a></h3>
-                <hr>
-                <div class="row">
-                  <div class="col-sm-3">
-                    <p><b>Gene:</b> {{gene}}</p>
-                    <p><b>miRNA: </b> {{miRNA}}</p>
-                    <p><b>Tumor: </b>{{tumor}}</p>
-                  </div>
+              </div>
 
-                  <div class="col-fluid text-center">
-                    {% for img in image%}
-                        <img src= '{%static img %}' width="400">
-                    {%endfor%}
+              <div class="col-fluid text-center">
+                
+                {% for img, value in mylist%}
+                  <div class="col" style="width: 400px; display: inline-block;">
+                    <a href="{%static img%}" target="_blank"><img src= '{%static img %}' width="400"></a>
+                    <p>{{value}}</p>
                   </div>
-                </div>               
+                  
+                
+                {%endfor%}
+              </div>
+                
+                
             </div>
-            {%endif%}
-
-            {%if go == 'error' %}
-            <div class="alert alert-danger text-center" role="alert">
-              <h5>Non esistono risultati per {{gene}} - {{miRNA}}</h5>
              
-            </div> 
-            {%endif%}
-      </div>
+          </div> 
+        </div> 
+            {%endif%}              
+            
+          {%if go == 'error' %}
+          <div class="alert alert-danger text-center" role="alert">
+            <h5>Non esistono risultati per {{gene}} {{miRNA}} {{tumor}} </h5>
+            
+          </div> 
+          {%endif%}
+    </div>
       
-
+    </div>
 {%endblock%}
     
