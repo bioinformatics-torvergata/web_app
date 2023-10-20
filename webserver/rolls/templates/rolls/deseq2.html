@@ -6,16 +6,33 @@
 
    <h2> DESeq2: Analisi di espressione differenziale</h2>
    
-    <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapsedescription" role="button" aria-expanded="false" aria-controls="collapsedescription">
       Description
     </a>
-    <button class="btn btn-primary" type="button" data-toggle="tooltip" data-placement="right" title="Click here for Example">
+    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
       Example
     </button>
   </p>
-  <div class="collapse" id="collapseExample">
+  <div class="collapse" id="collapsedescription">
     <div class="card card-body">
-      <p>Differential gene expression analysis based on the negative binomial distribution</p>
+      <p>The differential expression analysis performed with <a href="http://www.bioconductor.org/packages/release/bioc/html/DESeq2.html", target="_blank">DESeq2</a>, uses data from TCGA Gene Expression Quantification HTSeq - counts. This differential gene expression analysis is based on the negative binomial distribution.<br>
+        All DESeq2 analyses that the web server provides are precomputed, to save the user the computational time of the analysis itself. 
+        <br>
+        To perform the analysis, the user will have to 
+      </p>
+        <ol>
+          <li><i class="fa-solid fa-arrow-right"></i> Select the tumor of interest</li>
+          <li><i class="fa-solid fa-arrow-right"></i> Press the search button "Features"</li>
+          <li><i class="fa-solid fa-arrow-right"></i> This will display in the second select all the features for which it is possible to obtain the result of this analysis for that specific tumor.</li>
+          <li><i class="fa-solid fa-arrow-right"></i> Pressing "Submit" will display the results with graphs and related information of the data entered by the user.</li>
+        </ol>
+        <p>
+        A necessary information that will be specified is the Parameters compared, the order of the feature parameters compared (e.s. Tumor vs. Control).
+        <br><br>
+        <i class="fa-solid fa-square-poll-horizontal"></i> The analysis provides a downloadable results table where the calculated log2 Fold Change, p-value and adjusted p-value (padj) are associated for each gene. 
+        <br>In addition, several graphs such as Enhanced Volcano Plot, Heatmap, PCA and Heatmap top 100 can be viewed and downloaded.
+        
+      </p>
     </div>
   </div>
 
@@ -41,8 +58,11 @@
         </form>
     </div>
         <div class="col-sm mx-3" style="border:1px; border-left-style: solid; border-color:rgba(0, 0, 128, 0.301)">
-          <div>
-      
+          <div class="collapse" id="collapseExample">
+            <div class="card card-body">
+              <p class="text-center" >Example: </p>
+              <img src= "{%static 'media/examples/DESeq2.png' %}" width="750">
+            </div> 
           </div>
           {%if go == 'Valid' %}
           <h3>Results:</h3> You can download the log2FoldChange of this analisys <a href="{{dir}}/result_{{tumor}}.txt" download target="blank" ><button class="btn"><i class="fa-solid fa-download"></i></button></a></h3>

@@ -3,9 +3,123 @@
 {%block page%}
        
     <div class="conteiner text-center my-3" style="position: center;">
-        <p class="lead"> Documentation <p>
+        <p class="lead"> Documentation </p>
+    </div>
+
+    <div class="container my-5" style="position: center;">
+                <div class="accordion accordion-flush" id="accordionFlushExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-headingOne">
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                            DESeq2 analisys
+                          </button>
+                        </h2>
+                        <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                          <div class="accordion-body">
+                            The differential expression analysis performed with <a href="http://www.bioconductor.org/packages/release/bioc/html/DESeq2.html", target="_blank">DESeq2</a>, uses data from TCGA Gene Expression Quantification HTSeq - counts. This differential gene expression analysis is based on the negative binomial distribution.<br>
+                            All DESeq2 analyses that the web server provides are precomputed, to save the user the computational time of the analysis itself. 
+                            <br>
+                            To perform the analysis, the user will have to 
+                         
+                            <ol>
+                              <li><i class="fa-solid fa-arrow-right"></i> Select the tumor of interest</li>
+                              <li><i class="fa-solid fa-arrow-right"></i> Press the search button "Features"</li>
+                              <li><i class="fa-solid fa-arrow-right"></i> This will display in the second select all the features for which it is possible to obtain the result of this analysis for that specific tumor.</li>
+                              <li><i class="fa-solid fa-arrow-right"></i> Pressing "Submit" will display the results with graphs and related information of the data entered by the user.</li>
+                            </ol>
+                         
+                            A necessary information that will be specified is the Parameters compared, the order of the feature parameters compared (e.s. Tumor vs. Control).
+                            <br><br>
+                            <i class="fa-solid fa-square-poll-horizontal"></i> The analysis provides a downloadable results table where the calculated log2 Fold Change, p-value and adjusted p-value (padj) are associated for each gene. 
+                            <br>In addition, several graphs such as Enhanced Volcano Plot, Heatmap, PCA and Heatmap top 100 can be viewed and downloaded.
+                            
+                          </div>
+                        </div>
+                      </div>
+                    
+                    
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="flush-headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                        Differential expression analysis
+                        </button>
+                      </h2>
+                      <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            <h4>Single-gene differential expression analysis</h4>
+                            <p>Single-gene differential expression analysis is an analysis that allows the user to study the difference in expression of a gene, miRNA or protein between patients in two different conditions (based on the selected feature) with a given tumor.
+                                <br>This analysis uses TCGA Gene Expression Quantification - FPKM data (normalized counts) for genes.
+                                <br><br><i class="fa-solid fa-square-poll-horizontal"></i> As a result of the analysis, a box-plot is returned showing on the x-axis the two conditions under consideration (e.s. male and female), while the y-axis shows the expression of the gene, miRNA or protein entered.
+                                <br>Finally, the p-value is calculated using the Wilcoxon test, which indicates the significance of difference in expression between the two groups examined. 
+                            </p>
+                                <hr>
+                                
+                                <h4>miRNA isoform interactor analysis</h4>
+                                <p>This analysis provides the ability for the user to analyze the expression profile of the interactors of miRNA isoforms. 
+                                <br>The implemented script checks whether that provided miRNA has isoforms that are present in the RNA inter interaction file. This file contains the information of all miRNA (isoforms) - mRNA interactions
+                                that have been experimentally validated belonging to Homo sapiens. 
+                                </p>
+                                <br>
+                                The result obtained is a cluster map. On the rows the names of the patients and on the columns the name of the genes interacting with the miRNA isoform.
+                                Clustering was performed to highlight groups of genes with similar expression profile.
+
+                            </p>
+                        </div>
+                        </div>
+                    </div>
+
+
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="flush-headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                        Differential expression analysis all tumor
+                        </button>
+                      </h2>
+                      <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            <p>This analysis is the differential expression under two conditions of a gene, miRNA, or protein for all tumors for which data for the selected feature is available. 
+                                <br>This gives the user an overview of the expression of that particular gene in different tumors.
+                                <br>On the x-axis are shown all tumors for which analysis is available. On the y-axis the expression of the gene, miRNA or protein is shown.
+                              </p></div>
+                      </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-headingFour">
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour">
+                            Overall Survival
+                          </button>
+                        </h2>
+                        <div id="flush-collapseFour" class="accordion-collapse collapse" aria-labelledby="flush-headingFour" data-bs-parent="#accordionFlushExample">
+                          <div class="accordion-body">
+                            <h4>Analysis of overall survival</h4>
+                            <p>Time is shown on the x-axis, and survival probability (conditional probability) is shown on the y-axis. 
+                            <br>The implemented script uses OS time data provided by TCGA in the clinical data file as time-to-event information.
+                            <br>The time data are expressed in days. 
+                            <br><br>The expression data used are Gene Expression Quantification HTSeq - FPKM, miRNA Expression Quantification and Protein Expression Quantification.
+                          </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-headingFive">
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive">
+                            OS Pathway activity score
+                          </button>
+                        </h2>
+                        <div id="flush-collapseFive" class="accordion-collapse collapse" aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushExample">
+                          <div class="accordion-body">
+                            <h4>Overall survival with Pathway activity score</h4>
+                            <p>This analysis offers the opportunity to perform an overall survival analysis by going to study instead of the expression of a single gene, the expression of a set of genes (pathways).
+                            <br><br>The analysis for a given tumor consists of dividing samples into two groups based on pathway activity score (PAS) values pre-calculated with <a href='https://bioconductor.org/packages/devel/bioc/vignettes/GSVA/inst/doc/GSVA.html' target="_blank">GSVA</a> (Gene Set Variation Analysis).
+                            The PAS describes how active that pathway is in that given sample. GSVA is a nonparametric, unsupervised method for estimating the variation in gene set enrichment across samples in an expression dataset.
+                            <br>The implemented script uses OS time data provided by TCGA in the clinical data file as time-to-event information. The time data are expressed in days.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+            </div>
             
-            <p>pagina in costruzione</p>
     </div>
   
 

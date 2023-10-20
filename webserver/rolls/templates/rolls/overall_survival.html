@@ -5,16 +5,21 @@
 
   <h2> Overall survival </h2>
       <p>
-        <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+        <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapsedescription" role="button" aria-expanded="false" aria-controls="collapsedescription">
           Description
         </a>
         <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-          help
+          Example
         </button>
       </p>
-      <div class="collapse" id="collapseExample">
+      <div class="collapse" id="collapsedescription">
         <div class="card card-body">
-          #
+          <h4>Analysis of overall survival</h4>
+          <p>Time is shown on the x-axis, and survival probability (conditional probability) is shown on the y-axis. 
+          <br>The implemented script uses OS time data provided by TCGA in the clinical data file as time-to-event information.
+          <br>The time data are expressed in days. 
+          <br><br>The expression data used are Gene Expression Quantification HTSeq - FPKM, miRNA Expression Quantification and Protein Expression Quantification.
+        </p>
         </div>
       </div>
         
@@ -31,7 +36,12 @@
               </form>
           </div>
               <div class="col mx-3" style="border:1px; border-left-style: solid; border-color:rgba(0, 0, 128, 0.301)">
-                
+                <div class="collapse" id="collapseExample">
+                  <div class="card card-body">
+                    <p class="text-center" >Example: </p>
+                    <img src= "{%static 'media/examples/os.png' %}" width="750">
+                  </div> 
+                </div>
                   {%if go == 'Valid' %}
                 
                   <h3>Results: </h3>

@@ -6,56 +6,112 @@
 <h2> Overall survival with Pathway activity score </h2>
 <div class="container-fluid">
   <p>Dropdown menu multiple level</p>
-
   
-  <h3>Pathways</h3>
-  <div class="menu-container" style="height: 100%;overflow-y: scroll; background-color: aliceblue; width: 70%;">
-    <ul class="menu">
-      <li><a href='#'><i class="fa-solid fa-angle-down"></i> REACTOME </i></a>
-        <ul class="submenu" style="height: 100% ; overflow-y: scroll; width:100%;">
-          {% for key, value in dizionario.items %} 
-            <li><a href="#"><i class="fa-solid fa-angle-down"></i><b> {{key}}</b> </a>
-              <ul class="submenu2" style="height: 100% ; overflow-y: scroll; width:100%;">
-                {%for v in value%}
-                <li><a href="#">{{v}}</a></li>
-                {%endfor%}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
-            </ul>
-            </li>
-          {%endfor%}
-     
-        </ul>
-      </li>
+<script>
+    function readTextFile(file) {
+      var rawtext;
+      var rawFile = new XMLHttpRequest();
+      rawFile.open("GET", file, false);
+      rawFile.onreadystatechange = function () {
+          if (rawFile.readyState === 4) {
+              if (rawFile.status === 200 || rawFile.status == 0) {
+                  rawtext = rawFile.responseText;
+              }
+          }
+      }
+      rawFile.send(null);
+      return rawtext;
+    }
 
-      <li><a href="#"><i class="fa-solid fa-angle-down"></i> KEGG </a>
-        <ul class="submenu" style="height: 100% ; overflow-y: scroll; width:100%;">
-        {% for key, value in dizionario.items %} 
-            <li><a href="#"><i class="fa-solid fa-angle-down"></i> {{key}}</a>
-                <select class="form-select submenu2"  size="8">
-                {%for v in value%}
-                <option value="1">{{v}}</option>
-                {%endfor%}
-              </select>
-            </li>
-          {%endfor%}
-          </ul>
-        </li>
-        <li><a href="#"><i class="fa-solid fa-angle-down"></i> BIOCARTA </a>
-          <ul class="submenu" style="height: 100% ; overflow-y: scroll; width:100%;">
-            <li><a href="#" data-value="1">ciao</a></li>
-            <li><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-          </ul>
-        </li>
-        <li><a href="#"><i class="fa-solid fa-angle-down"></i> PID </a></li>
-        <li><a href="#"><i class="fa-solid fa-angle-down"></i> WIKIPATHWAYS </a></li>
-    </ul>
-   
-  
-  </div>
-  
+    var rowf = readTextFile("../static/json/Dictionary_name_Kegg.json");
+    var stateObject = JSON.parse(rowf);
+    
+    // var stateObject =
+    // {
+    //   "A": 
+    //       {"syste": ["1","2","3"], 
+    //       "ciccio": ["1","2","3"]
+    //       },
+    //   "B": 
+    //       {"flu":["3","4","5"],
+    //       "gio":["5","67"]
+    //       }
+    // }
+
+     window.onload = function ()
+     {
+
+        
+      var regionSelect = document.getElementById("DB"),
+      stateSelect = document.getElementById("stateSelect"),
+      districtSelect = document.getElementById("districtSelect");
+      for (var region in stateObject)
+      {
+      regionSelect.options[regionSelect.options.length] = new Option(region, region);
+      }
+      regionSelect.onchange = function ()
+      {
+      stateSelect.length = 1; // remove all options bar first
+      districtSelect.length = 1; // remove all options bar first
+      if (this.selectedIndex < 1) return; // done
+      for (var state in stateObject[this.value])
+      {
+      stateSelect.options[stateSelect.options.length] = new Option(state, state);
+      }
+      }
+      regionSelect.onchange(); // reset in case page is reloaded
+      stateSelect.onchange = function ()
+      {
+      districtSelect.length = 1; // remove all options bar first
+      if (this.selectedIndex < 1) return; // done
+      var district = stateObject[regionSelect.value][this.value];
+      for (var i = 0; i < district.length; i++)
+      {
+      districtSelect.options[districtSelect.options.length] = new Option(district[i], district[i]);
+      }
+      }
+     }
+ 
+</script>
+<div class="row"> 
+  <div class="col">
+  <form name="myform" id="myForm">
+    <div class="select">
+        <select class="custom-select mr-sm-2" name="state" id="DB" size="1">
+        <option value="" selected="selected">Select database</option>
+        </select> 
+    </div>
+    <br>
+    <div class="select">
+        <select class="custom-select mr-sm-2" name="region" id="stateSelect" size="1">
+        <option value="" selected="selected">Select group Pathway</option>
+        </select>
+    </div>
+    <br>
+    <div class="select ">
+        <select class="custom-select mr-sm-2" name="district" id="districtSelect" size="1">
+        <option value='district[i]'  selected="selected">Select Pathway</option>
+        </select>
+    </div>
+    <br>
+    <div class="d-grid gap-2 d-md-flex justify-content-md">
+      <button class="btn btn-primary me-md-2 my-3" type="submit" name="Submit">Submit</button>
+    </div>
+  </form>
+</div> 
+  <div class='col'>
+    
+    {%if go == 'Selected' %}
+    <p> result</p>
+      {{pathway}} 
+      {{go}}
+    {%endif%}
+  </div>  
+
+</div>  
+</div>
 {%endblock%}
   
 

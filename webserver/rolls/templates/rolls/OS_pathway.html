@@ -5,16 +5,21 @@
 
 <h2> Overall survival with Pathway activity score </h2>
       <p>
-        <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+        <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapsedescription" role="button" aria-expanded="false" aria-controls="collapsedescription">
           Description
         </a>
         <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-          help
+          Example
         </button>
       </p>
-      <div class="collapse" id="collapseExample">
+      <div class="collapse" id="collapsedescription">
         <div class="card card-body">
-          #
+          <h4>Overall survival with Pathway activity score</h4>
+          <p>This analysis offers the opportunity to perform an overall survival analysis by going to study instead of the expression of a single gene, the expression of a set of genes (pathways).
+          <br><br>The analysis for a given tumor consists of dividing samples into two groups based on pathway activity score (PAS) values pre-calculated with <a href='https://bioconductor.org/packages/devel/bioc/vignettes/GSVA/inst/doc/GSVA.html' target="_blank">GSVA</a> (Gene Set Variation Analysis).
+           The PAS describes how active that pathway is in that given sample. GSVA is a nonparametric, unsupervised method for estimating the variation in gene set enrichment across samples in an expression dataset.
+          <br>The implemented script uses OS time data provided by TCGA in the clinical data file as time-to-event information. The time data are expressed in days.
+          </p>
         </div>
       </div>
         
@@ -30,7 +35,15 @@
               
               </form>
           </div>
-              <div class="col mx-3" style="border:1px; border-left-style: solid; border-color:rgba(0, 0, 128, 0.301)">
+              
+                <div class="col mx-3" style="border:1px; border-left-style: solid; border-color:rgba(0, 0, 128, 0.301)">
+                  <div class="collapse" id="collapseExample">
+                    <div class="card card-body">
+                      <p class="text-center" >Example: </p>
+                      <img src= "{%static 'media/examples/pathway_os.png' %}" width="750">
+                    </div> 
+                  </div>
+                </div>
                 {%if go == 'Valid' %}
                 
                 <h3>Results: </h3>

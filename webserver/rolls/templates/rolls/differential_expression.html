@@ -5,16 +5,20 @@
 
   <h2>Differential expression analysis with all tumor</h2>
       <p>
-        <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+        <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapsedescription" role="button" aria-expanded="false" aria-controls="collapsedescription">
           Description
         </a>
         <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-          help
+          Example
         </button>
       </p>
-      <div class="collapse" id="collapseExample">
+      <div class="collapse" id="collapsedescription">
         <div class="card card-body">
-          #
+          <h4>Differential expression on all tumors</h4>
+          <p>This analysis is the differential expression under two conditions of a gene, miRNA, or protein for all tumors for which data for the selected feature is available. 
+            <br>This gives the user an overview of the expression of that particular gene in different tumors.
+            <br>On the x-axis are shown all tumors for which analysis is available. On the y-axis the expression of the gene, miRNA or protein is shown.
+          </p>
         </div>
       </div>
         
@@ -32,7 +36,12 @@
           </div>
           
               <div class="col mx-3" style="border:1px; border-left-style: solid; border-color:rgba(0, 0, 128, 0.301)">
-                  
+                  <div class="collapse" id="collapseExample">
+                  <div class="card card-body">
+                    <p class="text-center" >Example: </p>
+                    <img src= "{%static 'media/examples/all_tumor_DE.png' %}" width="750">
+                  </div> 
+                  </div>
                   {%if go == 'Valid' %}
                   
                   <h3>Results:</h3> You can download the p-value results calculated for this analysis <a href="http://160.80.35.91:7000/static/media/saveanalisi/{{dir}}/result.txt" download target="blank" ><button class="btn"><i class="fa-solid fa-download"></i></button></a>

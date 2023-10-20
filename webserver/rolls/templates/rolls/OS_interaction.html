@@ -25,7 +25,7 @@
           <br><br>
           L'analisi restituirà sei grafici dell'overall survival con il relativo p-value che sono stati calcolati andando ad utilizzare i campioni forniti da TCGA per cui sono disponibili i dati temporali (OS.time).
           <br><br>
-          I gruppi di campioni confrontati sono stati proposti sulla base dei dati di espressione del gene(Gene Expression Quantification HTSeq - FPKM) e del miRNA(miRNA Expression Quantification) forniti da TCGA.
+          I gruppi di campioni confrontati sono stati proposti sulla base dei dati di espressione del gene(Gene Expression Quantification HTSeq - FPKM) e del miRNA(Isoform Expression Quantification) forniti da TCGA.
           <br>(immagine tabella combinazioni di espressione)<br>
           Try with gene= "CCND2" 
         </div>
@@ -36,7 +36,6 @@
               <form method="post" >
                 {% csrf_token %}
                 {{form|crispy}} 
-                
                 <div class="d-grid gap-2 d-md-flex justify-content-md">
                     <button class="btn btn-primary me-md-2 my-3" data-toggle="tooltip" data-placement="right" title="Click here for search interactors" type="submit" name="interactor"><i class="fa-solid fa-magnifying-glass"></i> Interactors</button>
                 </div>
@@ -90,6 +89,11 @@
           <div class="alert alert-danger text-center" role="alert">
             <h5>Non esistono risultati per {{gene}} {{miRNA}} {{tumor}} </h5>
             
+          </div> 
+          {%endif%}
+          {%if go == 'errorname' %}
+          <div class="alert alert-danger text-center" role="alert">
+            <h5>Non esistono risultati per "{{gene}}"</h5>  
           </div> 
           {%endif%}
     </div>
