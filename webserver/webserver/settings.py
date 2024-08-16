@@ -24,8 +24,8 @@ SECRET_KEY = 'django-insecure-+upxo)994)8&bdl7l!ffhkd8o#8l#r7bgkt=gx_@&d!f%l_(b9
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = ['160.80.35.91']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+#ALLOWED_HOSTS = ['160.80.35.91']
 
 
 # Application definition
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rolls.apps.RollsConfig',
     'crispy_forms',
+    'crispy_bootstrap4',
 ]
 
 MIDDLEWARE = [

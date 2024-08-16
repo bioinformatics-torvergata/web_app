@@ -5,7 +5,7 @@ import os
 tumor= sys.argv[1]
 
 
-path='/mnt/data/notturno/web_app/webserver/rolls/static/media/deseq2/'
+path='../rolls/static/media/deseq2/'
 dir=os.listdir(path)
 
 listafeature=[]

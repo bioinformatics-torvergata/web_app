@@ -20,20 +20,7 @@
             <br><br><i class="fa-solid fa-square-poll-horizontal"></i> As a result of the analysis, a box-plot is returned showing on the x-axis the two conditions under consideration (e.s. male and female), while the y-axis shows the expression of the gene, miRNA or protein entered.
             <br>Finally, the p-value is calculated using the Wilcoxon test, which indicates the significance of difference in expression between the two groups examined. 
           </p>
-            <hr>
-            
-            <h4>miRNA isoform interactor analysis</h4>
-            <p>This analysis provides the ability for the user to analyze the expression profile of the interactors of miRNA isoforms. 
-            <br>The implemented script checks whether that provided miRNA has isoforms that are present in the RNA inter interaction file. This file contains the information of all miRNA (isoforms) - mRNA interactions
-            that have been experimentally validated belonging to Homo sapiens. 
-            </p>
-            <br>
-            The result obtained is a cluster map. On the rows the names of the patients and on the columns the name of the genes interacting with the miRNA isoform.
-            Clustering was performed to highlight groups of genes with similar expression profile.
-
-
-
-          </p>
+      
         </div>
       </div>
         
@@ -53,7 +40,7 @@
                 <div class="collapse" id="collapseExample">
                   <div class="card card-body">
                     <p class="text-center" >Example: </p>
-                    <img src= "{%static 'media/examples/de_heatmap.png' %}" width="750">
+                    <img src= "{%static 'media/examples/diff_ex_single_tumor.png' %}" width="750">
                   </div> 
                 </div>
                   {%if go == 'Valid' %}
@@ -67,42 +54,14 @@
                   <p><b>P-value: </b>{{formresult}}</p>
                   <br><br>
                   <div class="row">
-                    <div class="zoom col shadow mb-3 bg-body rounded" style="max-width: 450px;">
-                      <a href="{%static image%}" target="_blank"><img src= '{%static image %}' width="400"></a>
+                    <div class="mb-3 bg-body rounded" style="max-width: 800px;">
+                        <iframe src="{% static image %}" width="800" height="600" frameborder="0"></iframe>
+                    </div> 
                   </div>
                   
                   {%endif%}
 
-                  {%if go == 'Valid_heat' %}
-                  
-                  <h3>Results:</h3> 
-                  <hr>
-                  <p><b>Tumor: </b>{{tumor}}</p>
-                  <p><b>Feature: </b>{{feature}}</p>
-                  <p><b>Gene: </b> {{gene}}</p>
-                
-                  <p><b>P-value: </b>{{formresult}}</p>
-                  
-                  <br><br>
-                  <div class="row">
-                    <div class="zoom col shadow mb-3 bg-body rounded" style="max-width: 450px;">
-                      <a href="{%static image_box%}" target="_blank"><img src= '{%static image_box%}' width="400"></a>
-                    </div>
-                  </div>
-                  <hr>
-                    <h5>Interactor analysis of miRNA isoforms <a href="{{dir}}/result.txt" download target="blank" ><button class="btn"> Download results <i class="fa-solid fa-download"></i></button></a></h5>
-                  
-                    {% for img in image_cluster%}
-                    <div class="zoom col shadow mb-3 bg-body rounded" style="max-width: 450px;">
-                      <a href="{%static img%}" target="_blank"><img src= '{%static img %}' width="400"></a>
-                    </div>
-                  {%endfor%}
-                  
-
-                  {%endif%}
                  
-               
-
                   {%if go == 'error'%}
                   <div class="alert alert-danger text-center" role="alert">
                     <h5>Non esistono risultati per {{gene}} - {{tumor}} - {{feature}}</h5>

@@ -11,8 +11,23 @@ import mimetypes
 from shutil import make_archive
 import time
 import os.path
+from django.conf import settings
 
 import json
+import configparser
+from pathlib import Path
+
+#richiamo conf.ini
+config = configparser.ConfigParser()
+script_dir = Path(__file__).parent
+
+# Costruisci il percorso relativo al file di configurazione
+config_file = script_dir.parent.parent / 'webserver' / 'webserver' / 'conf.ini'
+
+config.read(config_file) 
+#directory base
+output_data = config['Paths']['output_data']
+
 
 parametri={
     'patient_status':'Tumor vs Ctrl',
@@ -39,6 +54,8 @@ def dataset(request):
 def contact(request):
     return render(request, 'rolls/contact.html')
 
+def yourdataset(request):
+    return render(request,'rolls/yourdataset.html')
 
 def pathwayPROVA(request):
     #menu
@@ -71,13 +88,14 @@ def overall_survival(request):
             inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
             out=run([sys.executable,'script/overall_survival.py',gene,tumor,inp3],shell=False, stdout=PIPE)
             print(out)
-            
-            dir='rolls/static/media/saveanalisi/'+inp3+'/'
+            dir= os.path.join(output_data, inp3)
+            #dir='rolls/static/media/saveanalisi/'+inp3+'/'
             if os.path.isdir(dir): 
                 files=os.listdir(dir)
                 for file in files:
                     if file[-3:]=='png':
-                        image='/media/saveanalisi/'+inp3+'/'+file
+                        image=os.path.join('media/saveanalisi',inp3,file)
+                        #image='/media/saveanalisi/'+inp3+'/'+file
                 form=Analisiform1()
 
                 return render(request, 'rolls/overall_survival.html', {
@@ -213,7 +231,7 @@ def os_pathway(request):
     return render(request, 'rolls/OS_pathway.html', {'form':form})
 
 
-######differential expression single tumor############
+############     DIFFERENTIAL EXPRESSION SINGLE TUMOR     ############
 def diff_exp_single_tumor(request):
     if request.method == 'POST':
             form = Analisiformcompleto(request.POST)
@@ -222,16 +240,20 @@ def diff_exp_single_tumor(request):
                 tumor=form.cleaned_data['tumor']
                 feature=form.cleaned_data['feature']
                 
-                inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
-                out=run([sys.executable,'script/Differential_expression_boxplot.py',gene,tumor,feature,inp3],shell=False, stdout=PIPE)
+                time_dir=(time.strftime("%Y-%m-%d-%H-%M-%S"))
+                dir= os.path.join(output_data, time_dir)
+               # dir=os.path.join(settings.BASE_DIR, 'rolls', 'static', 'media', 'saveanalisi', time_dir)
+                os.makedirs(dir)
+                out=run([sys.executable,'script/Differential_expression_boxplot_plotly.py',gene,tumor,feature,dir],shell=False, stdout=PIPE)
                 print(out)
-                dir='rolls/static/media/saveanalisi/'+inp3+'/'
+                
+                
                 if os.path.isdir(dir): 
                     files=os.listdir(dir)
                     for file in files:
-                        if file[-3:]=='jpg':
-                            image='/media/saveanalisi/'+inp3+'/'+file
-                            
+                        if file[-4:]=='html':
+                           # image='/media/saveanalisi/'+time_dir+'/'+file
+                            image=os.path.join('media/saveanalisi',time_dir,file)
                             form=Analisiformcompleto()
                             return render(request, 'rolls/diff_exp_single_tumor.html', {
                                 'form':form, 
@@ -255,7 +277,7 @@ def diff_exp_single_tumor(request):
 
 
 
-####### differential expression analisys with all tumor for feature #############
+#############      DIFFERENTIAL EXPRESSION ANALYSIS ALL TUMOR FOR FEATURE      #############
 def differential_expression(request):
     if request.method == 'POST':
         form = Analisiform(request.POST)
@@ -264,15 +286,17 @@ def differential_expression(request):
             feature=form.cleaned_data['feature']
             
             inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
-
-            out=run([sys.executable,'script/boxplot_all_tumor_giusto.py',gene,feature,inp3],shell=False, stdout=PIPE)
+            
+            dir= os.path.join(output_data, inp3)
+            out=run([sys.executable,'script/boxplot_all_tumor_giusto.py',gene,feature,dir],shell=False, stdout=PIPE)
             print(out)
-            dir='rolls/static/media/saveanalisi/'+inp3+'/'
+            
             if os.path.isdir(dir): 
                 files=os.listdir(dir)
                 for file in files:
                     if file[-3:]=='jpg':
-                        image='/media/saveanalisi/'+inp3+'/'+file
+                        image=os.path.join('media/saveanalisi',inp3,file)
+                        #image='media/saveanalisi/'+inp3+'/'+file
                 form=Analisiform()
                 return render(request, 'rolls/differential_expression.html', {
                     'form':form, 
