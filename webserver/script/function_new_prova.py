@@ -107,7 +107,7 @@ def detect_if_gene_mirna_proteina(gene, cartella):
     else:
         return(0) #la ricerca non è disponibile per il nome inserito
 
-def open_dataframe_gene_boxplot_all_tumor(gene,listanomi01, path_dataframe,index):
+def open_dataframe_gene_boxplot_all_tumor(gene,listanomi01, path_dataframe, index):
     if gene == 'miRNA':
         df=pd.read_csv(path_dataframe,usecols=listanomi01)
         df=df.set_index(index)
@@ -128,7 +128,7 @@ def open_dataframe_gene_boxplot_all_tumor(gene,listanomi01, path_dataframe,index
 
 def box_plot_all_tumor(df1, cartella, gene, feature):
     
-    sns.set(rc={'figure.figsize':(25.7,8.27)})
+    sns.set_theme(rc={'figure.figsize':(25.7,8.27)})
     sns.set_style("white")
 
     my_order = df1.groupby(by=["tumor"])[gene].median().iloc[::-1].sort_values().index

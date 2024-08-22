@@ -24,6 +24,7 @@ from function_new_prova import read_clinical_data,open_dataframe_gene_boxplot_al
 #################################   
 
 if __name__ == "__main__":
+    #parametri in input:
     gene= sys.argv[1]
     feature= sys.argv[2]
     cartella=sys.argv[3]
@@ -40,7 +41,7 @@ if __name__ == "__main__":
     ogg_analisi=detect_if_gene_mirna_proteina(gene, cartella) #es. miRNA, miRNA_ID, 'pathdataframe.csv'
     print(ogg_analisi)
     if ogg_analisi!=0:
-
+        
         #lista samples df expression gene/miRNA/prot
         dd=pd.read_csv(ogg_analisi[2],nrows=1)
         listamiRNA=list(dd.columns[1:])
@@ -78,8 +79,9 @@ if __name__ == "__main__":
 
 
             #df espressione solo dei campioni di cui abbiamo i dati clinici
-            d=open_dataframe_gene_boxplot_all_tumor(ogg_analisi[0],listanomi01, ogg_analisi[2],ogg_analisi[1])
-
+            print(ogg_analisi[2])
+            d=open_dataframe_gene_boxplot_all_tumor(ogg_analisi[0],listanomi01, ogg_analisi[2])
+            print('here')
 
 
         colonna1=list(d.loc[gene,])
