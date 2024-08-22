@@ -3,4 +3,102 @@
 {% load static %}
 {%block content%}
     <h2> Upload your dataset for analisys</h2>
+    <div class="row my-3">
+        <div class="col-6 my-3 mx-auto">
+            <form method="post" >
+                {%csrf_token%}
+                {{form|crispy}}
+                <br>
+                <div class="mb-3">
+                    <label for="formFile" class="form-label">Dataset</label>
+                    <input class="form-control" type="file" id="formFile">
+                  </div>
+                
+                <div class="mb-3">
+                    <label for="formFile" class="form-label">Default file input example</label>
+                    <input class="form-control" type="file" id="formFile">
+                  </div>
+
+                  <select class="form-select" aria-label="Default select example">
+                    <option selected>Select analisy</option>
+                    <option value="1">diff_exp_single_tumor</option>
+                    <option value="2">Overall survival</option>
+                    <option value="3">deseq</option>
+                  </select>
+
+                  <br>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                    <label class="form-check-label" for="flexRadioDefault1">
+                      gene
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+                    <label class="form-check-label" for="flexRadioDefault2">
+                      miRNA
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                    <label class="form-check-label" for="flexRadioDefault1">
+                      protein
+                    </label>
+                  </div>
+                  <br>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">email</span>
+                    <input type="text" class="form-control" placeholder="@example.com" aria-label="Username" aria-describedby="basic-addon1">
+                  </div>
+                  
+                  
+                  
+                  
+                  <div class="input-group">
+                    <span class="input-group-text">With textarea</span>
+                    <textarea class="form-control" aria-label="With textarea"></textarea>
+                  </div>
+                <div class="d-grid gap-2 d-md-flex justify-content-md">
+                    <button class="btn btn-primary me-md-2 my-3" type="submit">Submit</button>
+                </div>
+            
+            </form>
+        </div>
+    </div>
+
+    <title>Gene Autocomplete</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#gene-name").on('input', function() {
+                let query = $(this).val();
+                if (query.length > 1) {
+                    $.ajax({
+                        url: "{% url 'gene_autocomplete' %}",
+                        data: {
+                            'term': query
+                        },
+                        success: function(data) {
+                            let suggestions = data.map(name => `<option value="${name}">`);
+                            $("#gene-names").html(suggestions.join(''));
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+  <body>
+    <form method="post">
+        {% csrf_token %}
+        <label for="gene-name">Gene name:</label>
+        <input type="text" id="gene-name" name="gene_name" list="gene-names" autocomplete="on">
+        <datalist id="gene-names">
+            <!-- Suggestioni saranno popolate qui -->
+        </datalist>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+
 {%endblock%}
+

@@ -13,19 +13,14 @@
 # Ci restituisce due boxplot per confrontare i due gruppi di pazienti con quella determinata feature.
 # Calcoli il p-value con il test di Wilcoxon.
 # 
- 
+
+
 
 import pandas as pd
 import os 
-import matplotlib.pyplot as plt
-import seaborn as sns
-from scipy.stats import ranksums
 import sys
 import subprocess
-
-import plotly.express as px
-from function_new import open_dataframe_gene,df_feature,crealista
-os.chdir("/Users/chiaranotturnogranieri/Downloads/notturno") #aggiungere in un file di configurazione questo path
+from function_new_prova import open_dataframe,ranksum_test,plotly_plot,crealista,df_feature
 
 
 if __name__ == "__main__":
@@ -37,9 +32,10 @@ if __name__ == "__main__":
     
 
     #df di interesse:
-    ogg=open_dataframe_gene(gene,tumor,feature,cartella)
-
+    ogg=open_dataframe(gene,tumor,feature,cartella)
+   
     if ogg!=0:
+        gene=ogg[2]
         df=ogg[0]
         dffeat=df_feature(ogg[1], tumor, feature) #df features
         
@@ -86,26 +82,9 @@ if __name__ == "__main__":
             d[gene]=lista_exp
 
         #plt
-        fig = px.scatter(x=range(10), y=range(10))
-        fig=px.box(d,y=gene,x=feature,color=feature,points = 'all')
-        if ogg[1]== "miRNA":
-                fig.update_layout(yaxis_type="log")
-        #fig.show()
-      
-        fig.write_html(cartella+'/'+gene+'_'+feature+'.html')
-        
+        plotly_plot(feature,d, gene,cartella,ogg)
+
+        #p-value
+        print(ranksum_test(gene,d,feature))
+
        
-
-        #ranksum test per p-value
-        p=list(set(d[feature]))
-        
-        df1_mask=d[feature]== p[0]
-        dp0=d[df1_mask]
-        
-        df1_mask=d[feature]== p[1]
-        dp1=d[df1_mask]
-
-        w, p = ranksums(list(dp0[gene]), list(dp1[gene]))
-
-        print(p)
-

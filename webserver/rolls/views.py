@@ -244,7 +244,7 @@ def diff_exp_single_tumor(request):
                 dir= os.path.join(output_data, time_dir)
                # dir=os.path.join(settings.BASE_DIR, 'rolls', 'static', 'media', 'saveanalisi', time_dir)
                 os.makedirs(dir)
-                out=run([sys.executable,'script/Differential_expression_boxplot_plotly.py',gene,tumor,feature,dir],shell=False, stdout=PIPE)
+                out=run([sys.executable,'script/Differential_expression_boxplot_plotly_new.py',gene,tumor,feature,dir],shell=False, stdout=PIPE)
                 print(out)
                 
                 

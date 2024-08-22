@@ -4,17 +4,10 @@
 # ANALISI OVERALL SURVIVAL
 # 
 
-# In[7]:
-
 
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-from scipy.stats import pearsonr as prs
-from lifelines import KaplanMeierFitter
-from lifelines.statistics import logrank_test
-from lifelines.plotting import add_at_risk_counts
-from statsmodels.stats import multitest as multi
 import numpy as np
 import sys
 import os

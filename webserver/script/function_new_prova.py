@@ -11,7 +11,7 @@ from lifelines import KaplanMeierFitter
 from lifelines.statistics import logrank_test
 from lifelines.plotting import add_at_risk_counts
 from statsmodels.stats import multitest as multi
-
+import plotly.express as px
 #######################################################################################
 #                              Carica il file di configurazione                       #
 #######################################################################################
@@ -61,6 +61,27 @@ def read_clinical_data():
     x=x.set_index("bcr_patient_barcode")
     return(x)
 
+def what_is_my_object_gene(gene):
+    #implementato per prendere in input anche l'ENSG inserito senza versione.
+    if 'ENSG' in gene:
+        df_ensg= pd.read_csv(gene_name_ENSG,sep='\t')
+    
+        result_index = df_ensg[(df_ensg['gene_id_version'] == gene) | (df_ensg['gene_id'] == gene)].index
+        if not result_index.empty:
+            gene_version=df_ensg.loc[result_index[0],'gene_id_version']
+
+            return (gene_version,'gene','gene_id',result_index)
+        else:
+            return(0)
+
+    if gene in open(protein_name).read().split("\n"):
+        return(gene,'protein','peptide_target',protein_dataframe)
+
+    if gene in open(miRNA_name).read().split("\n"):
+        return (gene,'miRNA','miRNA_ID',miRNA_dataframe)
+
+    else:
+        return(0)
 def detect_if_gene_mirna_proteina(gene, cartella):
     
     if gene in open(miRNA_name).read().split("\n"):
@@ -206,118 +227,109 @@ def p_value(df, cartella,feature,gene):
 
 #######  ->                       Boxplot_single_tumor                      <-  #######
 def what_is_my_object_gene(gene):
+    #implementato per prendere in input anche l'ENSG inserito senza versione.
     if 'ENSG' in gene:
-        print('ENSG',gene)
         df_ensg= pd.read_csv(gene_name_ENSG,sep='\t')
-        print(df_ensg)
-
+    
         result_index = df_ensg[(df_ensg['gene_id_version'] == gene) | (df_ensg['gene_id'] == gene)].index
         if not result_index.empty:
-            gene_version=(df_ensg.loc[result_index[0],'gene_id_version'])
-            return (gene_version,'gene','gene_id')
+            gene_version=df_ensg.loc[result_index[0],'gene_id_version']
 
-       
+            return (gene_version,'gene','gene_id',result_index)
+        else:
+            return(0)
+
     if gene in open(protein_name).read().split("\n"):
-        return(gene,'protein','peptide_target')
+        return(gene,'protein','peptide_target',protein_dataframe)
 
     if gene in open(miRNA_name).read().split("\n"):
-        return (gene,'miRNA','miRNA_ID')
+        return (gene,'miRNA','miRNA_ID',miRNA_dataframe)
 
     else:
         return(0)
+    
+def open_df_gene(input,tumor,feature,cartella):
+    if feature == 'patient_status':
+        posizione=input[3]
+        #creiamo un dataframe piu piccolo dove c'è solo la riga del gene che è stato selezionato
+        path=cartella+'/'+input[0]+"_df.txt"
+        out_file=open(path,"w")
+        subprocess.call(["sed","-n", "-e 1p", posizione, gene_dataframe],stdout=out_file)
+        return(path)
+                
+    else:
+        path_df="Dataframe_FPKM_"+tumor+".csv"
+        path=os.path.join(gene_dataframe_FPKM,path_df)
+        return(path)
 
 def open_dataframe(gene,tumor,feature,cartella):
     input=what_is_my_object_gene(gene)
     if input!=0:
         if input[1]=='gene':
-            if feature == 'patient_status':
-                listageni=open(gene_name_ENSG).read().strip().split("\n")
-                posizione="-e "+str(listageni.index(gene)+1)+"p"
-
-                #creiamo un dataframe piu piccolo dove c'è solo la riga del gene che è stato selezionato
-
-                path=cartella+'/'+gene+"_df.txt"
-                out_file=open(path,"w")
-                subprocess.call(["sed","-n", "-e 1p", posizione, gene_dataframe],stdout=out_file)
-
-                df=pd.read_csv(path)
-                df=df.set_index("gene_id")
-                return(df, 'gene')
-            else:
-                path_df="Dataframe_FPKM_"+tumor+".csv"
-                df=pd.read_csv(os.path.join(gene_dataframe_FPKM,path_df))
-                df=df.set_index("gene_id")
-                return (df, 'gene') 
+            path=open_df_gene(input,tumor,feature,cartella) #bisogna vedere in base al tipo di feature che viene passata
+            df=pd.read_csv(path)
+            df=df.set_index(input[2])
+            return(df, input[1],input[0])
         else:
             df=df=pd.read_csv(input[3])
             df=df.set_index(input[2])
-            return(df,input[1])
-        
+            return(df,input[1],input[0])
     else: 
         print("non è disponibile la ricerca per il nome inserito")
         return(0)
     
 
+def plotly_plot(feature,d, gene,cartella,ogg):
+        fig = px.scatter(x=range(10), y=range(10))
+        fig=px.box(d,y=gene,x=feature,color=feature,points = 'all')
+        if ogg[1]== "miRNA":
+                fig.update_layout(yaxis_type="log")
+      
+        fig.write_html(cartella+'/'+gene+'_'+feature+'.html')
 
-def open_dataframe_gene(gene,tumor,feature,cartella):
-
-    if gene in open(miRNA_name).read().split("\n"):
-        df=pd.read_csv(miRNA_dataframe)
-        df=df.set_index('miRNA_ID')
-        return(df, 'miRNA')
-
-    if gene in open(gene_name_ENSG).read().split("\n"):
-        if feature == 'patient_status':
-            listageni=open(gene_name_ENSG).read().strip().split("\n")
-            posizione="-e "+str(listageni.index(gene)+1)+"p"
-
-            #creiamo un dataframe piu piccolo dove c'è solo la riga del gene che è stato selezionato
-
-            path=cartella+'/'+gene+"_df.txt"
-            out_file=open(path,"w")
-            subprocess.call(["sed","-n", "-e 1p", posizione, gene_dataframe],stdout=out_file)
-
-            df=pd.read_csv(path)
-            df=df.set_index("gene_id")
-            return(df, 'gene')
-        else:
-            path_df="Dataframe_FPKM_"+tumor+".csv"
-            df=pd.read_csv(os.path.join(gene_dataframe_FPKM,path_df))
-            df=df.set_index("gene_id")
-            return (df, 'gene') 
-
-    if gene in open(protein_name).read().split("\n"):
-        df=pd.read_csv(protein_dataframe)
-        df=df.set_index('peptide_target')
-        return (df, 'protein')
-    else: 
-        print("per il nome inserito non è disponibile la ricerca")
-        return 0
+def ranksum_test(gene,d,feature):
+    #ranksum test per p-value
+    p=list(set(d[feature]))
     
+    df1_mask=d[feature]== p[0]
+    dp0=d[df1_mask]
+    
+    df1_mask=d[feature]== p[1]
+    dp1=d[df1_mask]
+
+    w, p = ranksums(list(dp0[gene]), list(dp1[gene]))
+
+    return(p)
+
+
+
 
 
 def df_feature(ogg, tumor, feature):
-   
-    if ogg =='miRNA' or ogg=='protein' or ogg=='gene':
-        x=pd.read_csv(clinical_data)
-        df1_mask=x['acronym']== tumor
-        dfclinical=x[df1_mask]
+    x=pd.read_csv(clinical_data)
+    df1_mask=x['acronym']== tumor
+    dfclinical=x[df1_mask]
 
-        if feature=="age_at_initial_pathologic_diagnosis":
-            median=dfclinical[feature].median()
+    if feature=="age_at_initial_pathologic_diagnosis":
+       # dfclinical = dfclinical.dropna(subset=['age_at_initial_pathologic_diagnosis'])
+        dfclinical[feature] = pd.to_numeric(dfclinical[feature], errors='coerce').astype('Int64')
+
+
+        median=dfclinical[feature].median()
+        
+        lista_age=[]
+        for ele in dfclinical[feature]:
             
-            lista_age=[]
-            for ele in dfclinical[feature]:
-                ele=int(ele)
-                if ele<=median:
-                    lista_age.append("under")
-                else:
-                    lista_age.append("over")
-                    
-            dfclinical=dfclinical.rename(columns={"age_at_initial_pathologic_diagnosis":"age"})
-            dfclinical[feature]=lista_age
+            ele=int(ele)
+            if ele<=median:
+                lista_age.append("under")
+            else:
+                lista_age.append("over")
+                
+        dfclinical=dfclinical.rename(columns={feature:"age"})
+        dfclinical[feature]=lista_age
 
-        return (dfclinical)
+    return (dfclinical)
     
 
 def crealista(dffeat,df,feature):
