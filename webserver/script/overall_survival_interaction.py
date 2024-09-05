@@ -15,7 +15,25 @@ from statsmodels.stats import multitest as multi
 import numpy as np
 import os
 import sys
+import os
+import configparser
+from pathlib import Path
 
+# Carica il file di configurazione
+config = configparser.ConfigParser()
+script_dir = Path(__file__).parent
+
+# Costruisci il percorso relativo al file di configurazione
+config_file = script_dir.parent.parent / 'webserver' / 'webserver' / 'conf.ini'
+
+config.read(config_file) 
+#directory base
+output_data = config['Paths']['output_data']
+base_dir = config.get('Paths', 'base_dir', fallback='')
+
+# Costruisci i percorsi completi
+def get_full_path(relative_path):
+    return os.path.join(base_dir, relative_path)
 
 # In[2]:
 
@@ -203,20 +221,17 @@ def overall_survival_analysis(mrna, mirna, tumor, dfmrna, dfmirna, OS1, cartella
                 #    print("MEDIA <0 ??")
 
 
-# In[7]:
 
-
-dfclinic=pd.read_csv('/mnt/data/notturno/TCGA-CDR-SupplementalTableS1.csv')
-
+#dfclinic=pd.read_csv('/mnt/data/notturno/TCGA-CDR-SupplementalTableS1.csv')
+dfclinic=get_full_path(config['clinical']['clinical_OS'])
 #input
 gene= sys.argv[1]
 mirna=sys.argv[2]
-
-
 tumor=sys.argv[3]
 
+cartella=sys.argv[4]
+#cartella='/mnt/data/notturno/web_app/webserver/rolls/static/media/saveanalisi/'+sys.argv[4]+'/' ####da modificare passare come argoemnto dal view.py
 
-cartella='/mnt/data/notturno/web_app/webserver/rolls/static/media/saveanalisi/'+sys.argv[4]+'/'
 
 
 if gene[:4]!='ENSG':

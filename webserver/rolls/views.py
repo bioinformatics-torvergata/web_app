@@ -450,7 +450,8 @@ def correlation_analysis(request):
             tumor= form.cleaned_data['tumor']
 
             inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
-            out=run([sys.executable,'script/#',miRNA,gene,tumor,inp3],shell=False, stdout=PIPE)
+            dir= os.path.join(output_data, inp3)
+            out=run([sys.executable,'script/overall_survival_interaction.py',miRNA,gene,tumor,dir],shell=False, stdout=PIPE)
             print(out)
             dir='rolls/static/media/saveanalisi/'+inp3+'/'
             if os.path.isdir(dir): 
@@ -462,7 +463,7 @@ def correlation_analysis(request):
                         images.append('/media/saveanalisi/'+inp3+'/'+file)
 
                 form=Analisi_interaction()
-                return render(request, 'rolls/correlation_analysis.html', {
+                return render(request, 'rolls/OS_interaction.html', {
                     'form':form, 
                     'formresult': out.stdout.decode('ascii'),
                     'image': images,
@@ -473,7 +474,7 @@ def correlation_analysis(request):
                     })
             else:
                 form=Analisi_interaction()
-                return render(request, 'rolls/correlation_analysis.html', {'form':form,
+                return render(request, 'rolls/OS_interaction.html', {'form':form, #correlation_analysis
                 'miRNA':miRNA,
                 'gene':gene,
                 'tumor':tumor, 
@@ -481,5 +482,5 @@ def correlation_analysis(request):
                 
 
     form=Analisi_interaction()
-    return render(request, 'rolls/correlation_analysis.html', {'form':form})
+    return render(request, 'rolls/OS_interaction.html', {'form':form})
 

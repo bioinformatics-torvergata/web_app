@@ -82,3 +82,7 @@ class Analisi(models.Model):
 
 #class link(models.Model):
 #    url=models.TextField()
+
+
+class Gene(models.Model):
+    gene= models.CharField(max_length=100)

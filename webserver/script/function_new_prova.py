@@ -69,7 +69,7 @@ def what_is_my_object_gene(gene):
         result_index = df_ensg[(df_ensg['gene_id_version'] == gene) | (df_ensg['gene_id'] == gene)].index
         if not result_index.empty:
             gene_version=df_ensg.loc[result_index[0],'gene_id_version']
-
+            print(result_index)
             return (gene_version,'gene','gene_id',result_index)
         else:
             return(0)
@@ -82,6 +82,8 @@ def what_is_my_object_gene(gene):
 
     else:
         return(0)
+    
+
 def detect_if_gene_mirna_proteina(gene, cartella):
     
     if gene in open(miRNA_name).read().split("\n"):
@@ -281,7 +283,7 @@ def open_dataframe(gene,tumor,feature,cartella):
 
 def plotly_plot(feature,d, gene,cartella,ogg):
         fig = px.scatter(x=range(10), y=range(10))
-        fig=px.box(d,y=gene,x=feature,color=feature,points = 'all')
+        fig=px.box(d,y=gene,x=feature,color=feature) #points = 'all'
         if ogg[1]== "miRNA":
                 fig.update_layout(yaxis_type="log")
       

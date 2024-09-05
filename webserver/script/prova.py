@@ -47,6 +47,6 @@ if 'protein' in config:
 
 if 'clinical' in config:
     clinical_data= get_full_path(config['clinical']['dati_clinici'])
-
+    clinical_origin=get_full_path(config['clinical']['clinical_OS'])
 
 
