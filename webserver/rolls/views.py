@@ -13,6 +13,11 @@ import time
 import os.path
 from django.conf import settings
 
+
+from django.http import JsonResponse
+from rolls.models import Gene
+
+
 import json
 import configparser
 from pathlib import Path
@@ -56,6 +61,26 @@ def contact(request):
 
 def yourdataset(request):
     return render(request,'rolls/yourdataset.html')
+
+####### autocomplete ##############
+#funzionante prova1:
+# def gene_suggestions(request):
+#     if 'term' in request.GET:
+#         query = request.GET.get('term')
+#         genes = Gene.objects.filter(gene__icontains=query)[:10]  # Limita a 10 risultati
+#         gene_names = list(genes.values_list('gene', flat=True))
+#         return JsonResponse(gene_names, safe=False)
+#     return JsonResponse([], safe=False)
+
+
+# Funzione per l'autocomplete prova2
+def gene_suggestions(request):
+    if 'term' in request.GET:
+        qs = Gene.objects.filter(gene__icontains=request.GET.get('term'))[:10]  # Limita i risultati a 10
+        genes = list(qs.values_list('gene', flat=True))
+        return JsonResponse(genes, safe=False)
+##########################################
+
 
 def pathwayPROVA(request):
     #menu

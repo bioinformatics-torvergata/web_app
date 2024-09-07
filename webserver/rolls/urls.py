@@ -21,5 +21,8 @@ urlpatterns=[
     
     path('differential_expression', views.differential_expression, name= 'differential_expression'),
     path('diff_exp_single_tumor', views.diff_exp_single_tumor, name= 'diff_exp_single_tumor'),
-    path('rna_interactor',views.correlation_analysis, name= 'rna_interactor')
+    path('rna_interactor',views.correlation_analysis, name= 'rna_interactor'),
+    path('gene-suggestions/', views.gene_suggestions, name='gene_suggestions'),
+    
+
 ]

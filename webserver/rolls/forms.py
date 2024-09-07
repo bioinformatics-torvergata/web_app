@@ -8,7 +8,16 @@ class Gene(forms.ModelForm):
         fields=('gene','tumor')
 
 class Analisiformcompleto(forms.ModelForm):
-    gene=forms.CharField(widget=forms.TextInput(attrs={"placeHolder":"gene(ENSG)/miRNA/protein"}))
+    #gene=forms.CharField(widget=forms.TextInput(attrs={"placeHolder":"gene(ENSG)/miRNA/protein"}))
+    gene = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Gene(ENSG)/miRNA/protein",
+                "id": "gene-input",  # Aggiungi l'id qui per collegarlo all'autocomplete
+                "autocomplete": "on",  # Disabilita l'autocomplete del browser
+            }
+        )
+    )
     class Meta:
         model= Analisi
         fields=('gene', 'tumor','feature')
@@ -21,14 +30,29 @@ class Analisiform(forms.ModelForm):
         fields=('gene','feature')
 
 
-
-class Analisiform1(forms.ModelForm):
-    gene=forms.CharField(widget=forms.TextInput(attrs={"placeHolder":"Gene(ENSG)/miRNA/protein"}))
+####old funzionante###
+# class Analisiform1(forms.ModelForm):
+#     gene=forms.CharField(widget=forms.TextInput(attrs={"placeHolder":"Gene(ENSG)/miRNA/protein"}))
     
-    class Meta:
-        model= Analisi
-        fields=('gene','tumor')   
+#     class Meta:
+#         model= Analisi
+#         fields=('gene','tumor')   
 
+#prova con autocomplete##
+class Analisiform1(forms.ModelForm):
+    gene = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Gene(ENSG)/miRNA/protein",
+                "id": "gene-input",  # Aggiungi l'id qui per collegarlo all'autocomplete
+                "autocomplete": "on",  # Disabilita l'autocomplete del browser
+            }
+        )
+    )
+
+    class Meta:
+        model = Analisi
+        fields = ('gene', 'tumor')
 
 class Deseq2form(forms.ModelForm): 
 

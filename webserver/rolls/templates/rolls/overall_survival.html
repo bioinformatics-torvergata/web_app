@@ -1,78 +1,45 @@
-{%extends 'rolls/layoutpagine.html' %}
-{%load crispy_forms_tags%}
-{%block content%}
+{% extends 'rolls/layoutpagine.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
 {% load static %}
 
-  <h2> Overall survival </h2>
-      <p>
-        <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapsedescription" role="button" aria-expanded="false" aria-controls="collapsedescription">
-          Description
-        </a>
-        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-          Example
-        </button>
-      </p>
-      <div class="collapse" id="collapsedescription">
-        <div class="card card-body">
-          <h4>Analysis of overall survival</h4>
-          <p>Time is shown on the x-axis, and survival probability (conditional probability) is shown on the y-axis. 
-          <br>The implemented script uses OS time data provided by TCGA in the clinical data file as time-to-event information.
-          <br>The time data are expressed in days. 
-          <br><br>The expression data used are Gene Expression Quantification HTSeq - FPKM, miRNA Expression Quantification and Protein Expression Quantification.
-        </p>
-        </div>
+<h2> Overall survival </h2>
+<div class="row my-3">
+  <div class="col-sm-3 my-3">
+    <form method="post">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <br>
+      <div class="d-grid gap-2 d-md-flex justify-content-md">
+        <button class="btn btn-primary me-md-2 my-3" type="submit">Submit</button>
       </div>
-        
-      <div class="row my-3">
-          <div class="col-sm-3 my-3">
-              <form method="post" >
-                  {%csrf_token%}
-                  {{form|crispy}}
-                  <br>
-                  <div class="d-grid gap-2 d-md-flex justify-content-md">
-                      <button class="btn btn-primary me-md-2 my-3" type="submit">Submit</button>
-                  </div>
-              
-              </form>
-          </div>
-              <div class="col mx-3" style="border:1px; border-left-style: solid; border-color:rgba(0, 0, 128, 0.301)">
-                <div class="collapse" id="collapseExample">
-                  <div class="card card-body">
-                    <p class="text-center" >Example: </p>
-                    <img src= "{%static 'media/examples/os.png' %}" width="750">
-                  </div> 
-                </div>
-                  {%if go == 'Valid' %}
-                
-                  <h3>Results: </h3>
-                  <hr>
-                  <p>Gene: {{gene}}</p>
-                  <p>Tumor: {{tumor}}</p>
-                  {{formresult}}
-                  <br><br>
-                  <div class="row">
-                   
-                    <div class="zoom col shadow mb-3 bg-body rounded" style="max-width: 500px;">
-                      <a href="{%static image%}" target="_blank"><img src= '{%static image %}' width="500"></a>
-                  </div>
-                  </div>
-                </div>
-                  {%endif%}
-                  
-                  {%if go == "error" %}
-                  <div class="alert alert-danger text-center" role="alert">
-                    <h5>Non esistono risultati per {{gene}} - {{tumor}}</h5>
-                    {{formresult}}
-                  </div> 
-                  {%endif%}
+    </form>
+  </div>
+</div>
 
-           
-            
-              
-            </div>
-      
-      </div>
-      
+<!-- Includi jQuery UI e il suo CSS -->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-{%endblock%}
-    
+<!-- Script per il suggerimento con jQuery UI -->
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#gene-input').autocomplete({
+      source: function(request, response) {
+        $.ajax({
+          url: "{% url 'gene_suggestions' %}",  // L'URL che abbiamo aggiunto
+          data: {
+            'term': request.term  // Il testo digitato dall'utente
+          },
+          success: function(data) {
+            response(data);  // Restituisci i risultati all'autocomplete
+          }
+        });
+      },
+      minLength: 1,  // Numero minimo di caratteri per avviare l'autocomplete
+    });
+  });
+</script>
+
+{% endblock %}
