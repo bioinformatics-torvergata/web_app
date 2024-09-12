@@ -23,6 +23,7 @@ urlpatterns=[
     path('diff_exp_single_tumor', views.diff_exp_single_tumor, name= 'diff_exp_single_tumor'),
     path('rna_interactor',views.correlation_analysis, name= 'rna_interactor'),
     path('gene-suggestions/', views.gene_suggestions, name='gene_suggestions'),
+    path('pathway_suggestions/', views.pathway_suggestions, name='pathway_suggestions')
     
 
 ]

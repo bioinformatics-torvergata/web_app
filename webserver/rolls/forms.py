@@ -78,7 +78,14 @@ class Analisi_interaction(forms.ModelForm):
 
    
 class Analisipath(forms.ModelForm):
-    pathway=forms.CharField(widget=forms.TextInput(attrs={"placeHolder":"es. SA_PROGRAMMED_CELL_DEATH "}))
+    
+    pathway=forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "placeHolder":"es. SA_PROGRAMMED_CELL_DEATH ",
+                "id": "pathway-input",  # Aggiungi l'id qui per collegarlo all'autocomplete
+                "autocomplete": "on",  # Disabilita l'autocomplete del browser
+                }))
     class Meta:
         model= Analisi
         fields=('tumor',)   

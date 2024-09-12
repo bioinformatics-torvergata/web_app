@@ -80,6 +80,13 @@ def gene_suggestions(request):
         qs = Gene.objects.filter(gene__icontains=request.GET.get('term'))[:10]  # Limita i risultati a 10
         genes = list(qs.values_list('gene', flat=True))
         return JsonResponse(genes, safe=False)
+    
+
+def pathway_suggestions(request):
+    if 'term' in request.GET:
+        qs = Pathway.objects.filter(pathway__icontains=request.GET.get('term'))[:20]  # Limita i risultati a 10
+        pathways = list(qs.values_list('pathway', flat=True))
+        return JsonResponse(pathways, safe=False)
 ##########################################
 
 
