@@ -16,6 +16,7 @@ from django.conf import settings
 
 from django.http import JsonResponse
 from rolls.models import Gene
+from rolls.models import Pathway
 
 
 import json

@@ -86,3 +86,7 @@ class Analisi(models.Model):
 
 class Gene(models.Model):
     gene= models.CharField(max_length=100)
+
+
+class Pathway(models.Model):
+    pathway= models.CharField(max_length=100)
