@@ -1,0 +1,45 @@
+{% extends 'rolls/layoutpagine.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% load static %}
+
+<h2> Overall survival </h2>
+<div class="row my-3">
+  <div class="col-sm-3 my-3">
+    <form method="post">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <br>
+      <div class="d-grid gap-2 d-md-flex justify-content-md">
+        <button class="btn btn-primary me-md-2 my-3" type="submit">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Includi jQuery UI e il suo CSS -->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<!-- Script per il suggerimento con jQuery UI -->
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#gene-input').autocomplete({
+      source: function(request, response) {
+        $.ajax({
+          url: "{% url 'gene_suggestions' %}",  // L'URL che abbiamo aggiunto
+          data: {
+            'term': request.term  // Il testo digitato dall'utente
+          },
+          success: function(data) {
+            response(data);  // Restituisci i risultati all'autocomplete
+          }
+        });
+      },
+      minLength: 1,  // Numero minimo di caratteri per avviare l'autocomplete
+    });
+  });
+</script>
+
+{% endblock %}
