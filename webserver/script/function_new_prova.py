@@ -48,6 +48,9 @@ if 'protein' in config:
 if 'clinical' in config:
     clinical_data= get_full_path(config['clinical']['dati_clinici'])
 
+if 'os' in config:
+    os_pathway=get_full_path(config['OS']['os_pathway'])
+    
 
 
 #######################################################################################
@@ -405,6 +408,8 @@ def dataframe_OStime(tumor):
     return(OS)
 
 
+
+
 def overall_survival_analysis(m,tumor,feature,cartella,df1,OS1,gene):
     
     
@@ -418,7 +423,8 @@ def overall_survival_analysis(m,tumor,feature,cartella,df1,OS1,gene):
     results = logrank_test((OS1[i1]), (OS1[i2]),list(df1.loc[m,i1]),list(df1.loc[m,i2]), alpha=.95)
     
     if results.p_value < 1:
-        os.mkdir("../rolls/static/media/saveanalisi/"+cartella)
+        #os.mkdir("../rolls/static/media/saveanalisi/"+cartella)
+        os.mkdir(cartella)
         print("p-value:",results.p_value)
         
         kmf.fit((OS1[i1]), list(df1.loc[m,i1]), label="Higher expression")

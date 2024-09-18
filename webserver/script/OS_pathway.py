@@ -8,8 +8,6 @@
 # - nome del pathway
 # 
 
-# In[12]:
-
 
 import pandas as pd
 import sys
@@ -22,23 +20,19 @@ from lifelines.statistics import logrank_test
 from lifelines.plotting import add_at_risk_counts
 from statsmodels.stats import multitest as multi
 import numpy as np
+from function_new_prova import dataframe_OStime
 
 
-# In[2]:
+# def dataframe_OStime(dfclinic):
+#     OS=(dfclinic[['bcr_patient_barcode','OS.time']]) 
+#     df1_mask=dfclinic['type']==tumor
+#     OS=dfclinic[df1_mask]
+#     OS=(OS[['bcr_patient_barcode','OS.time']]) 
+#     OS=OS.set_index('bcr_patient_barcode')
+#     #display(OS)
+#     OS=OS.dropna()
+#     return(OS)
 
-
-def dataframe_OStime(dfclinic):
-    OS=(dfclinic[['bcr_patient_barcode','OS.time']]) 
-    df1_mask=dfclinic['type']==tumor
-    OS=dfclinic[df1_mask]
-    OS=(OS[['bcr_patient_barcode','OS.time']]) 
-    OS=OS.set_index('bcr_patient_barcode')
-    #display(OS)
-    OS=OS.dropna()
-    return(OS)
-
-
-# In[24]:
 
 
 def overall_survival_analysis(m,tumor,df1,OS1,cartella):
@@ -69,13 +63,10 @@ def overall_survival_analysis(m,tumor,df1,OS1,cartella):
    
 
 
-# In[32]:
-
-
 tumor= sys.argv[1]
 pathway= sys.argv[2]
-
-cartella="/mnt/data/notturno/web_app/webserver/rolls/static/media/saveanalisi/"+ sys.argv[3]
+cartella=sys.argv[3]
+#cartella="/mnt/data/notturno/web_app/webserver/rolls/static/media/saveanalisi/"+ sys.argv[3]
 
 #open df con PASs(pathway activity scores)
 df=pd.read_csv('/mnt/data/notturno/gsva/gsva_'+tumor+'.csv')
@@ -85,8 +76,8 @@ df.columns= [x.replace(".","-") for x in df.columns]
 
 
 ###df con dati OS time
-dfclinic=pd.read_csv('/mnt/data/notturno/TCGA-CDR-SupplementalTableS1.csv')
-OS=dataframe_OStime(dfclinic)
+#dfclinic=pd.read_csv('/mnt/data/notturno/TCGA-CDR-SupplementalTableS1.csv')
+OS=dataframe_OStime(tumor)
 
 
 

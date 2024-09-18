@@ -50,3 +50,6 @@ if 'clinical' in config:
     clinical_origin=get_full_path(config['clinical']['clinical_OS'])
 
 
+if 'os' in config:
+    os_pathway=get_full_path(config['OS']['os_pathway'])
+    

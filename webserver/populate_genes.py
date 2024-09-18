@@ -10,7 +10,7 @@ from rolls.models import Gene  # Sostituisci con il nome della tua app
 # Funzione per popolare il modello Gene
 def populate_genes():
     # Leggi la lista di geni dal file
-    with open('gene_list.txt', 'r') as f:
+    with open('gene_symbol_list.txt', 'r') as f:
         genes = f.readlines()
 
     # Rimuovi eventuali spazi bianchi e newline

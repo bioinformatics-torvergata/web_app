@@ -234,8 +234,8 @@ def os_pathway(request):
             tumor=form.cleaned_data['tumor']
             
             inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
-
-            out=run([sys.executable,'script/OS_pathway.py',tumor,pathway,inp3],shell=False, stdout=PIPE)
+            dir= os.path.join(output_data, inp3)
+            out=run([sys.executable,'script/OS_pathway.py',tumor,pathway,dir],shell=False, stdout=PIPE)
             print(out)
             
             dir='rolls/static/media/saveanalisi/'+inp3+'/'
@@ -517,3 +517,22 @@ def correlation_analysis(request):
     form=Analisi_interaction()
     return render(request, 'rolls/OS_interaction.html', {'form':form})
 
+def overview_mutazionale_tumore(request):
+    if request.method == 'POST':
+
+        if 'features' in request.POST:
+            
+            form = Analisipath(request.POST)
+            if form.is_valid():
+                tumor=request.POST['tumor'] 
+                out=run([sys.executable,'script/search_feature_deseq2.py',tumor],shell=False, stdout=PIPE) 
+                #out = subprocess.run(['Rscript', 'script/Overview_mutazionale_tumore.R', gene, tumor, inp3], 
+                                 #shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                stringa=(out.stdout.decode('ascii')).strip()
+                lista=stringa.split(',')
+
+                return render(request, 'rolls/overaview_mutazionale_tumore.html', {
+                    'form':form,
+                    'lista':lista,
+                    'tumor':tumor,
+                    })
