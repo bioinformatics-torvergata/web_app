@@ -441,7 +441,7 @@ def deseq2(request):
                     'images3': os.path.join('media/saveanalisi',inp3,images[3]),
                     'go':'Valid',
                     'parametri': parametri[feature],
-                    'dir':'media/saveanalisi/'+inp3+'/result_' + tumor + '.txt' ###aggiustare
+                    'dir':'media/saveanalisi/'+inp3+'/result_' + tumor + '.txt' 
                     })
 
             else:
@@ -459,6 +459,8 @@ def deseq2(request):
 
 
 ################################
+
+
 def correlation_analysis(request):
     if request.method == 'POST':
         form = Analisi_interaction(request.POST)
