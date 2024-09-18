@@ -4,7 +4,7 @@
 
 {%block content%}
 
-   <h2> DESeq2: Analisi di espressione differenziale</h2>
+   <h2> DESeq2: Differential expression analysis </h2>
    
     <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapsedescription" role="button" aria-expanded="false" aria-controls="collapsedescription">
       Description
@@ -98,8 +98,8 @@
 
           {%if go == 'error' %}
           <div class="alert alert-danger text-center" role="alert">
-            <h5><b>Non esistono risultati per {{tumor}} - {{feature}}</b></h5>
-            <p> Dopo aver inserito il tumore di interesse premere su "<i class="fa-solid fa-magnifying-glass"></i> Features" per selezionare una feature tra quelle disponibili</p>
+            <h5><b>There are no results for {{tumor}} - {{feature}}</b></h5>
+            <p> After entering the tumour of interest, click on "<i class="fa-solid fa-magnifying-glass"></i> Features" to select a feature from those available</p>
           </div> 
           {%endif%}
             

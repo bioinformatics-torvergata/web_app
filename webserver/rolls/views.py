@@ -12,7 +12,7 @@ from shutil import make_archive
 import time
 import os.path
 from django.conf import settings
-
+import shutil
 
 from django.http import JsonResponse
 from rolls.models import Gene
@@ -33,7 +33,7 @@ config_file = script_dir.parent.parent / 'webserver' / 'webserver' / 'conf.ini'
 config.read(config_file) 
 #directory base
 output_data = config['Paths']['output_data']
-
+base_dir = config.get('Paths', 'base_dir', fallback='')
 
 parametri={
     'patient_status':'Tumor vs Ctrl',
@@ -357,61 +357,43 @@ def differential_expression(request):
 
 ####### DESEQ2 analisi###############
 
-def choseimage(feature,tumor):
-    pathfiles='rolls/static/media/deseq2/'+feature+'/'+tumor+'/'
+def choseimage(tumor,pathfiles,dir_saveresults):
+    print(' i file li pesca da qui ', pathfiles)
     files=os.listdir(pathfiles)
+    print(files)
     filelist=[]
     for file in files:
+        print(file)
         if tumor in file:
-            path='/media/deseq2/'+feature+'/'+tumor+'/'+file
+            path_file=os.path.join(pathfiles,file)
+            print('prende da qui : ',path_file)
+
+            copy_filepath=os.path.join(dir_saveresults, os.path.basename(file))
+            print('copia qui: ',copy_filepath)
+       
+            shutil.copy(path_file,copy_filepath )
+            
+            
+            path=os.path.join(copy_filepath,file)
+           
             if 'jpg' in file:
                 if 'EnhancedVolcano' in file:
-                    enhancedimage=path
+                    enhancedimage=file
+                if 'heatmap' in file:
+                    heatmap=file
+                if 'PCA' in file: 
+                    pca=file
+                if 'TopGeni' in file:
+                    topgeni=file
                 else:
-                    filelist.append(path)
+                    filelist.append(file)
         
     if len(filelist)>0:
-        return(enhancedimage, filelist)
+        print(filelist)
+        return(enhancedimage,heatmap, pca,topgeni) #filelist)
     else:
         return()
 
-
-
-def deseq2copy1(request):
-    if request.method == 'POST':
-        form = Deseq2form(request.POST)
-        if form.is_valid():
-            
-            tumor=form.cleaned_data['tumor']
-            feature=form.cleaned_data['feature']
-            
-            dir='rolls/static/media/deseq2/'+feature+'/'+tumor
-            if os.path.isdir(dir): 
-                images=choseimage(feature,tumor)
-                
-                form=Deseq2form()              
-                           
-                return render(request, 'rolls/deseq2.html', {'form':form, 
-                'feature': feature,
-                'tumor':tumor,
-                'enhancedimage': images[0],
-                'images1': images[1][0],
-                'images2': images[1][1],
-                'images3': images[1][2],
-                'go':'Valid',
-                'parametri': parametri[feature],
-                'dir':"http://160.80.35.91:7000/static/media/deseq2/"+feature+"/"+tumor,
-                })
-            else:
-                form=Deseq2form()
-                return render(request, 'rolls/deseq2.html', {'form':form,
-                'feature': feature,
-                'tumor':tumor, 
-                'go':'error'})
-        
-    
-    form=Deseq2form()
-    return render(request, 'rolls/deseq2.html', {'form':form})
 
 
 ###################################################
@@ -419,7 +401,6 @@ def deseq2(request):
     if request.method == 'POST':
 
         if 'features' in request.POST:
-            
             form = Deseq2form(request.POST)
             if form.is_valid():
                 tumor=request.POST['tumor'] 
@@ -433,28 +414,34 @@ def deseq2(request):
                     'tumor':tumor,
                     })
         elif 'Submit' in request.POST:
-            
             go='Valid'
             form = Deseq2form(request.POST)
             tumor=request.POST['tumor'] 
             feature=request.POST.get('feature', False)
-
-            dir='rolls/static/media/deseq2/'+feature+'/'+tumor
+            dir= os.path.join(base_dir,'deseq2', feature,tumor)
+            
+            
             if os.path.isdir(dir): 
-                images=choseimage(feature,tumor)
-                
+                inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
+                dir_saveresults= os.path.join(output_data, inp3)
+                print(dir_saveresults)
+                os.makedirs(dir_saveresults)
 
+                images=choseimage(tumor,dir,dir_saveresults)
+                
+                
                 form=Deseq2form()                         
                 return render(request, 'rolls/deseq2.html', {'form':form, 
                     'feature': feature,
                     'tumor':tumor,
-                    'enhancedimage': images[0],
-                    'images1': images[1][0],
-                    'images2': images[1][1],
-                    'images3': images[1][2],
+                    
+                    'enhancedimage': os.path.join('media/saveanalisi',inp3,images[0]),
+                    'images1': os.path.join('media/saveanalisi',inp3,images[1]),
+                    'images2': os.path.join('media/saveanalisi',inp3,images[2]),
+                    'images3': os.path.join('media/saveanalisi',inp3,images[3]),
                     'go':'Valid',
                     'parametri': parametri[feature],
-                    'dir':"http://160.80.35.91:7000/static/media/deseq2/"+feature+"/"+tumor,
+                    'dir':'media/saveanalisi/'+inp3 ###aggiustare
                     })
 
             else:
@@ -468,8 +455,6 @@ def deseq2(request):
 
     form = Deseq2form()       
     return render(request, 'rolls/deseq2.html', {'form':form})
-
-
 
 
 
@@ -525,14 +510,16 @@ def overview_mutazionale_tumore(request):
             form = Analisipath(request.POST)
             if form.is_valid():
                 tumor=request.POST['tumor'] 
-                out=run([sys.executable,'script/search_feature_deseq2.py',tumor],shell=False, stdout=PIPE) 
-                #out = subprocess.run(['Rscript', 'script/Overview_mutazionale_tumore.R', gene, tumor, inp3], 
-                                 #shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                stringa=(out.stdout.decode('ascii')).strip()
-                lista=stringa.split(',')
+                # # out=run([sys.executable,'script/search_feature_deseq2.py',tumor],shell=False, stdout=PIPE) 
+                # # out = run(['Rscript', 'script/Overview_mutazionale_tumore.R', gene, tumor, inp3], 
+                # #                  #shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                # stringa=(out.stdout.decode('ascii')).strip()
+                # lista=stringa.split(',')
 
                 return render(request, 'rolls/overaview_mutazionale_tumore.html', {
                     'form':form,
-                    'lista':lista,
+                    #'lista':lista,
                     'tumor':tumor,
                     })
+            
+
