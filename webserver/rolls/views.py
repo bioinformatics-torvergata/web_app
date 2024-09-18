@@ -441,7 +441,7 @@ def deseq2(request):
                     'images3': os.path.join('media/saveanalisi',inp3,images[3]),
                     'go':'Valid',
                     'parametri': parametri[feature],
-                    'dir':'media/saveanalisi/'+inp3 ###aggiustare
+                    'dir':'media/saveanalisi/'+inp3+'/result_' + tumor + '.txt' ###aggiustare
                     })
 
             else:
@@ -522,4 +522,4 @@ def overview_mutazionale_tumore(request):
                     'tumor':tumor,
                     })
             
-
+    return render(request, 'rolls/overaview_mutazionale_tumore.html')

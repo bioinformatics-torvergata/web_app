@@ -65,8 +65,9 @@
             </div> 
           </div>
           {%if go == 'Valid' %}
-          <h3>Results:</h3> You can download the log2FoldChange of this analisys <a href="{{dir}}/result_{{tumor}}.txt" download target="blank" ><button class="btn"><i class="fa-solid fa-download"></i></button></a></h3>
+          <h3>Results:</h3> You can download the log2FoldChange of this analisys <a href="{% static dir %}" download target="blank" ><button class="btn"><i class="fa-solid fa-download"></i></button></a></h3>
           
+
           <hr>
           <div class="row">
             <div class="col mx-3">
