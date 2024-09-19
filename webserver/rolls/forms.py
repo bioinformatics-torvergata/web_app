@@ -38,15 +38,8 @@ class Analisiform(forms.ModelForm):
         fields=('gene','feature')
 
 
-####old funzionante###
-# class Analisiform1(forms.ModelForm):
-#     gene=forms.CharField(widget=forms.TextInput(attrs={"placeHolder":"Gene(ENSG)/miRNA/protein"}))
-    
-#     class Meta:
-#         model= Analisi
-#         fields=('gene','tumor')   
 
-#prova con autocomplete##
+
 class Analisiform1(forms.ModelForm):
     gene = forms.CharField(
         widget=forms.TextInput(
@@ -89,3 +82,19 @@ class Analisipath(forms.ModelForm):
     class Meta:
         model= Analisi
         fields=('tumor',)   
+
+
+class Onlygeneform(forms.ModelForm):
+    gene = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Gene (Gene Symbol)",
+                "id": "gene-input",  # Aggiungi l'id qui per collegarlo all'autocomplete
+                "autocomplete": "on",  # Disabilita l'autocomplete del browser
+            }
+        )
+    )
+    class Meta:
+        model= Analisi
+        fields=('gene',)
+

@@ -24,6 +24,8 @@ urlpatterns=[
     path('rna_interactor',views.correlation_analysis, name= 'rna_interactor'),
     path('gene-suggestions/', views.gene_suggestions, name='gene_suggestions'),
     path('pathway_suggestions/', views.pathway_suggestions, name='pathway_suggestions'),
-    path('overview_mutazionale_tumore/', views.overview_mutazionale_tumore, name='overview_mutazionale_tumore')
+    path('tumor_mutation_analysis/', views.tumor_mutation_analysis, name='tumor_mutation_analysis'),
+    path('gene_mutation_analysis/', views.gene_mutation_analysis, name='gene_mutation_analysis'),
+    path('survival_with_gene_mutation_status/', views.survival_with_gene_mutation_status, name='survival_with_gene_mutation_status'),
 
 ]

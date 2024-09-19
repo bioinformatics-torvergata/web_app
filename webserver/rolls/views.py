@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from subprocess import run,PIPE
 import sys
 from matplotlib import image
-from rolls.forms import Gene, Analisiform, Deseq2form, Analisiform1, Analisiformcompleto, Analisi_interaction,Analisipath
+from rolls.forms import Gene, Analisiform, Deseq2form, Analisiform1, Analisiformcompleto, Analisi_interaction,Analisipath,Onlygeneform
 import os
 from django.http import StreamingHttpResponse
 from wsgiref.util import FileWrapper
@@ -17,6 +17,7 @@ import shutil
 from django.http import JsonResponse
 from rolls.models import Gene
 from rolls.models import Pathway
+import subprocess
 
 
 import json
@@ -339,7 +340,7 @@ def differential_expression(request):
                     'gene':gene,
                     'feature':feature,
                     'parametri': parametri[feature],
-                    'dir':inp3,
+                    'dir':'media/saveanalisi/'+inp3+'/result.txt',
                     })
             else:
                 form=Analisiform()
@@ -504,24 +505,133 @@ def correlation_analysis(request):
     form=Analisi_interaction()
     return render(request, 'rolls/OS_interaction.html', {'form':form})
 
-def overview_mutazionale_tumore(request):
+
+
+def tumor_mutation_analysis(request):
     if request.method == 'POST':
 
-        if 'features' in request.POST:
+        form = Deseq2form(request.POST)
+        if form.is_valid(): 
+            tumor=request.POST['tumor'] 
             
-            form = Analisipath(request.POST)
-            if form.is_valid():
-                tumor=request.POST['tumor'] 
-                # # out=run([sys.executable,'script/search_feature_deseq2.py',tumor],shell=False, stdout=PIPE) 
-                # # out = run(['Rscript', 'script/Overview_mutazionale_tumore.R', gene, tumor, inp3], 
-                # #                  #shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                # stringa=(out.stdout.decode('ascii')).strip()
-                # lista=stringa.split(',')
-
-                return render(request, 'rolls/overaview_mutazionale_tumore.html', {
-                    'form':form,
-                    #'lista':lista,
+            inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
+            dir=os.path.join(output_data, inp3)
+            print
+            os.makedirs(dir)
+            
+            out = subprocess.run(['Rscript', 'script/tumor_mutation_analysis.R',tumor,dir], capture_output=True, text=True)
+            print(out)
+            
+            if os.path.isdir(dir): 
+                files=os.listdir(dir)
+                for file in files:
+                    if file[-3:]=='png':
+                        image=os.path.join('media/saveanalisi',inp3,file)    
+                print(image)
+                form=Deseq2form()
+                return render(request, 'rolls/tumor_mutation_analysis.html', {'form':form, 
+            
                     'tumor':tumor,
+                    'image':image,
+                    'go':'Valid',
+                    'dir':inp3,
                     })
+
+            else:
+                    form=Deseq2form()
+                    return render(request, 'rolls/tumor_mutation_analysis.html', {'form':form,
+                    'tumor':tumor, 
+                    'go':'error'})
+
+
+
+    form = Deseq2form()       
+    return render(request, 'rolls/tumor_mutation_analysis.html', {'form':form})
+
+
+
+
+def gene_mutation_analysis(request):
+    if request.method == 'POST':
+
+        form = Onlygeneform(request.POST)
+        if form.is_valid(): 
+            gene=request.POST['gene'] 
             
-    return render(request, 'rolls/overaview_mutazionale_tumore.html')
+            inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
+            dir=os.path.join(output_data, inp3)
+            print
+            os.makedirs(dir)
+            
+            out = subprocess.run(['Rscript', 'script/gene_mutation_analysis.R',gene,dir], capture_output=True, text=True)
+            print(out)
+            
+            if os.path.isdir(dir): 
+                files=os.listdir(dir)
+                for file in files:
+                    if file[-3:]=='png':
+                        image=os.path.join('media/saveanalisi',inp3,file)    
+                print(image)
+                form=Onlygeneform()
+                return render(request, 'rolls/gene_mutation_analysis.html', {'form':form, 
+            
+                    'gene':gene,
+                    'image':image,
+                    'go':'Valid',
+                    'dir':inp3,
+                    })
+
+            else:
+                    form=Onlygeneform()
+                    return render(request, 'rolls/gene_mutation_analysis.html', {'form':form,
+                    'gene':gene, 
+                    'go':'error'})
+
+
+
+    form = Onlygeneform()       
+    return render(request, 'rolls/gene_mutation_analysis.html', {'form':form})
+
+
+
+
+def survival_with_gene_mutation_status(request):
+    if request.method == 'POST':
+
+        form = Onlygeneform(request.POST)
+        if form.is_valid(): 
+            tumor=request.POST['tumor'] 
+            
+            inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
+            dir=os.path.join(output_data, inp3)
+            print
+            os.makedirs(dir)
+            
+            out = subprocess.run(['Rscript', 'script/survival_with_gene_mutation_status.R',tumor,dir], capture_output=True, text=True)
+            print(out)
+            
+            if os.path.isdir(dir): 
+                files=os.listdir(dir)
+                for file in files:
+                    if file[-3:]=='png':
+                        image=os.path.join('media/saveanalisi',inp3,file)    
+                print(image)
+                form=Onlygeneform()
+                return render(request, 'rolls/survival_with_gene_mutation_status.html', {'form':form, 
+            
+                    'tumor':tumor,
+                    'image':image,
+                    'go':'Valid',
+                    'dir':inp3,
+                    })
+
+            else:
+                    form=Onlygeneform()
+                    return render(request, 'rolls/survival_with_gene_mutation_status.html', {'form':form,
+                    'tumor':tumor, 
+                    'go':'error'})
+
+
+
+    form = Onlygeneform()       
+    return render(request, 'rolls/survival_with_gene_mutation_status.html', {'form':form})
