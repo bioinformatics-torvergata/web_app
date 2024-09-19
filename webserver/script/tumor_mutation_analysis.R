@@ -12,7 +12,6 @@ cx <- tcgaLoad(study = tumore, source = "Firehose")
 
 #Plotsummarymaf
 output_file <- paste0(output_dir, "/", tumore, "_maf_summary.png")
-print(output_file)
 png(output_file, width = 1200, height = 800, res = 150)
 plotmafSummary(maf = cx, rmOutlier = TRUE, addStat = 'median', dashboard = TRUE, titvRaw = FALSE)
 dev.off()

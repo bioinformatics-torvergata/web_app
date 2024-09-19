@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from subprocess import run,PIPE
 import sys
 from matplotlib import image
-from rolls.forms import Gene, Analisiform, Deseq2form, Analisiform1, Analisiformcompleto, Analisi_interaction,Analisipath,Onlygeneform,FormTumorMutation
+from rolls.forms import Gene, Analisiform, Deseq2form, Analisiform1, Analisiformcompleto, Analisi_interaction,Analisipath,tumorGeneform,FormTumorMutation
 import os
 from django.http import StreamingHttpResponse
 from wsgiref.util import FileWrapper
@@ -562,8 +562,9 @@ def tumor_mutation_analysis(request):
 def gene_mutation_analysis(request):
     if request.method == 'POST':
 
-        form = Onlygeneform(request.POST)
+        form = tumorGeneform(request.POST)
         if form.is_valid(): 
+            tumor=request.POST['tumor'] 
             gene=request.POST['gene'] 
             
             inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
@@ -571,33 +572,42 @@ def gene_mutation_analysis(request):
             print
             os.makedirs(dir)
             
-            out = subprocess.run(['Rscript', 'script/gene_mutation_analysis.R',gene,dir], capture_output=True, text=True)
+            out = subprocess.run(['Rscript', 'script/gene_mutation_analysis.R',tumor,gene,dir], capture_output=True, text=True)
             print(out)
             
             if os.path.isdir(dir): 
                 files=os.listdir(dir)
                 for file in files:
                     if file[-3:]=='png':
-                        image=os.path.join('media/saveanalisi',inp3,file)    
+                        if 'somaticInteractions' in file:
+                            image_interact=os.path.join('media/saveanalisi',inp3,file)  
+                        if 'TumorVAF' in file: 
+                            image_VAF=os.path.join('media/saveanalisi',inp3,file)  
+                        if 'lollipopPlot' in file:
+                            image_lolli=os.path.join('media/saveanalisi',inp3,file)  
+
                 print(image)
-                form=Onlygeneform()
+                form=tumorGeneform()
                 return render(request, 'rolls/gene_mutation_analysis.html', {'form':form, 
-            
+                    'tumor':tumor,
                     'gene':gene,
-                    'image':image,
+                    'image_interact':image_interact,
+                    'image_VAF':image_VAF,
+                    'image_lolli':image_lolli,
                     'go':'Valid',
                     'dir':inp3,
                     })
 
             else:
-                    form=Onlygeneform()
+                    form=tumorGeneform()
                     return render(request, 'rolls/gene_mutation_analysis.html', {'form':form,
                     'gene':gene, 
+                    'tumor':tumor,
                     'go':'error'})
 
 
 
-    form = Onlygeneform()       
+    form = tumorGeneform()       
     return render(request, 'rolls/gene_mutation_analysis.html', {'form':form})
 
 

@@ -91,7 +91,7 @@ class FormTumorMutation(forms.ModelForm):
         model=Analisi_mutation
         fields=('tumor',)
 
-class Onlygeneform(forms.ModelForm):
+class tumorGeneform(forms.ModelForm):
     gene = forms.CharField(
         widget=forms.TextInput(
             attrs={
@@ -102,6 +102,6 @@ class Onlygeneform(forms.ModelForm):
         )
     )
     class Meta:
-        model= Analisi
-        fields=('gene',)
+        model= Analisi_mutation
+        fields=('gene','tumor')
 
