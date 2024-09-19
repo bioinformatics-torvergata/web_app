@@ -1,5 +1,5 @@
 from django import forms
-from .models import Analisi
+from .models import Analisi, Analisi_mutation
 
 class Gene(forms.ModelForm):
     gene=forms.CharField(widget=forms.TextInput(attrs={"placeHolder":"gene symbol/ENSG"}))
@@ -61,6 +61,7 @@ class Deseq2form(forms.ModelForm):
         model=Analisi
         fields=('tumor',)
 
+
    
 class Analisi_interaction(forms.ModelForm):
     gene=forms.CharField(widget=forms.TextInput(attrs={"placeHolder":"ENSG/gene symbol"}))
@@ -83,6 +84,12 @@ class Analisipath(forms.ModelForm):
         model= Analisi
         fields=('tumor',)   
 
+
+class FormTumorMutation(forms.ModelForm): 
+
+    class Meta:
+        model=Analisi_mutation
+        fields=('tumor',)
 
 class Onlygeneform(forms.ModelForm):
     gene = forms.CharField(

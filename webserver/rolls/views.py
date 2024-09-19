@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from subprocess import run,PIPE
 import sys
 from matplotlib import image
-from rolls.forms import Gene, Analisiform, Deseq2form, Analisiform1, Analisiformcompleto, Analisi_interaction,Analisipath,Onlygeneform
+from rolls.forms import Gene, Analisiform, Deseq2form, Analisiform1, Analisiformcompleto, Analisi_interaction,Analisipath,Onlygeneform,FormTumorMutation
 import os
 from django.http import StreamingHttpResponse
 from wsgiref.util import FileWrapper
@@ -510,7 +510,7 @@ def correlation_analysis(request):
 def tumor_mutation_analysis(request):
     if request.method == 'POST':
 
-        form = Deseq2form(request.POST)
+        form = FormTumorMutation(request.POST)
         if form.is_valid(): 
             tumor=request.POST['tumor'] 
             
@@ -526,26 +526,34 @@ def tumor_mutation_analysis(request):
                 files=os.listdir(dir)
                 for file in files:
                     if file[-3:]=='png':
-                        image=os.path.join('media/saveanalisi',inp3,file)    
-                print(image)
-                form=Deseq2form()
-                return render(request, 'rolls/tumor_mutation_analysis.html', {'form':form, 
-            
-                    'tumor':tumor,
-                    'image':image,
-                    'go':'Valid',
-                    'dir':inp3,
-                    })
+                        if 'summary' in file:
+                            image_summary=os.path.join('media/saveanalisi',inp3,file)  
+                        if 'oncoplot' in file:
+                            image_oncoplot=os.path.join('media/saveanalisi',inp3,file)
+                        if 'Titv' in file:
+                            image_titv=os.path.join('media/saveanalisi',inp3,file)
 
-            else:
-                    form=Deseq2form()
-                    return render(request, 'rolls/tumor_mutation_analysis.html', {'form':form,
-                    'tumor':tumor, 
-                    'go':'error'})
+                        print(image)
+                        form=FormTumorMutation()
+                        return render(request, 'rolls/tumor_mutation_analysis.html', {'form':form, 
+                    
+                            'tumor':tumor,
+                            'image_summary':image_summary,
+                            'image_oncoplot':image_oncoplot,
+                            'image_titv':image_titv,
+                            'go':'Valid',
+                            'dir':inp3,
+                            })
+
+                    else:
+                        form=FormTumorMutation()
+                        return render(request, 'rolls/tumor_mutation_analysis.html', {'form':form,
+                        'tumor':tumor, 
+                        'go':'error'})
 
 
 
-    form = Deseq2form()       
+    form = FormTumorMutation()       
     return render(request, 'rolls/tumor_mutation_analysis.html', {'form':form})
 
 

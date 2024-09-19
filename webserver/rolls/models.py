@@ -37,6 +37,41 @@ TUMOR=[
     ('UCS','UCS'),
     ('UVM','UVM')]
 
+#rimosso MESO di cui non abbiamo i dati mutazionali
+TUMOR_MUTATION=[ 
+    (None,'Choice..'),
+    ('ACC','ACC'),
+    ('BLCA','BLCA'),
+    ('BRCA','BRCA'),
+    ('CESC','CESC'),
+    ('CHOL','CHOL'),
+    ('COAD','COAD'),
+    ('DLBC','DLBC'),
+    ('ESCA','ESCA'),
+    ('GBM','GBM'),
+    ('HNSC','HNSC'),
+    ('KICH','KICH'),
+    ('KIRC','KIRC'),
+    ('KIRP','KIRP'),
+    ('LGG','LGG'),
+    ('LIHC','LIHC'),
+    ('LUAD','LUAD'),
+    ('LUSH','LUSH'),
+    ('OV','OV'),
+    ('PAAD','PAAD'),
+    ('PCPG','PCPG'),
+    ('PRAD','PRAD'),
+    ('READ','READ'),
+    ('SARC','SARC'),
+    ('SKCM','SKCM'),
+    ('STAD','STAD'),
+    ('TGCT','TGCT'),
+    ('THCA','THCA'),
+    ('THYM','THYM'),
+    ('UCEC','UCEC'),
+    ('UCS','UCS'),
+    ('UVM','UVM')]
+
 FEATURES=[
     (None,'Choice..'),
     ('gender','Gender'),
@@ -76,7 +111,20 @@ class Analisi(models.Model):
         choices= FEATURES,
         default= 'Choice..',)
         
-        
+
+class Analisi_mutation(models.Model):
+    gene= models.CharField(
+        max_length=20,)
+    
+    tumor=models.CharField(
+        max_length=10,
+        choices= TUMOR_MUTATION,
+        default='Choice..',)
+
+    feature=models.CharField(
+        max_length=50,
+        choices= FEATURES,
+        default= 'Choice..',)       
         
 #class Downloadfileszip(models.Model)
 

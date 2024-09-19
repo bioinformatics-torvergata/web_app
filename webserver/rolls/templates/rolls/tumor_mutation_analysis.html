@@ -32,7 +32,7 @@
         <div class="collapse" id="collapseExample">
         <div class="card card-body">
           <p class="text-center" >Example: </p>
-          <img src= "{%static 'media/examples/all_tumor_DE.png' %}" width="750">
+          <img src= "{%static 'media/examples/tumor_mutation_analysis.png' %}" width="750">
         </div> 
         </div>
         {%if go == 'Valid' %}        
@@ -47,8 +47,14 @@
         <br>
         <div class="row">
           <div class="zoom shadow mx-auto bg-body rounded" style="max-width: 800px;">
-            <a href="{%static image%}" target="_blank"><img src= '{%static image %}' width="700"></a>
+            <a href="{%static image_summary%}" target="_blank"><img src= '{%static image_summary %}' width="700"></a>
         </div> 
+        <div class="zoom shadow mx-auto bg-body rounded" style="max-width: 800px;">
+        <a href="{%static image_oncoplot%}" target="_blank"><img src= '{%static image_oncoplot %}' width="700"></a>
+        </div>
+        <div class="zoom shadow mx-auto bg-body rounded" style="max-width: 800px;">
+          <a href="{%static image_titv%}" target="_blank"><img src= '{%static image_titv %}' width="700"></a>
+        </div>
         </div>
       </div>
         {%endif%}
