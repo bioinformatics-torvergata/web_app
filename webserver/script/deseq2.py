@@ -6,7 +6,7 @@ from scipy.stats import ranksums
 import os
 import sys
 from function_new_prova import copyfile,plotly_volcano
-
+import numpy as np
 
        
 #################################    
@@ -26,7 +26,7 @@ if __name__ == "__main__":
     path_result=os.path.join(dir_saveresults,'result_'+tumor+'.txt')
     print(path_result)
     df=pd.read_csv(path_result,sep="\t")
-
+    df['padj']=np.log10(df['padj'])*(-1)
     #plt
     plotly_volcano(df,dir_saveresults,tumor)
 
