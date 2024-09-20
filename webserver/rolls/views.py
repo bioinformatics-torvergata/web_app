@@ -516,7 +516,7 @@ def tumor_mutation_analysis(request):
             
             inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
             dir=os.path.join(output_data, inp3)
-            print
+            
             os.makedirs(dir)
             
             out = subprocess.run(['Rscript', 'script/tumor_mutation_analysis.R',tumor,dir], capture_output=True, text=True)
@@ -524,32 +524,33 @@ def tumor_mutation_analysis(request):
             
             if os.path.isdir(dir): 
                 files=os.listdir(dir)
+                print(files)
                 for file in files:
                     if file[-3:]=='png':
                         if 'summary' in file:
                             image_summary=os.path.join('media/saveanalisi',inp3,file)  
+                            
                         if 'oncoplot' in file:
                             image_oncoplot=os.path.join('media/saveanalisi',inp3,file)
                         if 'Titv' in file:
                             image_titv=os.path.join('media/saveanalisi',inp3,file)
 
-                        print(image)
-                        form=FormTumorMutation()
-                        return render(request, 'rolls/tumor_mutation_analysis.html', {'form':form, 
-                    
-                            'tumor':tumor,
-                            'image_summary':image_summary,
-                            'image_oncoplot':image_oncoplot,
-                            'image_titv':image_titv,
-                            'go':'Valid',
-                            'dir':inp3,
-                            })
+                        
+                form=FormTumorMutation()
+                return render(request, 'rolls/tumor_mutation_analysis.html', {'form':form, 
+                    'tumor':tumor,
+                    'image_summary':image_summary,
+                    'image_oncoplot':image_oncoplot,
+                    'image_titv':image_titv,
+                    'go':'Valid',
+                    'dir':inp3,
+                    })
 
-                    else:
-                        form=FormTumorMutation()
-                        return render(request, 'rolls/tumor_mutation_analysis.html', {'form':form,
-                        'tumor':tumor, 
-                        'go':'error'})
+            else:
+                form=FormTumorMutation()
+                return render(request, 'rolls/tumor_mutation_analysis.html', {'form':form,
+                'tumor':tumor, 
+                'go':'error'})
 
 
 
@@ -586,7 +587,6 @@ def gene_mutation_analysis(request):
                         if 'lollipopPlot' in file:
                             image_lolli=os.path.join('media/saveanalisi',inp3,file)  
 
-                print(image)
                 form=tumorGeneform()
                 return render(request, 'rolls/gene_mutation_analysis.html', {'form':form, 
                     'tumor':tumor,
@@ -616,7 +616,7 @@ def gene_mutation_analysis(request):
 def survival_with_gene_mutation_status(request):
     if request.method == 'POST':
 
-        form = Onlygeneform(request.POST)
+        form = Deseq2form(request.POST)
         if form.is_valid(): 
             tumor=request.POST['tumor'] 
             
@@ -634,7 +634,7 @@ def survival_with_gene_mutation_status(request):
                     if file[-3:]=='png':
                         image=os.path.join('media/saveanalisi',inp3,file)    
                 print(image)
-                form=Onlygeneform()
+                form=Deseq2form()
                 return render(request, 'rolls/survival_with_gene_mutation_status.html', {'form':form, 
             
                     'tumor':tumor,
@@ -644,12 +644,12 @@ def survival_with_gene_mutation_status(request):
                     })
 
             else:
-                    form=Onlygeneform()
+                    form=Deseq2form()
                     return render(request, 'rolls/survival_with_gene_mutation_status.html', {'form':form,
                     'tumor':tumor, 
                     'go':'error'})
 
 
 
-    form = Onlygeneform()       
+    form = Deseq2form()       
     return render(request, 'rolls/survival_with_gene_mutation_status.html', {'form':form})
