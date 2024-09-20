@@ -359,24 +359,13 @@ def differential_expression(request):
 ####### DESEQ2 analisi###############
 
 def choseimage(tumor,pathfiles,dir_saveresults):
-    print(' i file li pesca da qui ', pathfiles)
-    files=os.listdir(pathfiles)
+    print(' i file li pesca da qui ', dir_saveresults)
+    files=os.listdir(dir_saveresults)
     print(files)
     filelist=[]
     for file in files:
         print(file)
         if tumor in file:
-            path_file=os.path.join(pathfiles,file)
-            print('prende da qui : ',path_file)
-
-            copy_filepath=os.path.join(dir_saveresults, os.path.basename(file))
-            print('copia qui: ',copy_filepath)
-       
-            shutil.copy(path_file,copy_filepath )
-            
-            
-            path=os.path.join(copy_filepath,file)
-           
             if 'jpg' in file:
                 if 'EnhancedVolcano' in file:
                     enhancedimage=file
@@ -388,10 +377,14 @@ def choseimage(tumor,pathfiles,dir_saveresults):
                     topgeni=file
                 else:
                     filelist.append(file)
-        
+            
+            if 'html' in file:
+                image_plotly=file
+
+
     if len(filelist)>0:
         print(filelist)
-        return(enhancedimage,heatmap, pca,topgeni) #filelist)
+        return(enhancedimage,heatmap, pca,topgeni,image_plotly)
     else:
         return()
 
@@ -428,18 +421,20 @@ def deseq2(request):
                 print(dir_saveresults)
                 os.makedirs(dir_saveresults)
 
-                images=choseimage(tumor,dir,dir_saveresults)
                 
+                out=run([sys.executable,'script/deseq2.py',tumor,dir,dir_saveresults],shell=False, stdout=PIPE)
+                
+                images=choseimage(tumor,dir,dir_saveresults)
                 
                 form=Deseq2form()                         
                 return render(request, 'rolls/deseq2.html', {'form':form, 
                     'feature': feature,
                     'tumor':tumor,
-                    
                     'enhancedimage': os.path.join('media/saveanalisi',inp3,images[0]),
                     'images1': os.path.join('media/saveanalisi',inp3,images[1]),
                     'images2': os.path.join('media/saveanalisi',inp3,images[2]),
                     'images3': os.path.join('media/saveanalisi',inp3,images[3]),
+                    'image_plotly':os.path.join('media/saveanalisi',inp3,images[4]),
                     'go':'Valid',
                     'parametri': parametri[feature],
                     'dir':'media/saveanalisi/'+inp3+'/result_' + tumor + '.txt' 

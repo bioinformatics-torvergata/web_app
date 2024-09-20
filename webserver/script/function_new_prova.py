@@ -7,11 +7,15 @@ import subprocess
 from pathlib import Path
 import configparser
 from scipy.stats import ranksums
+import numpy as np
 from lifelines import KaplanMeierFitter
 from lifelines.statistics import logrank_test
 from lifelines.plotting import add_at_risk_counts
 from statsmodels.stats import multitest as multi
 import plotly.express as px
+import plotly.graph_objects as go 
+import shutil
+
 #######################################################################################
 #                              Carica il file di configurazione                       #
 #######################################################################################
@@ -292,6 +296,8 @@ def plotly_plot(feature,d, gene,cartella,ogg):
       
         fig.write_html(cartella+'/'+gene+'_'+feature+'.html')
 
+
+
 def ranksum_test(gene,d,feature):
     #ranksum test per p-value
     p=list(set(d[feature]))
@@ -370,6 +376,45 @@ def crealista(dffeat,df,feature):
             return listaf, listaf01
         else:
             return 0
+
+#######################################################################################
+
+#######  ->                               Deseq2                            <-  #######
+
+def copyfile(tumor,pathfiles,dir_saveresults):
+    print('siamo nel copy file')
+    print(' i file li pesca da qui ', pathfiles)
+    files=os.listdir(pathfiles)
+    print(files)
+    for file in files:
+        
+        if tumor in file:
+            
+            path_file=os.path.join(pathfiles,file)
+            print('prende da qui : ',path_file)
+            
+            copy_filepath=os.path.join(dir_saveresults, os.path.basename(file))
+            print('copia qui: ',copy_filepath)
+       
+            shutil.copy(path_file,copy_filepath )
+
+
+def plotly_volcano(df,cartella,tumor):
+    fig=go.Figure()
+    trace1=go.Scatter(
+        x=df['log2FoldChange'],
+        y=df['padj'],
+        mode='markers',
+        hovertext=list(df.index)
+    )
+    fig.add_trace(trace1)
+    fig.add_hline(y=-np.log10(0.05),line_dash="dash")
+    fig.add_vline(x=1,line_dash="dash")
+    fig.add_vline(x=-1,line_dash="dash")
+
+    
+    fig.write_html(cartella+'/'+tumor+'.html')
+
 
 #######################################################################################
 
