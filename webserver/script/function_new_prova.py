@@ -228,16 +228,25 @@ def p_value(df, cartella,feature,gene):
 
 def what_is_my_object_gene(gene):
     #implementato per prendere in input anche l'ENSG inserito senza versione.
-    if 'ENSG' in gene:
-        df_ensg= pd.read_csv(gene_name_ENSG,sep='\t')
-    
-        result_index = df_ensg[(df_ensg['gene_id_version'] == gene) | (df_ensg['gene_id'] == gene)].index
-        if not result_index.empty:
-            gene_version=df_ensg.loc[result_index[0],'gene_id_version']
 
-            return (gene_version,'gene','gene_id',int(result_index[0]))
-        else:
-            return(0)
+    df_ensg= pd.read_csv(gene_name_ENSG,sep='\t')
+    
+    result_index = df_ensg[(df_ensg['gene_id_version'] == gene) | (df_ensg['gene_id'] == gene) | (df_ensg['gene_symbol'] == gene)].index
+    if not result_index.empty:
+        gene_version=df_ensg.loc[result_index[0],'gene_id_version']
+
+        return (gene_version,'gene','gene_id',int(result_index[0]))
+    
+    # if 'ENSG' in gene:
+    #     df_ensg= pd.read_csv(gene_name_ENSG,sep='\t')
+    
+    #     result_index = df_ensg[(df_ensg['gene_id_version'] == gene) | (df_ensg['gene_id'] == gene)].index
+    #     if not result_index.empty:
+    #         gene_version=df_ensg.loc[result_index[0],'gene_id_version']
+
+    #         return (gene_version,'gene','gene_id',int(result_index[0]))
+    #     else:
+    #         return(0)
 
     if gene in open(protein_name).read().split("\n"):
         return(gene,'protein','peptide_target',protein_dataframe)
