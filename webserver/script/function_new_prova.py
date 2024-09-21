@@ -235,6 +235,7 @@ def p_value(df, cartella,feature,gene):
 #######################################################################################
 
 #######  ->                       Boxplot_single_tumor                      <-  #######
+
 def what_is_my_object_gene(gene):
     #implementato per prendere in input anche l'ENSG inserito senza versione.
     if 'ENSG' in gene:
@@ -244,7 +245,7 @@ def what_is_my_object_gene(gene):
         if not result_index.empty:
             gene_version=df_ensg.loc[result_index[0],'gene_id_version']
 
-            return (gene_version,'gene','gene_id',result_index)
+            return (gene_version,'gene','gene_id',int(result_index[0]))
         else:
             return(0)
 
@@ -259,9 +260,10 @@ def what_is_my_object_gene(gene):
     
 def open_df_gene(input,tumor,feature,cartella):
     if feature == 'patient_status':
-        posizione=input[3]
+        print(input)
+        posizione="-e "+str(input[3]+2)+"p"
         #creiamo un dataframe piu piccolo dove c'è solo la riga del gene che è stato selezionato
-        path=cartella+'/'+input[0]+"_df.txt"
+        path=cartella+'/'+str(input[0])+"_df.txt"
         out_file=open(path,"w")
         subprocess.call(["sed","-n", "-e 1p", posizione, gene_dataframe],stdout=out_file)
         return(path)
@@ -275,6 +277,7 @@ def open_dataframe(gene,tumor,feature,cartella):
     input=what_is_my_object_gene(gene)
     if input!=0:
         if input[1]=='gene':
+            print(feature)
             path=open_df_gene(input,tumor,feature,cartella) #bisogna vedere in base al tipo di feature che viene passata
             df=pd.read_csv(path)
             df=df.set_index(input[2])
