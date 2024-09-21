@@ -15,7 +15,7 @@ import os
 import sys
 import configparser
 from pathlib import Path
-from function_new_prova import read_clinical_data,open_dataframe_gene_boxplot_all_tumor,detect_if_gene_mirna_proteina,box_plot_all_tumor,df_feature_age,crealista_patient_status,pulisci_df,p_value
+from function_new_prova import read_clinical_data,open_dataframe_gene_boxplot_all_tumor,box_plot_all_tumor,df_feature_age,crealista_patient_status,pulisci_df,p_value,gene_mirna_proteina
 
 
 
@@ -36,12 +36,11 @@ if __name__ == "__main__":
     else:
         x1=x
 
-
     #aprire df
-    ogg_analisi=detect_if_gene_mirna_proteina(gene, cartella) #es. miRNA, miRNA_ID, 'pathdataframe.csv'
-    print(ogg_analisi)
+    ogg_analisi=gene_mirna_proteina(gene, cartella) #es. miRNA, miRNA_ID, 'pathdataframe.csv'
+    gene=ogg_analisi[3]
     if ogg_analisi!=0:
-        
+
         #lista samples df expression gene/miRNA/prot
         dd=pd.read_csv(ogg_analisi[2],nrows=1)
         listamiRNA=list(dd.columns[1:])
@@ -52,7 +51,7 @@ if __name__ == "__main__":
             listanomi01, listanomi= crealista_patient_status(x, listamiRNA,ogg_analisi)
             
             #aprire df espressione
-            d=open_dataframe_gene_boxplot_all_tumor(ogg_analisi[0],listanomi01, ogg_analisi[2],ogg_analisi[1])
+            d=open_dataframe_gene_boxplot_all_tumor(ogg_analisi[0],listanomi01, ogg_analisi[2],ogg_analisi[1]) #piu index
             
 
             lista_exp=[]#lista valori espressione
@@ -79,9 +78,8 @@ if __name__ == "__main__":
 
 
             #df espressione solo dei campioni di cui abbiamo i dati clinici
-            print(ogg_analisi[2])
-            d=open_dataframe_gene_boxplot_all_tumor(ogg_analisi[0],listanomi01, ogg_analisi[2])
-            print('here')
+            d=open_dataframe_gene_boxplot_all_tumor(ogg_analisi[0],listanomi01, ogg_analisi[2],ogg_analisi[1])
+
 
 
         colonna1=list(d.loc[gene,])
@@ -100,7 +98,9 @@ if __name__ == "__main__":
         if feature=='patient_status':
             df=pulisci_df(df,feature)  
 
-        box_plot_all_tumor(df, cartella, gene, feature)
+
+
+        box_plot_all_tumor(df, cartella, gene, feature,ogg_analisi[0])
         p_value(df, cartella,feature,gene)
 
     else:

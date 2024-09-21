@@ -322,7 +322,7 @@ def differential_expression(request):
             inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
             
             dir= os.path.join(output_data, inp3)
-            out=run([sys.executable,'script/boxplot_all_tumor_giusto.py',gene,feature,dir],shell=False, stdout=PIPE)
+            out=run([sys.executable,'script/boxplot_all_tumor_giusto_new.py',gene,feature,dir],shell=False, stdout=PIPE)
             print(out)
             
             if os.path.isdir(dir): 

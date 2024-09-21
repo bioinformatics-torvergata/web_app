@@ -51,7 +51,7 @@ if 'protein' in config:
 
 if 'clinical' in config:
     clinical_data= get_full_path(config['clinical']['dati_clinici'])
-
+    dati_age= get_full_path(config['clinical']['dati_age'])
 if 'os' in config:
     os_pathway=get_full_path(config['OS']['os_pathway'])
     
@@ -68,53 +68,42 @@ def read_clinical_data():
     x=x.set_index("bcr_patient_barcode")
     return(x)
 
-def what_is_my_object_gene(gene):
-    #implementato per prendere in input anche l'ENSG inserito senza versione.
-    if 'ENSG' in gene:
-        df_ensg= pd.read_csv(gene_name_ENSG,sep='\t')
+
+
+def gene_mirna_proteina(gene, cartella):
     
-        result_index = df_ensg[(df_ensg['gene_id_version'] == gene) | (df_ensg['gene_id'] == gene)].index
-        if not result_index.empty:
-            gene_version=df_ensg.loc[result_index[0],'gene_id_version']
-            print(result_index)
-            return (gene_version,'gene','gene_id',result_index)
-        else:
-            return(0)
-
-    if gene in open(protein_name).read().split("\n"):
-        return(gene,'protein','peptide_target',protein_dataframe)
-
-    if gene in open(miRNA_name).read().split("\n"):
-        return (gene,'miRNA','miRNA_ID',miRNA_dataframe)
-
-    else:
-        return(0)
-    
-
-def detect_if_gene_mirna_proteina(gene, cartella):
-    
-    if gene in open(miRNA_name).read().split("\n"):
+    #controllare se è gene symbol:
+    df_ensg= pd.read_csv(gene_name_ENSG,sep='\t')
+    result_index = df_ensg[(df_ensg['gene_id_version'] == gene) | (df_ensg['gene_id'] == gene) | (df_ensg['gene_symbol'] == gene)].index
+    if not result_index.empty:
+        gene_version=df_ensg.loc[result_index[0],'gene_id_version']
+        indice=int(result_index[0])
         os.mkdir(cartella)
-        return(['miRNA',"miRNA_ID",miRNA_dataframe])
-    
-    if gene in open(gene_name_ENSG).read().split("\n"):
-        os.mkdir(cartella)
-        listageni=open(gene_name_ENSG).read().strip().split("\n")
-        posizione="-e "+str(listageni.index(gene)+1)+"p"
-        
-        #creiamo un dataframe piu piccolo dove c'è solo la riga del gene che è stato selezionato
+        posizione="-e "+str(indice+2)+"p"
+            #creiamo un dataframe piu piccolo dove c'è solo la riga del gene che è stato selezionato
+            
         path=cartella+'/'+gene+"_df.txt"
         out_file=open(path,"w")
-        subprocess.call(["sed","-n", "-e 1p", posizione, gene_dataframe ],stdout=out_file)
-        
-        return(['gene','gene_id',path])
+        subprocess.call(["sed","-n", "-e 1p", posizione,gene_dataframe],stdout=out_file)
+        return(['gene','gene_id',path,gene_version])   
 
+
+    #controllo df miRNA
+    if gene in open(miRNA_name).read().split("\n"):
+        os.mkdir(cartella)
+        return(['miRNA',"miRNA_ID",miRNA_dataframe,gene])
+    
+    
+    #controllo df proteina
     if gene in open(protein_name).read().split("\n"):
         os.mkdir(cartella)
-        return(['protein', "peptide_target",protein_dataframe])
+        return(['protein', "peptide_target",protein_dataframe,gene])
     
     else:
         return(0) #la ricerca non è disponibile per il nome inserito
+
+
+
 
 def open_dataframe_gene_boxplot_all_tumor(gene,listanomi01, path_dataframe, index):
     if gene == 'miRNA':
@@ -135,21 +124,22 @@ def open_dataframe_gene_boxplot_all_tumor(gene,listanomi01, path_dataframe, inde
 
 
 
-def box_plot_all_tumor(df1, cartella, gene, feature):
+def box_plot_all_tumor(df1, cartella, gene, feature,type_gene):
     
     sns.set_theme(rc={'figure.figsize':(25.7,8.27)})
     sns.set_style("white")
 
     my_order = df1.groupby(by=["tumor"])[gene].median().iloc[::-1].sort_values().index
     ax=sns.boxplot(x="tumor", y=gene, hue=feature, data=df1, palette="Set2", width=0.7, order=my_order)
-    ax.set_yscale("log")
+    if type_gene == 'miRNA':
+        ax.set_yscale("log")
     
     plt.savefig(cartella+'/'+gene+'_'+feature+'.jpg')
 
 
 def df_feature_age(x,feature):
     if feature=="age_at_initial_pathologic_diagnosis":
-        df=pd.read_csv('mediana_age_tumor.csv')
+        df=pd.read_csv(dati_age)
         df=df.set_index('acronym')
         
         lista_age=[]
@@ -296,7 +286,6 @@ def plotly_plot(feature,d, gene,cartella,ogg):
         fig=px.box(d,y=gene,x=feature,color=feature) #points = 'all'
         if ogg[1]== "miRNA":
                 fig.update_layout(yaxis_type="log")
-      
         fig.write_html(cartella+'/'+gene+'_'+feature+'.html')
 
 
@@ -403,19 +392,36 @@ def copyfile(tumor,pathfiles,dir_saveresults):
 
 
 def plotly_volcano(df,cartella,tumor):
+
+    significance_threshold = -np.log10(0.05)
+    fold_change_threshold = 1
+    df['color'] = 'grey'  # default colore
+    df.loc[(df['padj'] > significance_threshold), 'color'] = 'blue'  
+    df.loc[(df['padj'] < significance_threshold), 'color'] = 'grey'  
+    df.loc[df['log2FoldChange'] > fold_change_threshold, 'color'] = 'red'  # Up-regolati
+    df.loc[df['log2FoldChange'] < -fold_change_threshold, 'color'] = 'red'  # Up-regolati
+   
     fig=go.Figure()
     trace1=go.Scatter(
         x=df['log2FoldChange'],
         y=df['padj'],
         mode='markers',
-        hovertext=list(df.index)
+        hovertext=list(df.index),
+        marker=dict(
+            color=df['color'],  # Usa la colonna color per colorare i punti
+            size=10
+        ),
     )
     fig.add_trace(trace1)
-    fig.add_hline(y=-np.log10(0.05),line_dash="dash")
-    fig.add_vline(x=1,line_dash="dash")
-    fig.add_vline(x=-1,line_dash="dash")
+    fig.add_hline(y=(significance_threshold),line_dash="dash")# Padj cutoff
+    fig.add_vline(x=fold_change_threshold, line_dash="dash")# line_color="black")  # Fold change positivo cutoff
+    fig.add_vline(x=-fold_change_threshold, line_dash="dash")#, line_color="black")  # Fold change negativo cutoff
 
-    
+    fig.update_layout(
+        title="Volcano Plot",
+        xaxis_title="log2 Fold Change",
+        yaxis_title="-log10(padj)"
+    )
     fig.write_html(cartella+'/'+tumor+'.html')
 
 
