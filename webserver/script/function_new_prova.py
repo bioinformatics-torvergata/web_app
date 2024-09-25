@@ -52,6 +52,7 @@ if 'protein' in config:
 if 'clinical' in config:
     clinical_data= get_full_path(config['clinical']['dati_clinici'])
     dati_age= get_full_path(config['clinical']['dati_age'])
+    clinical_OS= get_full_path(config['clinical']['clinical_OS'])
 if 'os' in config:
     os_pathway=get_full_path(config['OS']['os_pathway'])
     
@@ -407,8 +408,8 @@ def plotly_volcano(df,cartella,tumor):
     df['color'] = 'grey'  # default colore
     df.loc[(df['padj'] > significance_threshold), 'color'] = 'blue'  
     df.loc[(df['padj'] < significance_threshold), 'color'] = 'grey'  
-    df.loc[df['log2FoldChange'] > fold_change_threshold, 'color'] = 'red'  # Up-regolati
-    df.loc[df['log2FoldChange'] < -fold_change_threshold, 'color'] = 'red'  # Up-regolati
+    df.loc[df['log2FoldChange'] >= fold_change_threshold, 'color'] = 'red'  # Up-regolati
+    df.loc[df['log2FoldChange'] <= -fold_change_threshold, 'color'] = 'red'  # Up-regolati
    
     fig=go.Figure()
     trace1=go.Scatter(
@@ -439,16 +440,20 @@ def plotly_volcano(df,cartella,tumor):
 #######  ->                        Overall Survival                         <-  #######
 
 def open_dataframe_gene_overall(gene,tumor):
+    df_ensg= pd.read_csv(gene_name_ENSG,sep='\t')
+    result_index = df_ensg[(df_ensg['gene_id_version'] == gene) | (df_ensg['gene_id'] == gene) | (df_ensg['gene_symbol'] == gene)].index
+    if not result_index.empty:
+        gene_version=df_ensg.loc[result_index[0],'gene_id_version']
+        indice=int(result_index[0])
+        gene_dataframe_FPKM_tumor=os.path.join(gene_dataframe_FPKM,"Dataframe_FPKM_"+tumor+".csv")
+        df=pd.read_csv(gene_dataframe_FPKM_tumor)
+        df=df.set_index("gene_id")
+        return(df)
     if gene in open(miRNA_name).read().split("\n"):
         df=pd.read_csv(miRNA_dataframe)
         df=df.set_index('miRNA_ID')
         return(df)
-    if gene in open(gene_name_ENSG).read().split("\n"):
-        gene_dataframe_FPKM_tumor=gene_dataframe_FPKM+"_"+tumor+".csv"
-        df=pd.read_csv(gene_dataframe_FPKM_tumor)
-        #df=pd.read_csv("/mnt/data/notturno/Dataframe_tumorgene/Dataframe_FPKM/Dataframe_FPKM_"+tumor+".csv")
-        df=df.set_index("gene_id")
-        return (df)
+   
     if gene in open(protein_name).read().split("\n"):
         df=pd.read_csv(protein_dataframe)
         df=df.set_index('peptide_target')
@@ -460,7 +465,7 @@ def open_dataframe_gene_overall(gene,tumor):
 
 
 def dataframe_OStime(tumor):
-    dfclinic=pd.read_csv(clinical_data)    
+    dfclinic=pd.read_csv(clinical_OS)    
     OS=(dfclinic[['bcr_patient_barcode','OS.time']]) 
     df1_mask=dfclinic['type']==tumor
     OS=dfclinic[df1_mask]
@@ -484,10 +489,8 @@ def overall_survival_analysis(m,tumor,feature,cartella,df1,OS1,gene):
 
     #if np.mean(list(df1.loc[m,i2]))>0:
     results = logrank_test((OS1[i1]), (OS1[i2]),list(df1.loc[m,i1]),list(df1.loc[m,i2]), alpha=.95)
-    
-    if results.p_value < 1:
-        #os.mkdir("../rolls/static/media/saveanalisi/"+cartella)
-        os.mkdir(cartella)
+    print(results.p_value )
+    if results.p_value < 1:       
         print("p-value:",results.p_value)
         
         kmf.fit((OS1[i1]), list(df1.loc[m,i1]), label="Higher expression")
@@ -495,10 +498,12 @@ def overall_survival_analysis(m,tumor,feature,cartella,df1,OS1,gene):
 
         kmf.fit((OS1[i2]),list(df1.loc[m,i2]) , label="Lower expression")
         kmf.plot(ax=a1)
-        plt.savefig("../rolls/static/media/saveanalisi/"+cartella+"/overallsurvival_"+gene+"_"+tumor+".png")
+        print(cartella+"/overallsurvival_"+gene+"_"+tumor+".png")
+        plt.savefig(cartella+"/overallsurvival_"+gene+"_"+tumor+".png")
         
     else:
         print("ANALISI NON VALIDA pvalue>1")
+        return(0)
   
 
   #######################################################################################

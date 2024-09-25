@@ -120,21 +120,23 @@ def overall_survival(request):
             print(gene, tumor)
             
             inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
-            out=run([sys.executable,'script/overall_survival.py',gene,tumor,inp3],shell=False, stdout=PIPE)
-            print(out)
             dir= os.path.join(output_data, inp3)
-            #dir='rolls/static/media/saveanalisi/'+inp3+'/'
+            os.makedirs(dir)
+            out=run([sys.executable,'script/overall_survival.py',gene,tumor,dir],shell=False, stdout=PIPE)
+            print(out)
+            
+
             if os.path.isdir(dir): 
                 files=os.listdir(dir)
                 for file in files:
                     if file[-3:]=='png':
                         image=os.path.join('media/saveanalisi',inp3,file)
-                        #image='/media/saveanalisi/'+inp3+'/'+file
+                        
                 form=Analisiform1()
 
                 return render(request, 'rolls/overall_survival.html', {
                     'form':form, 
-                    'formresult': out.stdout.decode('ascii'),
+                    #'formresult': out.stdout.decode('ascii'),
                     'image': image,
                     'go':'Valid',
                     'gene':gene ,

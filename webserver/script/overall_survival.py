@@ -11,16 +11,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sys
 import os
-from function_new import open_dataframe_gene_overall,dataframe_OStime,overall_survival_analysis
+from function_new_prova import open_dataframe_gene_overall,dataframe_OStime,overall_survival_analysis
 
 
 
 if __name__ == "__main__":
-    #dfclinic=read_clinical_data()
-    #dfclinic=pd.read_csv('/mnt/data/notturno/TCGA-CDR-SupplementalTableS1.csv')
     gene= sys.argv[1] #gene/mirna/protein
     tumor=sys.argv[2]
     cartella=sys.argv[3]
+    print(cartella)
+
     feature='median'
 
 
@@ -28,7 +28,7 @@ if __name__ == "__main__":
     df=open_dataframe_gene_overall(gene,tumor)
 
     OS=dataframe_OStime(tumor)
-
+    
     lista=list(OS.index)
     oslist=[]
     dflist=[]
@@ -46,6 +46,7 @@ if __name__ == "__main__":
     OS1=OS.loc[oslist,:]
 
     overall_survival_analysis(gene,tumor,feature, cartella,df1,OS1,gene)
+
 
 
 
