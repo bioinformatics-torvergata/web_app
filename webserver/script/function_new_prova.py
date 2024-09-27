@@ -53,8 +53,9 @@ if 'clinical' in config:
     clinical_data= get_full_path(config['clinical']['dati_clinici'])
     dati_age= get_full_path(config['clinical']['dati_age'])
     clinical_OS= get_full_path(config['clinical']['clinical_OS'])
+
 if 'os' in config:
-    os_pathway=get_full_path(config['OS']['os_pathway'])
+    os_pathway=get_full_path(config['os']['os_pathway'])
     
 
 
@@ -506,4 +507,41 @@ def overall_survival_analysis(m,tumor,feature,cartella,df1,OS1,gene):
         return(0)
   
 
-  #######################################################################################
+
+
+def overall_survival_analysis_pathway(m,tumor,df1,OS1,cartella):
+      
+    i1=df1.loc[m,:] > df1.loc[m,:].median()
+    i2 = df1.loc[m,:] < df1.loc[m,:].median() 
+    
+    kmf = KaplanMeierFitter()
+    
+
+    
+    results = logrank_test((OS1[i1]), (OS1[i2]),list(df1.loc[m,i1]),list(df1.loc[m,i2]), alpha=.95)
+    
+    if results.p_value < 1:
+        os.mkdir(cartella)
+        print("p-value:",results.p_value)
+        
+        kmf.fit((OS1[i1]), label="Higher expression")
+        a1 = kmf.plot()
+
+        kmf.fit((OS1[i2]), label="Lower expression")
+        kmf.plot(ax=a1)
+        
+        plt.savefig(cartella+"/"+m+"_"+tumor+".png")
+
+    else:
+        print("pvalue>1")
+
+
+def open_gsva_df(tumor):
+    file=os.path.join(os_pathway,'gsva_'+tumor+'.csv')
+    df=pd.read_csv(file)
+    df=df.set_index('Unnamed: 0')
+    df.columns= [x.replace(".","-") for x in df.columns]
+    return(df)
+
+
+#######################################################################################

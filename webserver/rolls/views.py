@@ -250,10 +250,10 @@ def os_pathway(request):
         if form.is_valid():
             pathway=form.cleaned_data['pathway']
             tumor=form.cleaned_data['tumor']
-            
+            method=form.cleaned_data['Methods']
             inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
             dir= os.path.join(output_data, inp3)
-            out=run([sys.executable,'script/OS_pathway.py',tumor,pathway,dir],shell=False, stdout=PIPE)
+            out=run([sys.executable,'script/OS_pathway.py',tumor,pathway,dir,method],shell=False, stdout=PIPE)
             print(out)
             
             dir='rolls/static/media/saveanalisi/'+inp3+'/'
@@ -269,7 +269,9 @@ def os_pathway(request):
                     'image': image,
                     'go':'Valid',
                     'pathway':pathway ,
-                    'tumor':tumor,})
+                    'tumor':tumor,
+                    'method':method,
+                    })
             else:
                 form=Analisipath()
                 return render(request, 'rolls/OS_pathway.html', {'form':form,

@@ -133,9 +133,16 @@ class Analisipath(forms.ModelForm):
                 "id": "pathway-input",  # Aggiungi l'id qui per collegarlo all'autocomplete
                 "autocomplete": "on",  # Disabilita l'autocomplete del browser
                 }))
+    Methods = forms.ChoiceField(
+        choices=[
+            ('OS.time', 'OS.time'),
+            ('DFI.time', 'DFI.time'),
+        ],
+         widget=forms.RadioSelect
+    )
     class Meta:
         model= Analisi
-        fields=('tumor',)   
+        fields=('tumor','Methods')   
 
 
 class FormTumorMutation(forms.ModelForm): 
