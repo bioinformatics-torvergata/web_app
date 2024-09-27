@@ -12,7 +12,7 @@ class Analisiformcompleto(forms.ModelForm):
     gene = forms.CharField(
         widget=forms.TextInput(
             attrs={
-                "placeholder": "Gene(ENSG)/miRNA/protein",
+                "placeholder": "ENSG/Gene symbol/miRNA",
                 "id": "gene-input",  # Aggiungi l'id qui per collegarlo all'autocomplete
                 "autocomplete": "on",  # Disabilita l'autocomplete del browser
             }
@@ -27,7 +27,7 @@ class Analisiform(forms.ModelForm):
     gene = forms.CharField(
         widget=forms.TextInput(
             attrs={
-                "placeholder": "Gene(ENSG)/miRNA/protein",
+                "placeholder": "ENSG/Gene symbol/miRNA",
                 "id": "gene-input",  # Aggiungi l'id qui per collegarlo all'autocomplete
                 "autocomplete": "on",  # Disabilita l'autocomplete del browser
             }
