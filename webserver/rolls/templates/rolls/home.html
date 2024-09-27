@@ -1,39 +1,165 @@
 {%extends 'rolls/titolohome.html' %}
 {% load static %}
 {%block page%}
-
-    <div class="conteiner text-center my-3" style="max-width: 700px; margin: 0 auto; ">
-        <p class="lead">This web server offers tools to analyse RNAseq data collected by TCGA. The analyses that are made available use clinical data to perform differential gene expression and overall survival with different options.<p>
-    </div>
-  <div class="container text-center my-5">
-      <div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel" style="display: flex; justify-content: center;">
-        
-        <div class="carousel-inner" style="max-width: 580px;">
-                <div class="carousel-item active">
-                  <a href="{%url 'home'%}"><img src="{% static 'media/logo.jpg'%}" class="d-block w-100" alt="EnhancedVolcanoGeni_UCEC" style="width: 80px;"> </a>
-                </div>
-                <div class="carousel-item">
-                      <img src="{% static 'media/EnhancedVolcanoGeni_UCEC.svg' %}" class="d-block w-100" alt="PCA" style="width: 80px ;">
-                </div>
-                <div class="carousel-item">
-                      <img src="{%static 'media/heatmap_geni_UCS.svg' %}" class="d-block w-100" alt="gruppo" style="width: 80px ;">
-                </div>
-                <div class="carousel-item">
-                  <img src="{%static 'media/PCA_geni_KIRP.jpg' %}" class="d-block w-100" alt="gruppo" style="width: 80px ;">
-                </div>
-              </div>
-              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-              </button>
-              <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
-              <span class="carousel-control-next-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Next</span>
-              </button>
-        </div>
+ 
+    <div class="conteiner text-center my-3" style="max-width: 100vw; margin: 0 auto; padding: 0 20px;">
     
+<!-- seconda prova 5 sulla stessa riga
+  <div class="conteiner text-center my-3">
+    <div class="row">
+      <div class="col-md">
+        <div class="card h-100">
+          <img src="{% static 'media/home/volcano.png' %}" class="card-img-top" alt="PCA" style="width: 100%; height: 300px; object-fit: contain;">
+          <div class="card-body">
+            <h5 class="card-title">Transcriptomic analyses</h5>
+            <p class="card-text">Differential expression analyses and correlation analysis by selecting tumour, clinical features, gene and miRNA</p>
+            
+            <p class="card-text"><small class="text-muted">
+              <li><a href="{%url 'deseq2'%}">DESeq2 analysis</a></li>
+              <li><a href="{%url 'diff_exp_single_tumor'%}">Differential expression analysis</a></li>
+              <li><a href="{%url 'differential_expression'%}">Differential expression analysis all tumor</a></li>
+              <li><a href="{%url 'rna_interactor'%}">Correlation Analysis RNA interactor</a></li>
+          </small></p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md">
+        <div class="card h-100">
+          <img src="{% static 'media/home/boxplot_protein.png' %}" class="card-img-top" alt="boxplot_protein" style="width: 100%; height: 300px; object-fit: contain;">
+          <div class="card-body">
+            <h5 class="card-title">Proteomic analyses</h5>
+            <p class="card-text">Differential expression analysis available by selecting tumour, clinical features and protein name</p>
+            <p class="card-text"><small class="text-muted">
+              <li><a href="{%url 'diff_exp_single_tumor'%}"> Differential expression analysis</a></li>
+              <li><a href="{%url 'differential_expression'%}"> Differential expression analysis all tumor</a></li>
+          </small></p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md">
+        <div class="card h-100">
+          <img src="{% static 'media/home/BRCA_maf_summary.png' %}" class="card-img-top" alt="BRCA maf summary" style="width: 100%; height: 300px; object-fit: contain;">
+          <div class="card-body">
+            <h5 class="card-title">Mutational analyses</h5>
+            <p class="card-text">Analysis with mutational data by selecting the tumour or gene of interest</p>
+            <p class="card-text"><small class="text-muted">
+              <li><a href="{%url 'tumor_mutation_analysis'%}">Tumour mutation analysis</a></li>
+              <li><a href="{%url 'gene_mutation_analysis'%}">Gene mutation analysis</a></li>
+          </small></p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md">
+        <div class="card h-100">
+          <img src="{% static 'media/home/overall.png' %}" class="card-img-top" alt="Overall survival" style="width: 100%; height: 300px; object-fit: contain;">
+          <div class="card-body">
+            <h5 class="card-title">Survival Analysis</h5>
+            <p class="card-text">Survival analysis with mutational, transcriptomic and proteomic data by tumour and clinical characteristics</p>
+            <p class="card-text"><small class="text-muted">
+              <li><a href="{%url 'overall_survival'%}">Overall Survival</a></li>
+              <li><a href="{%url 'OS_pathway'%}">Overall Survival with Pathway activity score</a></li>
+              <li><a href="{%url 'survival_with_gene_mutation_status'%}">Overall Survival with gene mutation status</a></li>
+  
+            </small></p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md">
+        <div class="card h-100">
+          <img src="{% static 'media/home/BRCA_boxplot.jpeg' %}" class="card-img-top" alt="BRCA boxplot" style="width: 100%; height: 300px; object-fit: contain;">
+          <div class="card-body">
+            <h5 class="card-title">Cell types analyses</h5>
+            <p class="card-text">Deconvolution analysis</p>
+            <p class="card-text"><small class="text-muted">
+              <li><a href="{%url 'deconvolution'%}"> Deconvolution Analysis</a></li></small></p>
+          </div>
+        </div>
       </div>
     </div>
+  </div> -->
+  <div class="container text-center my-3">
+    <div class="row justify-content-center mb-4">
+      <!-- First row: 3 cards -->
+      <div class="col-md-4">
+        <div class="card h-100">
+          <img src="{% static 'media/home/volcano.png' %}" class="card-img-top" alt="PCA" style="width: 100%; height: 300px; object-fit: contain;">
+          <div class="card-body">
+            <h5 class="card-title">Transcriptomic analyses</h5>
+            <p class="card-text">Differential expression analyses and correlation analysis by selecting tumour, clinical features, gene and miRNA</p>
+            <p class="card-text"><small class="text-muted">
+              <li><a href="{% url 'deseq2' %}">DESeq2 analysis</a></li>
+              <li><a href="{% url 'diff_exp_single_tumor' %}">Differential expression analysis</a></li>
+              <li><a href="{% url 'differential_expression' %}">Differential expression analysis all tumor</a></li>
+              <li><a href="{% url 'rna_interactor' %}">Correlation Analysis RNA interactor</a></li>
+            </small></p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100">
+          <img src="{% static 'media/home/boxplot_protein.png' %}" class="card-img-top" alt="boxplot_protein" style="width: 100%; height: 300px; object-fit: contain;">
+          <div class="card-body">
+            <h5 class="card-title">Proteomic analyses</h5>
+            <p class="card-text">Differential expression analysis available by selecting tumour, clinical features and protein name</p>
+            <p class="card-text"><small class="text-muted">
+              <li><a href="{% url 'diff_exp_single_tumor_protein' %}"> Differential expression analysis</a></li>
+              <li><a href="{% url 'differential_expression_protein' %}"> Differential expression analysis all tumor</a></li>
+            </small></p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100">
+          <img src="{% static 'media/home/BRCA_maf_summary.png' %}" class="card-img-top" alt="BRCA maf summary" style="width: 100%; height: 300px; object-fit: contain;">
+          <div class="card-body">
+            <h5 class="card-title">Mutational analyses</h5>
+            <p class="card-text">Analysis with mutational data by selecting the tumour or gene of interest</p>
+            <p class="card-text"><small class="text-muted">
+              <li><a href="{% url 'tumor_mutation_analysis' %}">Tumour mutation analysis</a></li>
+              <li><a href="{% url 'gene_mutation_analysis' %}">Gene mutation analysis</a></li>
+            </small></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Second row: 2 cards -->
+    <div class="row justify-content-center">
+      <div class="col-md-4">
+        <div class="card h-100">
+          <img src="{% static 'media/home/overall.png' %}" class="card-img-top" alt="Overall survival" style="width: 100%; height: 300px; object-fit: contain;">
+          <div class="card-body">
+            <h5 class="card-title">Survival Analysis</h5>
+            <p class="card-text">Survival analysis with mutational, transcriptomic and proteomic data by tumour and clinical characteristics</p>
+            <p class="card-text"><small class="text-muted">
+              <li><a href="{% url 'overall_survival' %}">Overall Survival</a></li>
+              <li><a href="{% url 'OS_pathway' %}">Overall Survival with Pathway activity score</a></li>
+              <li><a href="{% url 'survival_with_gene_mutation_status' %}">Overall Survival with gene mutation status</a></li>
+            </small></p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100">
+          <img src="{% static 'media/home/BRCA_boxplot.jpeg' %}" class="card-img-top" alt="BRCA boxplot" style="width: 100%; height: 300px; object-fit: contain;">
+          <div class="card-body">
+            <h5 class="card-title">Cell types analyses</h5>
+            <p class="card-text">Deconvolution analysis</p>
+            <p class="card-text"><small class="text-muted">
+              <li><a href="{% url 'deconvolution' %}"> Deconvolution Analysis</a></li>
+            </small></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
 
+
+  
+</div> 
+  <div class="conteiner text-center my-3" style="max-width: 300px; margin: 0 auto; ">
+    <a href="{%url 'home'%}"><img src="{% static 'media/logo.png'%}" class="d-block w-100" alt="LOGO" style="width: 80px;"> </a>   
+</div>
 {%endblock%}
  

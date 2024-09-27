@@ -1,0 +1,199 @@
+<h2 class="mx-3">Analysis</h2>
+      
+<!-- Categoria 1: Transcriptomic analyses -->
+<!-- <button class="category-toggle mx-3" style="font-size: 16px; color: black; display: block ;padding: 10px; text-align: left; width: 100%;" onclick="toggleCategory('category1')">Differential Expression Analysis</button> -->
+<button class="category-toggle mx-3" style="font-size: 16px; color: navy; display: flex; align-items: center; padding: 10px; text-align: left; width: 100%; background-color: white;  border-radius: 5px;" 
+onclick="toggleCategory('category1', this)" onmouseover="this.style.backgroundColor='rgb(208,231,231,255)';" onmouseout="this.style.backgroundColor='white';"data-category="category1">
+<span class="arrow" style="transition: transform 0.3s; color: navy;padding-right: 10px;"><i class="fa-solid fa-angle-down"></i></span>
+Transcriptomic analyses
+</button>
+<ul id="category1" style="display: none; padding-left: 20px;"> 
+    <li><a href="{%url 'deseq2'%}"><i class="fas fa-solid fa-square-poll-vertical"></i> DESeq2 analysis</a></li>
+    <li><a href="{%url 'diff_exp_single_tumor'%}"><i class="fas fa-solid fa-square-poll-vertical"></i> Differential expression analysis</a></li>
+    <li><a href="{%url 'differential_expression'%}"><i class="fas fa-solid fa-square-poll-vertical"></i> Differential expression analysis all tumor</a></li>
+    <li><a href="{%url 'rna_interactor'%}"><i class="fa-solid fa-square-poll-horizontal"></i> Correlation Analysis RNA interactor</a></li> 
+</ul>
+
+<br>
+
+
+<!-- Categoria 2: Transcriptomic analyses -->
+<!-- <button class="category-toggle mx-3" style="font-size: 16px; color: black; display: block ;padding: 10px; text-align: left; width: 100%;" onclick="toggleCategory('category1')">Differential Expression Analysis</button> -->
+<button class="category-toggle mx-3" style="font-size: 16px; color: navy; display: flex; align-items: center; padding: 10px; text-align: left; width: 100%; background-color: white;  border-radius: 5px;" 
+onclick="toggleCategory('category2', this)" onmouseover="this.style.backgroundColor='rgb(208,231,231,255)';" onmouseout="this.style.backgroundColor='white';"data-category="category2">
+<span class="arrow" style="transition: transform 0.3s; color: navy;padding-right: 10px;"><i class="fa-solid fa-angle-down"></i></span>
+Proteomic analyses 
+</button>
+<ul id="category2" style="display: none; padding-left: 20px;"> 
+    <li><a href="{%url 'diff_exp_single_tumor_protein'%}"><i class="fas fa-solid fa-square-poll-vertical"></i> Differential expression analysis</a></li>
+    <li><a href="{%url 'differential_expression_protein'%}"><i class="fas fa-solid fa-square-poll-vertical"></i> Differential expression analysis all tumor</a></li>
+</ul>
+
+<br>
+
+
+<!-- Categoria 3: Survival Analysis -->
+<button class="category-toggle mx-3" style="font-size: 16px; color: navy; display: flex; align-items: center; padding: 10px; text-align: left; width: 100%; background-color: white;  border-radius: 5px;" 
+onclick="toggleCategory('category3', this)" onmouseover="this.style.backgroundColor='rgb(208,231,231,255)';" onmouseout="this.style.backgroundColor='white';"data-category="category3">
+<span class="arrow" style="transition: transform 0.3s; color: navy;padding-right: 10px;"><i class="fa-solid fa-angle-down"></i></span>
+Survival Analysis
+
+</button>
+<ul id="category3" style="display: none; padding-left: 20px;">
+    <li><a href="{%url 'overall_survival'%}"><i class="fas fa-solid fa-chart-line"></i> Overall Survival</a></li>
+    <li><a href="{%url 'OS_pathway'%}"><i class="fas fa-solid fa-chart-line"></i> Overall Survival with Pathway activity score</a></li>
+    <li><a href="{%url 'survival_with_gene_mutation_status'%}"><i class="fas fa-solid fa-square-poll-horizontal"></i> Overall Survival with gene mutation status</a></li>
+</ul>
+<br>
+
+
+<!-- Categoria 4: Mutational analyses-->
+<button class="category-toggle mx-3" style="font-size: 16px; color: navy; display: flex; align-items: center; padding: 10px; text-align: left; width: 100%; background-color: white;  border-radius: 5px;" 
+onclick="toggleCategory('category4', this)" onmouseover="this.style.backgroundColor='rgb(208,231,231,255)';" onmouseout="this.style.backgroundColor='white';"data-category="category4">
+<span class="arrow" style="transition: transform 0.3s; color: navy;padding-right: 10px;"><i class="fa-solid fa-angle-down"></i></span>
+Mutational analyses
+
+</button>
+<ul id="category4" style="display: none; padding-left: 20px;">
+    <li><a href="{%url 'tumor_mutation_analysis'%}"><i class="fas fa-solid fa-square-poll-horizontal"></i> Tumour mutation analysis</a></li>
+    <li><a href="{%url 'gene_mutation_analysis'%}"><i class="fas fa-solid fa-square-poll-horizontal"></i> Gene mutation analysis</a></li>
+</ul>
+<br>
+
+
+<!-- Categoria 5: Survival with Mutation Status -->
+<button class="category-toggle mx-3" style="font-size: 16px; color: navy; display: flex; align-items: center; padding: 10px; text-align: left; width: 100%; background-color: white;  border-radius: 5px;" 
+onclick="toggleCategory('category5', this)" onmouseover="this.style.backgroundColor='rgb(208,231,231,255)';" onmouseout="this.style.backgroundColor='white';"data-category="category5">
+<span class="arrow" style="transition: transform 0.3s; color: navy;padding-right: 10px;"><i class="fa-solid fa-angle-down"></i></span>
+Cell types analyses
+</button>
+
+ <ul id="category5" style="display: none; padding-left: 20px;">
+    <li><a href="{%url 'deconvolution'%}"><i class="fas fa-solid fa-square-poll-horizontal"></i> Deconvolution Analysis</a></li>
+</ul>
+
+
+<!-- script per rendere animato il menu-->
+<!-- <script>
+function toggleCategory(categoryId, button) {
+  var category = document.getElementById(categoryId);
+  var arrow = button.querySelector('.arrow');
+  if (category.style.display === "none" || category.style.display === "") {
+      category.style.display = "block"; // Mostra il contenuto
+      arrow.style.transform = "rotate(90deg)"; // Ruota la freccia a destra
+  } else {
+      category.style.display = "none"; // Nascondi il contenuto
+      arrow.style.transform = "rotate(0deg)"; // Riporta la freccia dritta
+  }
+}
+</script> -->
+
+<!-- 
+<script>
+    // Function to toggle the category and save its state
+    function toggleCategory(categoryId, button) {
+      var category = document.getElementById(categoryId);
+      var arrow = button.querySelector('.arrow');
+    
+      // Check current display state
+      if (category.style.display === "none" || category.style.display === "") {
+          category.style.display = "block"; // Show the content
+          arrow.style.transform = "rotate(90deg)"; // Rotate arrow to the right
+          localStorage.setItem(categoryId, 'open'); // Save state in localStorage
+      } else {
+          category.style.display = "none"; // Hide the content
+          arrow.style.transform = "rotate(0deg)"; // Reset the arrow
+          localStorage.setItem(categoryId, 'closed'); // Save state in localStorage
+      }
+    }
+    
+    // Function to restore menu state on page load
+    window.onload = function() {
+      // Select all buttons that toggle categories
+      var toggles = document.querySelectorAll('[data-category]');
+    
+      toggles.forEach(function(button) {
+        var categoryId = button.getAttribute('data-category');
+        var category = document.getElementById(categoryId);
+        var arrow = button.querySelector('.arrow');
+        
+        // Check the saved state in localStorage
+        var state = localStorage.getItem(categoryId);
+        
+        if (state === 'open') {
+            category.style.display = "block"; // Show the content
+            arrow.style.transform = "rotate(90deg)"; // Rotate the arrow
+        } else {
+            category.style.display = "none"; // Hide the content
+            arrow.style.transform = "rotate(0deg)"; // Reset the arrow
+        }
+      });
+    };
+    </script> -->
+
+
+<script>
+    // Function to toggle the category and ensure only one stays open at a time
+    function toggleCategory(categoryId, button) {
+        var category = document.getElementById(categoryId);
+
+        // Close all other categories except the one being clicked
+        var allCategories = document.querySelectorAll('ul[id^="category"]');
+        allCategories.forEach(function(cat) {
+            if (cat.id !== categoryId) {
+                cat.style.display = "none"; // Close all other categories
+                localStorage.setItem(cat.id, 'closed'); // Save state as closed
+            }
+        });
+
+        // Toggle the selected category
+        if (category.style.display === "none" || category.style.display === "") {
+            category.style.display = "block"; // Show the content
+            localStorage.setItem(categoryId, 'open'); // Save state in localStorage
+        } else {
+            category.style.display = "none"; // Hide the content
+            localStorage.setItem(categoryId, 'closed'); // Save state in localStorage
+        }
+    }
+
+    // Function to restore the menu state on page load
+    window.onload = function() {
+        // Select all buttons that toggle categories
+        var toggles = document.querySelectorAll('[data-category]');
+
+        toggles.forEach(function(button) {
+            var categoryId = button.getAttribute('data-category');
+            var category = document.getElementById(categoryId);
+
+            // Check the saved state in localStorage
+            var state = localStorage.getItem(categoryId);
+
+            if (state === 'open') {
+                category.style.display = "block"; // Show the content
+            } else {
+                category.style.display = "none"; // Hide the content
+            }
+        });
+    };
+
+</script>
+
+
+ 
+    
+<style>
+    .category-toggle {
+        background-color: transparent;
+        border: none;
+        color: navy;
+        font-size: 18px;
+        cursor: pointer;
+        padding: 10px;
+        text-align: left;
+        width: 100%;
+        display: block;
+    }
+    .category-toggle:hover {
+        color: darkblue;
+    }
+</style>

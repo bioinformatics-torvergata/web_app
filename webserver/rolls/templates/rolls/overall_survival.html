@@ -2,7 +2,7 @@
 {%load crispy_forms_tags%}
 {%block content%}
 {% load static %}
-
+<h4 style="color:navy">Survival Analyses</h4>
   <h2> Overall survival </h2>
       <p>
         <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapsedescription" role="button" aria-expanded="false" aria-controls="collapsedescription">
@@ -48,6 +48,7 @@
                   <hr>
                   <p>Gene: {{gene}}</p>
                   <p>Tumor: {{tumor}}</p>
+                  <p>Method: {{method}}</p>
                   {{formresult}}
                   <br><br>
                   <div class="row">

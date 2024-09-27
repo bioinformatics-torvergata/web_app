@@ -1,0 +1,112 @@
+{%extends 'rolls/layoutpagine.html' %}
+{%load crispy_forms_tags%}
+{%block content%}
+{% load static %}
+<h4 style="color:navy">Proteomic analyses</h4>
+  <h2>Differential expression analysis</h2>
+      <p>
+        <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapsedescription" role="button" aria-expanded="false" aria-controls="collapsedescription">
+          Description
+        </a>
+        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+          Example
+        </button>
+      </p>
+      <div class="collapse" id="collapsedescription">
+        <div class="card card-body">
+          <h4>Single-gene differential expression analysis</h4>
+          <p>Single-gene differential expression analysis is an analysis that allows the user to study the difference in expression of a gene, miRNA or protein between patients in two different conditions (based on the selected feature) with a given tumor.
+            <br>This analysis uses TCGA Gene Expression Quantification - FPKM data (normalized counts) for genes.
+            <br><br><i class="fa-solid fa-square-poll-horizontal"></i> As a result of the analysis, a box-plot is returned showing on the x-axis the two conditions under consideration (e.s. male and female), while the y-axis shows the expression of the gene, miRNA or protein entered.
+            <br>Finally, the p-value is calculated using the Wilcoxon test, which indicates the significance of difference in expression between the two groups examined. 
+          </p>
+      
+        </div>
+      </div>
+        
+      <div class="row my-3">
+          <div class="col-sm-3 my-3">
+              <form method="post" >
+                  {%csrf_token%}
+                  {{form|crispy}}
+                  <br>
+                  <div class="d-grid gap-2 d-md-flex justify-content-md">
+                      <button class="btn btn-primary me-md-2 my-3" type="submit">Submit</button>
+                  </div>
+              
+              </form>
+          </div>
+              <div class="col mx-3" style="border:1px; border-left-style: solid; border-color:rgba(0, 0, 128, 0.301)">
+                <div class="collapse" id="collapseExample">
+                  <div class="card card-body">
+                    <p class="text-center" >Example: </p>
+                    <img src= "{%static 'media/examples/diff_ex_single_tumor.png' %}" width="750">
+                  </div> 
+                </div>
+                  {%if go == 'Valid' %}
+                  
+                  <h3>Results:</h3> 
+                  <hr>
+                  <p><b>Tumor: </b>{{tumor}}</p>
+                  <p><b>Feature: </b>{{feature}}</p>
+                  <p><b>Gene: </b> {{gene}}</p>
+                
+                  <p><b>P-value: </b>{{formresult}}</p>
+                  <br><br>
+                  <div class="row">
+                    <div class="mb-3 bg-body rounded" style="max-width: 800px;">
+                        <iframe src="{% static image %}" width="800" height="600" frameborder="0"></iframe>
+                    </div> 
+                  </div>
+                  
+                  {%endif%}
+
+                 
+                  {%if go == 'error'%}
+                  <div class="alert alert-danger text-center" role="alert">
+                    <h5>There are no results for {{gene}} - {{tumor}} - {{feature}}</h5>
+                    <p> Errore </p>
+                  </div> 
+
+                  {%endif%}
+
+                  {%if go == 'errorname' %}
+                  <div class="alert alert-danger text-center" role="alert">
+                    <h5>There are no results for "{{gene}}"</h5>  
+                  </div> 
+                  {%endif%}
+           
+            
+              
+            </div>
+              </div>
+      </div>
+      
+
+<!-- Includi jQuery UI e il suo CSS -->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<!-- Script per il suggerimento con jQuery UI -->
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#protein-input').autocomplete({
+      source: function(request, response) {
+        $.ajax({
+          url: "{% url 'protein_suggestions' %}",  // L'URL che abbiamo aggiunto
+          data: {
+            'term': request.term  // Il testo digitato dall'utente
+          },
+          success: function(data) {
+            response(data);  // Restituisci i risultati all'autocomplete
+          }
+        });
+      },
+      minLength: 1,  // Numero minimo di caratteri per avviare l'autocomplete
+    });
+  });
+</script>
+
+{%endblock%}
+    

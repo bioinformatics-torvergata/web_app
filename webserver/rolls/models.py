@@ -138,3 +138,9 @@ class Gene(models.Model):
 
 class Pathway(models.Model):
     pathway= models.CharField(max_length=100)
+
+class Protein(models.Model):
+    protein= models.CharField(max_length=100)
+
+class Gene_symbol(models.Model):
+    gene_symbol= models.CharField(max_length=100)

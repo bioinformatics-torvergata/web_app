@@ -5,6 +5,7 @@ from . import views
 
 urlpatterns=[
     path('', views.rolls, name='home'),
+    
     path('documentation', views.documentation, name="documentation"),
     path('dataset', views.dataset, name="dataset"),
     path('contact', views.contact, name="contact"),
@@ -16,16 +17,25 @@ urlpatterns=[
     path ('pathwayPROVA', views.pathwayPROVA, name='pathwayPROVA'),
 
     path('OS_interaction', views.os_interaction, name='OS_interaction'),
-    
-    
-    
+
     path('differential_expression', views.differential_expression, name= 'differential_expression'),
     path('diff_exp_single_tumor', views.diff_exp_single_tumor, name= 'diff_exp_single_tumor'),
+    
+    path('differential_expression_protein', views.differential_expression_protein, name= 'differential_expression_protein'),
+    path('diff_exp_single_tumor_protein', views.diff_exp_single_tumor_protein, name= 'diff_exp_single_tumor_protein'),
+    path('protein_suggestions/', views.protein_suggestions, name='protein_suggestions'),
+    
+    
+
+
     path('rna_interactor',views.correlation_analysis, name= 'rna_interactor'),
     path('gene-suggestions/', views.gene_suggestions, name='gene_suggestions'),
     path('pathway_suggestions/', views.pathway_suggestions, name='pathway_suggestions'),
+
     path('tumor_mutation_analysis/', views.tumor_mutation_analysis, name='tumor_mutation_analysis'),
     path('gene_mutation_analysis/', views.gene_mutation_analysis, name='gene_mutation_analysis'),
-    path('survival_with_gene_mutation_status/', views.survival_with_gene_mutation_status, name='survival_with_gene_mutation_status'),
+    path('gene_symbol_suggestions/', views.gene_symbol_suggestions, name='gene_symbol_suggestions'),
 
+    path('survival_with_gene_mutation_status/', views.survival_with_gene_mutation_status, name='survival_with_gene_mutation_status'),
+    path('deconvolution/', views.deconvolution,name='deconvolution'),
 ]

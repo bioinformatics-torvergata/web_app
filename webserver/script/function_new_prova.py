@@ -448,28 +448,28 @@ def open_dataframe_gene_overall(gene,tumor):
         gene_dataframe_FPKM_tumor=os.path.join(gene_dataframe_FPKM,"Dataframe_FPKM_"+tumor+".csv")
         df=pd.read_csv(gene_dataframe_FPKM_tumor)
         df=df.set_index("gene_id")
-        return(df)
+        return(df,gene_version)
     if gene in open(miRNA_name).read().split("\n"):
         df=pd.read_csv(miRNA_dataframe)
         df=df.set_index('miRNA_ID')
-        return(df)
+        return(df,gene)
    
     if gene in open(protein_name).read().split("\n"):
         df=pd.read_csv(protein_dataframe)
         df=df.set_index('peptide_target')
-        return (df)
+        return (df,gene)
     else: 
         print("per il nome inserito non è disponibile la ricerca")
         return 0
 
 
 
-def dataframe_OStime(tumor):
-    dfclinic=pd.read_csv(clinical_OS)    
-    OS=(dfclinic[['bcr_patient_barcode','OS.time']]) 
+def dataframe_OStime(tumor,column):
+    dfclinic=pd.read_csv(clinical_OS)  
+    OS=(dfclinic[['bcr_patient_barcode',column]]) 
     df1_mask=dfclinic['type']==tumor
     OS=dfclinic[df1_mask]
-    OS=(OS[['bcr_patient_barcode','OS.time']]) 
+    OS=(OS[['bcr_patient_barcode',column]]) 
     OS=OS.set_index('bcr_patient_barcode')
     #display(OS)
     OS=OS.dropna()

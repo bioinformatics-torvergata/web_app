@@ -19,15 +19,17 @@ if __name__ == "__main__":
     gene= sys.argv[1] #gene/mirna/protein
     tumor=sys.argv[2]
     cartella=sys.argv[3]
+    column=sys.argv[4]
     print(cartella)
 
     feature='median'
 
 
 
-    df=open_dataframe_gene_overall(gene,tumor)
-
-    OS=dataframe_OStime(tumor)
+    ogg=open_dataframe_gene_overall(gene,tumor)
+    df=ogg[0]
+    gene=ogg[1]
+    OS=dataframe_OStime(tumor,column)
     
     lista=list(OS.index)
     oslist=[]

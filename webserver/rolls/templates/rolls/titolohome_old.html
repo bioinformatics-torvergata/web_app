@@ -1,0 +1,43 @@
+{%extends 'rolls/common.html' %}
+
+{% load static %}
+{%block content%}
+       
+    <div class="tit contentainer-fluid"  style="background-color:rgba(208,231,231,255); box-shadow: 0 0 5px rgba(33,33,33,.2);">
+    <div class="title container text-center" style="height: 400px;">
+        <h1>PANDA</h1>
+        <h2>PAN-cancer Data Analysis web tool</h2>
+         
+        <h4 style="color: rgb(61, 61, 61);">Bioinformatics tools for statistical analysis of tumor gene expression</h4>
+        <br>
+        <button class="btn btn-primary my-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" >Analysis</button>
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+            <div class="offcanvas-header">
+            <h5 id="offcanvasRightLabel">Bioinfo tools</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close" ></button>
+            </div>
+            <div class="offcanvas-body">
+                <h2 class="mx-3">Analysis</h2>
+                <ul>
+                    <li><a href="{%url 'deseq2'%}"><i class="fas fa-solid fa-square-poll-vertical"></i>DESeq2 analysis</a></li>
+                    <li><a href="{%url 'diff_exp_single_tumor'%}"><i class="fas fa-solid fa-square-poll-vertical"></i>Differential expression analysis</a></li> 
+                    <li><a href="{%url 'differential_expression' %}"><i class="fas fa-solid fa-square-poll-vertical"></i>Differential expression analysis all tumor</a></li> 
+                    <li><a href="{%url 'overall_survival'%}"><i class="fas fa-solid fa-chart-line"></i>Overall Survival</a></li>
+                    <li><a href="{%url 'OS_pathway'%}"><i class="fas fa-solid fa-chart-line"></i>Overall Survival with Pathway activity score</a></li>
+                    <li><a href="{%url 'rna_interactor'%}"><i class="fa-solid fa-square-poll-horizontal"></i> Correlation Analysis RNA interactor</a></li>
+                    <li><a href="{%url 'tumor_mutation_analysis'%}"><i class="fa-solid fa-square-poll-horizontal"></i> Tumour mutation analysis</a></li>
+                    <li><a href="{%url 'gene_mutation_analysis'%}"><i class="fa-solid fa-square-poll-horizontal"></i> Gene mutation analysis</a></li>
+                    <li><a href="{%url 'survival_with_gene_mutation_status'%}"><i class="fa-solid fa-square-poll-horizontal"></i> Overall Survival with gene mutation status</a></li>
+
+                </ul> 
+            </div>
+        </div>
+    </div>
+    </div>
+    {%block page%}
+    
+    {%endblock%}
+
+   
+{%endblock%}
+ 

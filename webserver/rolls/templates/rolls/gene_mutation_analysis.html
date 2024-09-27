@@ -2,7 +2,7 @@
 {%load crispy_forms_tags%}
 {%block content%}
 {% load static %}
-
+<h4 style="color:navy">Mutation Analyses</h4>
 <h2> Gene mutation analysis </h2>
    
     <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapsedescription" role="button" aria-expanded="false" aria-controls="collapsedescription">
@@ -83,10 +83,10 @@
 <!-- Script per il suggerimento con jQuery UI -->
 <script type="text/javascript">
   $(document).ready(function() {
-    $('#pathway-input').autocomplete({
+    $('#gene_symbol-input').autocomplete({
       source: function(request, response) {
         $.ajax({
-          url: "{% url 'pathway_suggestions' %}",  // L'URL che abbiamo aggiunto
+          url: "{% url 'gene_symbol_suggestions' %}",  // L'URL che abbiamo aggiunto
           data: {
             'term': request.term  // Il testo digitato dall'utente
           },
