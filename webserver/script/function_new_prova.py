@@ -408,8 +408,8 @@ def plotly_volcano(df,cartella,tumor):
     df['color'] = 'grey'  # default colore
     df.loc[(df['padj'] > significance_threshold), 'color'] = 'blue'  
     df.loc[(df['padj'] < significance_threshold), 'color'] = 'grey'  
-    df.loc[df['log2FoldChange'] >= fold_change_threshold, 'color'] = 'red'  # Up-regolati
-    df.loc[df['log2FoldChange'] <= -fold_change_threshold, 'color'] = 'red'  # Up-regolati
+    df.loc[(df['log2FoldChange'] >= fold_change_threshold) & (df['padj'] > significance_threshold), 'color'] = 'red' # Up-regolati
+    df.loc[(df['log2FoldChange'] <= -fold_change_threshold) & (df['padj'] > significance_threshold), 'color'] = 'red'  # Up-regolati
    
     fig=go.Figure()
     trace1=go.Scatter(
