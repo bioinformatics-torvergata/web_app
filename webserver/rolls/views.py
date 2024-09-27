@@ -638,6 +638,10 @@ def tumor_mutation_analysis(request):
                             image_oncoplot=os.path.join('media/saveanalisi',inp3,file)
                         if 'Titv' in file:
                             image_titv=os.path.join('media/saveanalisi',inp3,file)
+                        if 'somaticInteractions' in file:
+                            image_interact=os.path.join('media/saveanalisi',inp3,file)  
+                        if 'TumorVAF' in file: 
+                            image_VAF=os.path.join('media/saveanalisi',inp3,file) 
 
                         
                 form=FormTumorMutation()
@@ -646,6 +650,8 @@ def tumor_mutation_analysis(request):
                     'image_summary':image_summary,
                     'image_oncoplot':image_oncoplot,
                     'image_titv':image_titv,
+                    'image_interact':image_interact,
+                    'image_VAF':image_VAF,
                     'go':'Valid',
                     'dir':inp3,
                     })
@@ -684,10 +690,10 @@ def gene_mutation_analysis(request):
                 files=os.listdir(dir)
                 for file in files:
                     if file[-3:]=='png':
-                        if 'somaticInteractions' in file:
-                            image_interact=os.path.join('media/saveanalisi',inp3,file)  
-                        if 'TumorVAF' in file: 
-                            image_VAF=os.path.join('media/saveanalisi',inp3,file)  
+                        # if 'somaticInteractions' in file:
+                        #     image_interact=os.path.join('media/saveanalisi',inp3,file)  
+                        # if 'TumorVAF' in file: 
+                        #     image_VAF=os.path.join('media/saveanalisi',inp3,file)  
                         if 'lollipopPlot' in file:
                             image_lolli=os.path.join('media/saveanalisi',inp3,file)  
 
@@ -695,8 +701,7 @@ def gene_mutation_analysis(request):
                 return render(request, 'rolls/gene_mutation_analysis.html', {'form':form, 
                     'tumor':tumor,
                     'gene':gene,
-                    'image_interact':image_interact,
-                    'image_VAF':image_VAF,
+                    
                     'image_lolli':image_lolli,
                     'go':'Valid',
                     'dir':inp3,
