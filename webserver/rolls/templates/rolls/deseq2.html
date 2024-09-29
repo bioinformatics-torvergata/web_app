@@ -65,7 +65,7 @@
             </div> 
           </div>
           {%if go == 'Valid' %}
-          <h3>Results:</h3> You can download the log2FoldChange of this analisys <a href="{% static dir %}" download target="blank" ><button class="btn"><i class="fa-solid fa-download"></i></button></a></h3>
+          <h3>Results:</h3>
           
 
           <hr>
@@ -96,9 +96,8 @@
             </div>
           
            <br>
-            
-
-          {%endif%}
+           
+           {%endif%}
 
           {%if go == 'error' %}
           <div class="alert alert-danger text-center" role="alert">
@@ -108,8 +107,44 @@
           {%endif%}
             
         </div>
+        {%if go == 'Valid' %}
+        <br>
+        <p>You can download the log2FoldChange of this analysis <a href="{% static dir %}" download target="_blank">
+          <button class="btn"><i class="fa-solid fa-download"></i></button></a>
+      </p>
+      
+      <div class="table-responsive" style="height: 400px; overflow-y: auto;">
+          <table class="table table-hover table-sm" style="width: 100%; margin: 0 auto; text-align: left; border-collapse: collapse; border: 1px solid white;">
+              <thead style="position: sticky; top: 0; background-color: white; z-index: auto;">
+                  <tr>
+                      {% for colonna in dati.0 %}
+                          <th style="border: 1px solid white; font-weight: bold;">{{ colonna }}</th> <!-- Bordo per le intestazioni -->
+                      {% endfor %}
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for riga in dati|slice:"1:" %}
+                      <tr>
+                          {% for colonna in riga %}
+                              <td style="border: 1px solid white;">{{ colonna }}</td>
+                          {% endfor %}
+                      </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
       </div>
+      {%endif%}
 
+      </div>
+  <!-- Aggiungi questo stile per alternare i colori delle righe -->
+  <style>
+    tbody tr:nth-child(odd) {
+        background-color: white;
+    }
+    tbody tr:nth-child(even) {
+        background-color: rgba(208,231,231,0.5); /* Colore grigio chiaro */
+    }
+</style>
 
 {%endblock%}
     

@@ -362,6 +362,11 @@ def differential_expression(request):
                     if file[-3:]=='jpg':
                         image=os.path.join('media/saveanalisi',inp3,file)
                         #image='media/saveanalisi/'+inp3+'/'+file
+
+                    if 'txt' in file:
+                        result_data=os.path.join(output_data,inp3,file)
+                        result=read_table(result_data)
+                    
                 form=Analisiform()
                 return render(request, 'rolls/differential_expression.html', {
                     'form':form, 
@@ -372,6 +377,7 @@ def differential_expression(request):
                     'feature':feature,
                     'parametri': parametri[feature],
                     'dir':'media/saveanalisi/'+inp3+'/result.txt',
+                    'dati':result,
                     })
             else:
                 form=Analisiform()
@@ -395,7 +401,7 @@ def differential_expression_protein(request):
     if request.method == 'POST':
         form = Analisiform_protein(request.POST)
         if form.is_valid():
-            gene=form.cleaned_data['gene']
+            gene=form.cleaned_data['protein']
             feature=form.cleaned_data['feature']
             
             inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
@@ -410,6 +416,9 @@ def differential_expression_protein(request):
                     if file[-3:]=='jpg':
                         image=os.path.join('media/saveanalisi',inp3,file)
                         #image='media/saveanalisi/'+inp3+'/'+file
+                    if 'txt' in file:
+                        result_data=os.path.join(output_data,inp3,file)
+                        result=read_table(result_data)
                 form=Analisiform_protein()
                 return render(request, 'rolls/differential_expression_protein.html', {
                     'form':form, 
@@ -420,6 +429,7 @@ def differential_expression_protein(request):
                     'feature':feature,
                     'parametri': parametri[feature],
                     'dir':'media/saveanalisi/'+inp3+'/result.txt',
+                    'dati':result,
                     })
             else:
                 form=Analisiform_protein()
@@ -549,7 +559,10 @@ def deseq2(request):
                 out=run([sys.executable,'script/deseq2.py',tumor,dir,dir_saveresults],shell=False, stdout=PIPE)
                 
                 images=choseimage(tumor,dir,dir_saveresults)
-                
+                result_file='result_' + tumor + '.txt'
+                file_txt=os.path.join(output_data,inp3,'result_' + tumor + '.txt')
+                print(file_txt)
+                result=read_table(file_txt)
                 form=Deseq2form()                         
                 return render(request, 'rolls/deseq2.html', {'form':form, 
                     'feature': feature,
@@ -561,7 +574,8 @@ def deseq2(request):
                     'image_plotly':os.path.join('media/saveanalisi',inp3,images[4]),
                     'go':'Valid',
                     'parametri': parametri[feature],
-                    'dir':'media/saveanalisi/'+inp3+'/result_' + tumor + '.txt' 
+                    'dir':'media/saveanalisi/'+inp3+'/result_' + tumor + '.txt', 
+                    'dati':result,
                     })
 
             else:
