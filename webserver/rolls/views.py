@@ -13,6 +13,7 @@ import time
 import os.path
 from django.conf import settings
 import shutil
+import csv
 
 from django.http import JsonResponse
 from rolls.models import Gene,Pathway,Protein, Gene_symbol
@@ -35,7 +36,7 @@ config.read(config_file)
 #directory base
 output_data = config['Paths']['output_data']
 base_dir = config.get('Paths', 'base_dir', fallback='')
-
+output_data_Table=config['Paths']['output_data_Table']
 parametri={
     'patient_status':'Tumor vs Ctrl',
     'gender':'Female vs Male',
@@ -54,8 +55,30 @@ def rolls(request):
 def documentation(request):
     return render(request, 'rolls/documentation.html')
 
+def read_table(file_path):
+    txt_data = []
+
+    # Leggi il file TXT
+    with open(file_path, newline='', encoding='utf-8') as txtfile:
+        # Separa i dati usando il delimitatore di tabulazioni (\t) o un altro delimitatore
+        reader = csv.reader(txtfile, delimiter='\t')  # Cambia delimiter se necessario (es. ',' per CSV)
+        
+        for row in reader:
+            txt_data.append(row)
+
+    return(txt_data)
+
+
 def dataset(request):
-    return render(request, 'rolls/dataset.html')
+    file_path = os.path.join(output_data_Table,'table','campioni_TCGA.txt')
+    file_path_genetype=os.path.join(output_data_Table,'table','gene_type.txt')
+    txt_data_clinical=read_table(file_path)
+
+    txt_data_typegene=read_table(file_path_genetype)    
+    return render(request, 'rolls/dataset.html', {
+        'dati': txt_data_clinical, 
+        'dati_genetype':txt_data_typegene,
+ })
 
 
 def contact(request):
@@ -64,15 +87,6 @@ def contact(request):
 def yourdataset(request):
     return render(request,'rolls/yourdataset.html')
 
-####### autocomplete ##############
-#funzionante prova1:
-# def gene_suggestions(request):
-#     if 'term' in request.GET:
-#         query = request.GET.get('term')
-#         genes = Gene.objects.filter(gene__icontains=query)[:10]  # Limita a 10 risultati
-#         gene_names = list(genes.values_list('gene', flat=True))
-#         return JsonResponse(gene_names, safe=False)
-#     return JsonResponse([], safe=False)
 
 
 # Funzione per l'autocomplete prova2
