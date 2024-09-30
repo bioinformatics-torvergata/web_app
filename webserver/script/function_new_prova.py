@@ -259,7 +259,7 @@ def what_is_my_object_gene(gene,control):
     
 def open_df_gene(input,tumor,feature,cartella):
     if feature == 'patient_status':
-        print(input)
+        #print(input)
         posizione="-e "+str(input[3]+2)+"p"
         #creiamo un dataframe piu piccolo dove c'è solo la riga del gene che è stato selezionato
         path=cartella+'/'+str(input[0])+"_df.txt"
@@ -276,7 +276,7 @@ def open_dataframe(gene,tumor,feature,cartella,control):
     input=what_is_my_object_gene(gene,control)
     if input!=0:
         if input[1]=='gene':
-            print(feature)
+            #print(feature)
             path=open_df_gene(input,tumor,feature,cartella) #bisogna vedere in base al tipo di feature che viene passata
             df=pd.read_csv(path)
             df=df.set_index(input[2])
