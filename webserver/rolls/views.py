@@ -309,9 +309,10 @@ def diff_exp_single_tumor(request):
                 
                 time_dir=(time.strftime("%Y-%m-%d-%H-%M-%S"))
                 dir= os.path.join(output_data, time_dir)
+                control=''
                # dir=os.path.join(settings.BASE_DIR, 'rolls', 'static', 'media', 'saveanalisi', time_dir)
                 os.makedirs(dir)
-                out=run([sys.executable,'script/Differential_expression_boxplot_plotly_new.py',gene,tumor,feature,dir],shell=False, stdout=PIPE)
+                out=run([sys.executable,'script/Differential_expression_boxplot_plotly_new.py',gene,tumor,feature,dir,control],shell=False, stdout=PIPE)
                 print(out)
                 
                 
@@ -351,9 +352,9 @@ def differential_expression(request):
             feature=form.cleaned_data['feature']
             
             inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
-            
+            control=''
             dir= os.path.join(output_data, inp3)
-            out=run([sys.executable,'script/boxplot_all_tumor_giusto_new.py',gene,feature,dir],shell=False, stdout=PIPE)
+            out=run([sys.executable,'script/boxplot_all_tumor_giusto_new.py',gene,feature,dir,control],shell=False, stdout=PIPE)
             print(out)
             
             if os.path.isdir(dir): 
@@ -405,9 +406,9 @@ def differential_expression_protein(request):
             feature=form.cleaned_data['feature']
             
             inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
-            
+            control='protein'
             dir= os.path.join(output_data, inp3)
-            out=run([sys.executable,'script/boxplot_all_tumor_giusto_new.py',gene,feature,dir],shell=False, stdout=PIPE)
+            out=run([sys.executable,'script/boxplot_all_tumor_giusto_new.py',gene,feature,dir,control],shell=False, stdout=PIPE)
             print(out)
             
             if os.path.isdir(dir): 
@@ -450,15 +451,15 @@ def diff_exp_single_tumor_protein(request):
     if request.method == 'POST':
             form = Analisiformcompleto_protein(request.POST)
             if form.is_valid():
-                gene=form.cleaned_data['gene']
+                gene=form.cleaned_data['protein']
                 tumor=form.cleaned_data['tumor']
                 feature=form.cleaned_data['feature']
-                protein='protein'
+                control='protein'
                 time_dir=(time.strftime("%Y-%m-%d-%H-%M-%S"))
                 dir= os.path.join(output_data, time_dir)
                # dir=os.path.join(settings.BASE_DIR, 'rolls', 'static', 'media', 'saveanalisi', time_dir)
                 os.makedirs(dir)
-                out=run([sys.executable,'script/Differential_expression_boxplot_plotly_new.py',gene,tumor,feature,dir,protein],shell=False, stdout=PIPE)
+                out=run([sys.executable,'script/Differential_expression_boxplot_plotly_new.py',gene,tumor,feature,dir,control],shell=False, stdout=PIPE)
                 print(out)
                 
                 

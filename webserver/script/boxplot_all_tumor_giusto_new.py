@@ -28,7 +28,7 @@ if __name__ == "__main__":
     gene= sys.argv[1]
     feature= sys.argv[2]
     cartella=sys.argv[3]
-
+    control=sys.argv[4]
     x=read_clinical_data()
    
     if feature=="age_at_initial_pathologic_diagnosis":
@@ -37,7 +37,7 @@ if __name__ == "__main__":
         x1=x
 
     #aprire df
-    ogg_analisi=gene_mirna_proteina(gene, cartella) #es. miRNA, miRNA_ID, 'pathdataframe.csv'
+    ogg_analisi=gene_mirna_proteina(gene, cartella,control) #es. miRNA, miRNA_ID, 'pathdataframe.csv'
     gene=ogg_analisi[3]
     if ogg_analisi!=0:
 

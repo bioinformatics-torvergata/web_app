@@ -29,10 +29,10 @@ if __name__ == "__main__":
     tumor= sys.argv[2]
     feature= sys.argv[3]
     cartella=sys.argv[4]
-    
+    control=sys.argv[5]
 
     #df di interesse:
-    ogg=open_dataframe(gene,tumor,feature,cartella)
+    ogg=open_dataframe(gene,tumor,feature,cartella,control)
    
     if ogg!=0:
         gene=ogg[2]
