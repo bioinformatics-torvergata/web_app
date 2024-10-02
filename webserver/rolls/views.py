@@ -117,23 +117,6 @@ def gene_symbol_suggestions(request):
 ##########################################
 
 
-def pathwayPROVA(request):
-    #menu
-    f=open('/mnt/data/notturno/gsva/pathway/name_group_REACTOME.txt').read().rstrip().split('\n')
-
-    #dizionario submenu: submenu2
-    tf = open("/mnt/data/notturno/gsva/pathway/Dictionary_name_reactome.json", "r")
-    dizionario = json.load(tf)
-
-    #dizionario submenu2: valore msigdb da passare allo script
-    dictionary={'chiave1':['v','v2'], 'chiave2':['v1','v2']}
-
-
-    return render(request, 'rolls/pathwayPROVA.html', {
-        'listachiavi':f,
-        'dizionary':dictionary,
-        'dizionario':dizionario,
-    })
 
 
 ######### OVERALL SURVIVAL ################
@@ -149,7 +132,7 @@ def overall_survival(request):
             print(gene, tumor,methods)
             inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
             dir= os.path.join(output_data, inp3)
-            #os.makedirs(dir)
+            
             out=run([sys.executable,'script/overall_survival.py',gene,tumor,dir,methods],shell=False, stdout=PIPE)
             print(out)
             
@@ -183,80 +166,6 @@ def overall_survival(request):
 
     form=formSurvival()
     return render(request, 'rolls/overall_survival.html', {'form':form})
-
-
-#############Overall survival con dati interazione miRNA-mRNA ############
-
-def os_interaction(request):
-    if request.method == 'POST':
-
-        if 'interactor' in request.POST:
-            form = Gene(request.POST)
-            if form.is_valid():
-                gene=request.POST['gene']
-                tumor=request.POST['tumor']
-
-                out=run([sys.executable,'script/search_interactor.py',gene],shell=False, stdout=PIPE)
-                stringa=(out.stdout.decode('ascii')).strip()
-                lista=stringa.split(',')
-                
-
-                return render(request, 'rolls/OS_interaction.html', {
-                    'form':form,
-                    'lista':lista,
-                    'gene':gene,
-                    'tumor':tumor,    
-                })
-        elif 'Submit' in request.POST:
-            go='Selected'
-
-            form = Gene(request.POST)
-            gene=request.POST['gene']
-            tumor=request.POST['tumor']  
-
-            miRNA=request.POST.get('miRNA', False)
-
-            inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
-
-            out=run([sys.executable,'script/overall_survival_interaction.py',gene,miRNA,tumor,inp3],shell=False, stdout=PIPE)
-            print(out)
-            dir='rolls/static/media/saveanalisi/'+inp3+'/'
-            if os.path.isdir(dir): 
-                files=os.listdir(dir)
-                images=[]
-                pvalue=[]
-                for file in files:
-                    if file[-3:]=='jpg':
-                        images.append('/media/saveanalisi/'+inp3+'/'+file)
-                pvalue=open(dir+'result.txt').read().rstrip().split("\n")
-                
-                mylist = zip(images, pvalue)
-                
-                form=Gene()
-            
-                return render(request, 'rolls/OS_interaction.html', {
-                    'form':form,
-                    'gene':gene,
-                    'miRNA':miRNA,
-                    'tumor':tumor,
-                    'go':go,
-                    'pvalue':pvalue,
-                    'mylist': mylist,
-                    'formresult': out.stdout.decode('ascii'),
-                    'image': images,
-                    'dir':'http://160.80.35.91:7000/static/media/saveanalisi/'+inp3,
-                 })
-            else:
-                form=Gene()
-                return render(request, 'rolls/OS_interaction.html', {'form':form,
-                'miRNA':miRNA,
-                'gene':gene,
-                'tumor':tumor, 
-                'go':'error'})  
-
-    form = Gene()
-    return render(request, 'rolls/OS_interaction.html', {'form':form})
-    
 
 
 ###########Overall survival con pathway activity score######
@@ -300,6 +209,52 @@ def os_pathway(request):
     return render(request, 'rolls/OS_pathway.html', {'form':form})
 
 
+######### survival with gene mutation status ######### 
+def survival_with_gene_mutation_status(request):
+    if request.method == 'POST':
+
+        form = tumorGeneform(request.POST)
+        if form.is_valid(): 
+            tumor=request.POST['tumor'] 
+            gene=request.POST['gene'] 
+            inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
+            dir=os.path.join(output_data, inp3)
+            # print
+            # os.makedirs(dir)
+            
+            out = subprocess.run(['Rscript', 'script/survival_with_gene_mutation_status.R',tumor,gene,dir], capture_output=True, text=True)
+            print(out)
+            
+            if os.path.isdir(dir): 
+                files=os.listdir(dir)
+                for file in files:
+                    if 'png' in file:
+                        image=os.path.join('media/saveanalisi',inp3,file)    
+                
+                form=tumorGeneform()
+                return render(request, 'rolls/survival_with_gene_mutation_status.html', {'form':form, 
+                    'gene':gene,
+                    'tumor':tumor,
+                    'image':image,
+                    'go':'Valid',
+                    'dir':inp3,
+                    })
+
+            else:
+                
+                form=tumorGeneform()
+                return render(request, 'rolls/survival_with_gene_mutation_status.html', {
+                'form':form,
+                'formresult':'analysis is not available for the entered name',                                                                      
+                'tumor':tumor, 
+                'go':'error'})
+
+
+
+    form = tumorGeneform()       
+    return render(request, 'rolls/survival_with_gene_mutation_status.html', {'form':form})
+
+
 ############     DIFFERENTIAL EXPRESSION SINGLE TUMOR  TRASCRITTOMIC   ############
 def diff_exp_single_tumor(request):
     if request.method == 'POST':
@@ -312,7 +267,6 @@ def diff_exp_single_tumor(request):
                 time_dir=(time.strftime("%Y-%m-%d-%H-%M-%S"))
                 dir= os.path.join(output_data, time_dir)
                 control=''
-               # dir=os.path.join(settings.BASE_DIR, 'rolls', 'static', 'media', 'saveanalisi', time_dir)
                 os.makedirs(dir)
                 out=run([sys.executable,'script/Differential_expression_boxplot_plotly_new.py',gene,tumor,feature,dir,control],shell=False, stdout=PIPE)
                 print(out)
@@ -320,8 +274,11 @@ def diff_exp_single_tumor(request):
                 
                 if os.path.isdir(dir): 
                     files=os.listdir(dir)
+                    n=0
                     for file in files:
+                        
                         if file[-4:]=='html':
+                            n+=1
                            # image='/media/saveanalisi/'+time_dir+'/'+file
                             image=os.path.join('media/saveanalisi',time_dir,file)
                             form=Analisiformcompleto()
@@ -334,9 +291,18 @@ def diff_exp_single_tumor(request):
                                 'tumor':tumor,
                                 'feature':feature,
                                 'parametri': parametri[feature],})
+                    if n==0:
+                      
+                        form=Analisiformcompleto()
+                        return render(request, 'rolls/diff_exp_single_tumor.html', {'form':form,
+                        'formresult': out,
+                        'feature': feature,
+                        'tumor':tumor, 
+                        'go':'error'})
                 else:
                     form=Analisiformcompleto()
                     return render(request, 'rolls/diff_exp_single_tumor.html', {'form':form,
+                    'formresult': out.stdout.decode('ascii'),
                     'feature': feature,
                     'tumor':tumor, 
                     'go':'error'})
@@ -595,51 +561,6 @@ def deseq2(request):
 
 
 
-############# CORRELATION ANALYSIS ###################
-
-def correlation_analysis(request):
-    if request.method == 'POST':
-        form = Analisi_interaction(request.POST)
-        if form.is_valid():
-            gene=form.cleaned_data['gene']
-            miRNA=form.cleaned_data['miRNA']
-            tumor= form.cleaned_data['tumor']
-
-            inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
-            dir= os.path.join(output_data, inp3)
-            out=run([sys.executable,'script/overall_survival_interaction.py',miRNA,gene,tumor,dir],shell=False, stdout=PIPE)
-            print(out)
-            dir='rolls/static/media/saveanalisi/'+inp3+'/'
-            if os.path.isdir(dir): 
-                #dir='rolls/static/media/saveanalisi/'+inp3+'/'
-                files=os.listdir(dir)
-                images=[]
-                for file in files:
-                    if file[-3:]=='jpg':
-                        images.append('/media/saveanalisi/'+inp3+'/'+file)
-
-                form=Analisi_interaction()
-                return render(request, 'rolls/OS_interaction.html', {
-                    'form':form, 
-                    'formresult': out.stdout.decode('ascii'),
-                    'image': images,
-                    'go':'Valid',
-                    'gene':gene,
-                    'tumor':tumor,
-                    'miRNA':miRNA,
-                    })
-            else:
-                form=Analisi_interaction()
-                return render(request, 'rolls/OS_interaction.html', {'form':form, #correlation_analysis
-                'miRNA':miRNA,
-                'gene':gene,
-                'tumor':tumor, 
-                'go':'error'})
-                
-
-    form=Analisi_interaction()
-    return render(request, 'rolls/OS_interaction.html', {'form':form})
-
 
 ########### MUTATION ANALYSES ########### 
 def tumor_mutation_analysis(request):
@@ -699,8 +620,6 @@ def tumor_mutation_analysis(request):
     return render(request, 'rolls/tumor_mutation_analysis.html', {'form':form})
 
 
-
-
 def gene_mutation_analysis(request):
     if request.method == 'POST':
 
@@ -755,50 +674,6 @@ def gene_mutation_analysis(request):
 
 
 
-
-def survival_with_gene_mutation_status(request):
-    if request.method == 'POST':
-
-        form = tumorGeneform(request.POST)
-        if form.is_valid(): 
-            tumor=request.POST['tumor'] 
-            gene=request.POST['gene'] 
-            inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
-            dir=os.path.join(output_data, inp3)
-            print
-            os.makedirs(dir)
-            
-            out = subprocess.run(['Rscript', 'script/survival_with_gene_mutation_status.R',tumor,gene,dir], capture_output=True, text=True)
-            print(out)
-            
-            if os.path.isdir(dir): 
-                files=os.listdir(dir)
-                for file in files:
-                    if 'png' in file:
-                        image=os.path.join('media/saveanalisi',inp3,file)    
-                
-                form=tumorGeneform()
-                return render(request, 'rolls/survival_with_gene_mutation_status.html', {'form':form, 
-                    'gene':gene,
-                    'tumor':tumor,
-                    'image':image,
-                    'go':'Valid',
-                    'dir':inp3,
-                    })
-
-            else:
-                    form=tumorGeneform()
-                    return render(request, 'rolls/survival_with_gene_mutation_status.html', {'form':form,
-                    'tumor':tumor, 
-                    'go':'error'})
-
-
-
-    form = tumorGeneform()       
-    return render(request, 'rolls/survival_with_gene_mutation_status.html', {'form':form})
-
-
-
 ########### DECONVOLUTION ########### 
 def deconvolution(request):
     if request.method == 'POST':
@@ -849,3 +724,143 @@ def deconvolution(request):
 
 
 
+
+
+#### bozze da revisionare##########################
+
+############# CORRELATION ANALYSIS ###################
+
+def correlation_analysis(request):
+    if request.method == 'POST':
+        form = Analisi_interaction(request.POST)
+        if form.is_valid():
+            gene=form.cleaned_data['gene']
+            miRNA=form.cleaned_data['miRNA']
+            tumor= form.cleaned_data['tumor']
+
+            inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
+            dir= os.path.join(output_data, inp3)
+            out=run([sys.executable,'script/overall_survival_interaction.py',miRNA,gene,tumor,dir],shell=False, stdout=PIPE)
+            print(out)
+            dir='rolls/static/media/saveanalisi/'+inp3+'/'
+            if os.path.isdir(dir): 
+                #dir='rolls/static/media/saveanalisi/'+inp3+'/'
+                files=os.listdir(dir)
+                images=[]
+                for file in files:
+                    if file[-3:]=='jpg':
+                        images.append('/media/saveanalisi/'+inp3+'/'+file)
+
+                form=Analisi_interaction()
+                return render(request, 'rolls/OS_interaction.html', {
+                    'form':form, 
+                    'formresult': out.stdout.decode('ascii'),
+                    'image': images,
+                    'go':'Valid',
+                    'gene':gene,
+                    'tumor':tumor,
+                    'miRNA':miRNA,
+                    })
+            else:
+                form=Analisi_interaction()
+                return render(request, 'rolls/OS_interaction.html', {'form':form, #correlation_analysis
+                'miRNA':miRNA,
+                'gene':gene,
+                'tumor':tumor, 
+                'go':'error'})
+                
+
+    form=Analisi_interaction()
+    return render(request, 'rolls/OS_interaction.html', {'form':form})
+
+
+def pathwayPROVA(request):
+    #menu
+    f=open('/mnt/data/notturno/gsva/pathway/name_group_REACTOME.txt').read().rstrip().split('\n')
+
+    #dizionario submenu: submenu2
+    tf = open("/mnt/data/notturno/gsva/pathway/Dictionary_name_reactome.json", "r")
+    dizionario = json.load(tf)
+
+    #dizionario submenu2: valore msigdb da passare allo script
+    dictionary={'chiave1':['v','v2'], 'chiave2':['v1','v2']}
+
+
+    return render(request, 'rolls/pathwayPROVA.html', {
+        'listachiavi':f,
+        'dizionary':dictionary,
+        'dizionario':dizionario,
+    })
+
+#############Overall survival con dati interazione miRNA-mRNA ############
+
+def os_interaction(request):
+    if request.method == 'POST':
+
+        if 'interactor' in request.POST:
+            form = Gene(request.POST)
+            if form.is_valid():
+                gene=request.POST['gene']
+                tumor=request.POST['tumor']
+
+                out=run([sys.executable,'script/search_interactor.py',gene],shell=False, stdout=PIPE)
+                stringa=(out.stdout.decode('ascii')).strip()
+                lista=stringa.split(',')
+                
+
+                return render(request, 'rolls/OS_interaction.html', {
+                    'form':form,
+                    'lista':lista,
+                    'gene':gene,
+                    'tumor':tumor,    
+                })
+        elif 'Submit' in request.POST:
+            go='Selected'
+
+            form = Gene(request.POST)
+            gene=request.POST['gene']
+            tumor=request.POST['tumor']  
+
+            miRNA=request.POST.get('miRNA', False)
+
+            inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
+
+            out=run([sys.executable,'script/overall_survival_interaction.py',gene,miRNA,tumor,inp3],shell=False, stdout=PIPE)
+            print(out)
+            dir='rolls/static/media/saveanalisi/'+inp3+'/'
+            if os.path.isdir(dir): 
+                files=os.listdir(dir)
+                images=[]
+                pvalue=[]
+                for file in files:
+                    if file[-3:]=='jpg':
+                        images.append('/media/saveanalisi/'+inp3+'/'+file)
+                pvalue=open(dir+'result.txt').read().rstrip().split("\n")
+                
+                mylist = zip(images, pvalue)
+                
+                form=Gene()
+            
+                return render(request, 'rolls/OS_interaction.html', {
+                    'form':form,
+                    'gene':gene,
+                    'miRNA':miRNA,
+                    'tumor':tumor,
+                    'go':go,
+                    'pvalue':pvalue,
+                    'mylist': mylist,
+                    'formresult': out.stdout.decode('ascii'),
+                    'image': images,
+                    'dir':'http://160.80.35.91:7000/static/media/saveanalisi/'+inp3,
+                 })
+            else:
+                form=Gene()
+                return render(request, 'rolls/OS_interaction.html', {'form':form,
+                'miRNA':miRNA,
+                'gene':gene,
+                'tumor':tumor, 
+                'go':'error'})  
+
+    form = Gene()
+    return render(request, 'rolls/OS_interaction.html', {'form':form})
+    

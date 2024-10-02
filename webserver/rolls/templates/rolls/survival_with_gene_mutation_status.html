@@ -14,7 +14,9 @@
   </p>
   <div class="collapse" id="collapsedescription">
     <div class="card card-body">
-      <p>text</p>
+      <p>This analysis examines the overall survival (OS) of patients by evaluating the impact of specific gene mutations on survival outcomes within a particular tumor type. Utilizing the maftools R package, the analysis leverages mutation data from The Cancer Genome Atlas (TCGA) to provide insights into how the mutation status of a selected gene influences patient prognosis.</p>
+      <p>For more details go to <a href="{% url 'documentation' %}" target="_blank">PANDA Documentation</a></p>
+
     </div>
   </div>
 
@@ -32,7 +34,7 @@
         <div class="collapse" id="collapseExample">
         <div class="card card-body">
           <p class="text-center" >Example: </p>
-          <img src= "{%static 'media/examples/all_tumor_DE.png' %}" width="750">
+          <img src= "{%static 'media/examples/os_mutation.png' %}" width="700">
         </div> 
         </div>
         {%if go == 'Valid' %}        
@@ -56,8 +58,8 @@
   
         {%if go == 'error'%}
         <div class="alert alert-danger text-center" role="alert">
-          <h5>There are no results for {{tumor}}</h5>
-          <p> Error: {{formresult}} </p>
+          <h5>There are no results for {{gene}} - {{tumor}}</h5>
+          <p>{{formresult}} </p>
           
         </div> 
 

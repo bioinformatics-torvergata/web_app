@@ -15,11 +15,13 @@
       <div class="collapse" id="collapsedescription">
         <div class="card card-body">
           <h4>Overall survival with Pathway activity score</h4>
-          <p>This analysis offers the opportunity to perform an overall survival analysis by going to study instead of the expression of a single gene, the expression of a set of genes (pathways).
-          <br><br>The analysis for a given tumor consists of dividing samples into two groups based on pathway activity score (PAS) values pre-calculated with <a href='https://bioconductor.org/packages/devel/bioc/vignettes/GSVA/inst/doc/GSVA.html' target="_blank">GSVA</a> (Gene Set Variation Analysis).
-           The PAS describes how active that pathway is in that given sample. GSVA is a nonparametric, unsupervised method for estimating the variation in gene set enrichment across samples in an expression dataset.
-          <br>The implemented script uses OS time data provided by TCGA in the clinical data file as time-to-event information. The time data are expressed in days.
-          </p>
+          <p>This analysis enables the evaluation of overall survival by focusing not only on the expression of individual genes but also on the expression of gene sets, referred to as pathways.</p>
+
+          <p>For a specific tumor type, samples are categorized into two groups based on pre-calculated Pathway Activity Score (PAS) values, obtained through Gene Set Variation Analysis (GSVA). The PAS reflects the activity level of a given pathway within each sample. GSVA is a nonparametric and unsupervised method that estimates variations in gene set enrichment across samples within an expression dataset.</p>
+
+          <p>The analysis employs overall survival (OS) time data provided by The Cancer Genome Atlas (TCGA) clinical data file, which serves as the time-to-event information. The time data are represented in days.</p>
+          <p>For more details go to <a href="{% url 'documentation' %}" target="_blank">PANDA Documentation</a></p>
+
         </div>
       </div>
         
@@ -36,14 +38,14 @@
               </form>
           </div>
               
-                <div class="col mx-3" style="border:1px; border-left-style: solid; border-color:rgba(0, 0, 128, 0.301)">
+            <div class="col mx-3" style="border:1px; border-left-style: solid; border-color:rgba(0, 0, 128, 0.301)">
                   <div class="collapse" id="collapseExample">
                     <div class="card card-body">
                       <p class="text-center" >Example: </p>
-                      <img src= "{%static 'media/examples/pathway_os.png' %}" width="750">
+                      <img src= "{%static 'media/examples/pathway_os.png' %}" width="600">
                     </div> 
                   </div>
-                </div>
+                
                 {%if go == 'Valid' %}
                 
                 <h3>Results: </h3>
@@ -51,17 +53,16 @@
                 <p><b>Pathway: </b> {{pathway}}</p>
                 <p><b>Tumor: </b> {{tumor}}</p>
                 <p><b>Method: </b> {{method}}</p>
+                <p><b>P-value:</b> {{formresult}}</p>
 
-                {{formresult}}
-
-                <br><br>
+              
                 <div class="row">
                  
-                  <div class="zoom col shadow mb-3 bg-body rounded text-center" style="max-width: 500px;">
-                    <a href="{%static image%}" target="_blank"><img src= '{%static image %}' width="500"></a>
+                  <div class="mb-3 bg-body rounded" style="max-width: 500px;">
+                    <a href="{%static image%}" target="_blank"><img src= '{%static image %}' width="700"></a>
+                  </div>
                 </div>
-                </div>
-              </div>
+             
                 {%endif%}
                 
                 {%if go == "error" %}

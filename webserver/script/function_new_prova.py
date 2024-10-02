@@ -458,7 +458,7 @@ def open_dataframe_gene_overall(gene,tumor):
         df=df.set_index('peptide_target')
         return (df,gene)
     else: 
-        print("search is not available for the name entered")
+        print("analysis is not available for the entered name")
         return 0
 
 
@@ -490,7 +490,7 @@ def overall_survival_analysis(m,tumor,cartella,df1,OS1,gene):
 
     #print(results.p_value )
     if results.p_value < 1:       
-        print("p-value:",results.p_value)
+        print(results.p_value)
         os.makedirs(cartella)
        
         # Creiamo il grafico Kaplan-Meier con miglioramenti
@@ -528,7 +528,9 @@ def overall_survival_analysis(m,tumor,cartella,df1,OS1,gene):
 
 
 def overall_survival_analysis_pathway(m,tumor,df1,OS1,cartella):
-      
+    # if m not in df1.index:
+    #     return('search is not available for the name entered')
+    # else:
     i1=df1.loc[m,:] > df1.loc[m,:].median()
     i2 = df1.loc[m,:] < df1.loc[m,:].median() 
     
@@ -536,24 +538,43 @@ def overall_survival_analysis_pathway(m,tumor,df1,OS1,cartella):
     
 
     
-    results = logrank_test((OS1[i1]), (OS1[i2]),list(df1.loc[m,i1]),list(df1.loc[m,i2]), alpha=.95)
-    #results = logrank_test(OS1[i1], OS1[i2], event_observed_A=df1.loc[m, i1], event_observed_B=df1.loc[m, i2])
+    #results = logrank_test((OS1[i1]), (OS1[i2]),list(df1.loc[m,i1]),list(df1.loc[m,i2]), alpha=.95)
+    results = logrank_test(OS1[i1], OS1[i2], event_observed_A=df1.loc[m, i1], event_observed_B=df1.loc[m, i2])
 
     
     if results.p_value < 1:
         os.mkdir(cartella)
-        print("p-value:",results.p_value)
-        
-        kmf.fit((OS1[i1]), label="Higher expression")
-        a1 = kmf.plot()
+        print(results.p_value)
+    
 
-        kmf.fit((OS1[i2]), label="Lower expression")
-        kmf.plot(ax=a1)
+        kmf.fit(OS1[i1], list(df1.loc[m, i1]), label="Higher expression")
+        a1 = kmf.plot(color='red', linestyle='-', linewidth=1,ci_show=False)  
+        kmf.fit(OS1[i2], list(df1.loc[m, i2]), label="Lower expression")
+        kmf.plot(ax=a1, color='blue', linestyle='--', linewidth=1,ci_show=False)  
+
+        # Aggiungiamo una griglia
+        plt.grid(True, which='both', linestyle='--', linewidth=0.5)
+        # Rimuovere i bordi del grafico
+        a1.spines['top'].set_visible(False)   # Rimuove il bordo superiore
+        a1.spines['right'].set_visible(False) # Rimuove il bordo destro
+        
+
+        # Aggiungiamo etichette e titolo
+        plt.xlabel('Time (days)', fontsize=10)
+        plt.ylabel('Survival Probability', fontsize=10)
+        plt.title('Kaplan-Meier Survival Curves', fontsize=12)
+
+        # Posizioniamo la legenda in alto a destra, senza bordo
+        plt.legend(loc='best', frameon=False)
+
         
         plt.savefig(cartella+"/"+m+"_"+tumor+".png")
 
     else:
-        print("pvalue>1")
+        print("Not enough survival data to calculate the analysis")
+        return(0)
+
+
 
 
 def open_gsva_df(tumor):
