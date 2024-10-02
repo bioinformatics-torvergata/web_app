@@ -6,7 +6,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'webserver.settings')  # Sostitu
 django.setup()
 
 
-from rolls.models import Gene  # Replace with your app name
+from rolls.models import Gene_symbol  # Replace with your app name
 
 # Function to delete genes from the model
 def delete_genes_from_file(file_path):
@@ -19,7 +19,8 @@ def delete_genes_from_file(file_path):
 
     # Delete each gene from the database
     for gene_name in genes_to_delete:
-        deleted, _ = Gene.objects.filter(gene=gene_name).delete()
+        deleted, _ = Gene_symbol.objects.filter(gene_symbol=gene_name).delete()
+        
         if deleted:
             print(f'Deleted gene: {gene_name}')
         else:
@@ -27,5 +28,7 @@ def delete_genes_from_file(file_path):
 
 if __name__ == '__main__':
     # Pass the file name as an argument
-    file_name = 'proteindelete.txt'  # Replace with your actual file name
+    file_name = 'gene_symbol_list.txt'  # Replace with your actual file name
     delete_genes_from_file(file_name)
+    total_objects = Gene_symbol.objects.count()
+    print(f"Numero totale di oggetti: {total_objects}")

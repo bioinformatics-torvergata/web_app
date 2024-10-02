@@ -714,27 +714,30 @@ def gene_mutation_analysis(request):
             
             out = subprocess.run(['Rscript', 'script/gene_mutation_analysis.R',tumor,gene,dir], capture_output=True, text=True)
             print(out)
-            
-            if os.path.isdir(dir): 
-                files=os.listdir(dir)
-                for file in files:
-                    if file[-3:]=='png':
-                        # if 'somaticInteractions' in file:
-                        #     image_interact=os.path.join('media/saveanalisi',inp3,file)  
-                        # if 'TumorVAF' in file: 
-                        #     image_VAF=os.path.join('media/saveanalisi',inp3,file)  
-                        if 'lollipopPlot' in file:
-                            image_lolli=os.path.join('media/saveanalisi',inp3,file)  
-
-                form=tumorGeneform()
-                return render(request, 'rolls/gene_mutation_analysis.html', {'form':form, 
-                    'tumor':tumor,
-                    'gene':gene,
-                    
-                    'image_lolli':image_lolli,
-                    'go':'Valid',
-                    'dir':inp3,
-                    })
+            return_code = out.returncode
+            if return_code!=1:
+                if os.path.isdir(dir): 
+                    files=os.listdir(dir)
+                    for file in files:
+                        if file[-3:]=='png':
+                            # if 'somaticInteractions' in file:
+                            #     image_interact=os.path.join('media/saveanalisi',inp3,file)  
+                            # if 'TumorVAF' in file: 
+                            #     image_VAF=os.path.join('media/saveanalisi',inp3,file)  
+                            if 'lollipopPlot' in file:
+                                image_lolli=os.path.join('media/saveanalisi',inp3,file)  
+                        if 'txt' in file:
+                            result_data=os.path.join(output_data,inp3,file)  
+                            result=read_table(result_data)
+                    form=tumorGeneform()
+                    return render(request, 'rolls/gene_mutation_analysis.html', {'form':form, 
+                        'tumor':tumor,
+                        'gene':gene,
+                        'dati':result,
+                        'image_lolli':image_lolli,
+                        'go':'Valid',
+                        'dir':'media/saveanalisi/'+inp3+'/result.txt',
+                        })
 
             else:
                     form=tumorGeneform()
@@ -754,27 +757,27 @@ def gene_mutation_analysis(request):
 def survival_with_gene_mutation_status(request):
     if request.method == 'POST':
 
-        form = Deseq2form(request.POST)
+        form = tumorGeneform(request.POST)
         if form.is_valid(): 
             tumor=request.POST['tumor'] 
-            
+            gene=request.POST['gene'] 
             inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
             dir=os.path.join(output_data, inp3)
             print
             os.makedirs(dir)
             
-            out = subprocess.run(['Rscript', 'script/survival_with_gene_mutation_status.R',tumor,dir], capture_output=True, text=True)
+            out = subprocess.run(['Rscript', 'script/survival_with_gene_mutation_status.R',tumor,gene,dir], capture_output=True, text=True)
             print(out)
             
             if os.path.isdir(dir): 
                 files=os.listdir(dir)
                 for file in files:
-                    if file[-3:]=='png':
+                    if 'png' in file:
                         image=os.path.join('media/saveanalisi',inp3,file)    
-                print(image)
-                form=Deseq2form()
+                
+                form=tumorGeneform()
                 return render(request, 'rolls/survival_with_gene_mutation_status.html', {'form':form, 
-            
+                    'gene':gene,
                     'tumor':tumor,
                     'image':image,
                     'go':'Valid',
@@ -782,14 +785,14 @@ def survival_with_gene_mutation_status(request):
                     })
 
             else:
-                    form=Deseq2form()
+                    form=tumorGeneform()
                     return render(request, 'rolls/survival_with_gene_mutation_status.html', {'form':form,
                     'tumor':tumor, 
                     'go':'error'})
 
 
 
-    form = Deseq2form()       
+    form = tumorGeneform()       
     return render(request, 'rolls/survival_with_gene_mutation_status.html', {'form':form})
 
 
