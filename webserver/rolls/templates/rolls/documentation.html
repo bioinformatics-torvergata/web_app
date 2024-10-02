@@ -1,11 +1,9 @@
-{%extends 'rolls/titolohome.html' %}
+{%extends 'rolls/layoutpagine.html' %}
 {% load static %}
-{%block page%}
-       
-    <div class="conteiner text-center my-3" style="position: center;">
-        <p class="lead"> Documentation </p>
-    </div>
 
+{%block content%}
+    <h2 style="color:navy">PANDA Documentation</h2>
+   
     <div class="container my-5" style="position: center;">
                 <div class="accordion accordion-flush" id="accordionFlushExample">
                     <div class="accordion-item">
@@ -46,42 +44,51 @@
                       </h2>
                       <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
                         <div class="accordion-body">
-                            <h4>Single-gene differential expression analysis</h4>
+                            <h5>Single-gene differential expression analysis</h5>
                             <p>Single-gene differential expression analysis is an analysis that allows the user to study the difference in expression of a gene, miRNA or protein between patients in two different conditions (based on the selected feature) with a given tumor.
                                 <br>This analysis uses TCGA Gene Expression Quantification - FPKM data (normalized counts) for genes.
                                 <br><br><i class="fa-solid fa-square-poll-horizontal"></i> As a result of the analysis, a box-plot is returned showing on the x-axis the two conditions under consideration (e.s. male and female), while the y-axis shows the expression of the gene, miRNA or protein entered.
                                 <br>Finally, the p-value is calculated using the Wilcoxon test, which indicates the significance of difference in expression between the two groups examined. 
                             </p>
-                                <hr>
                                 
-                                <h4>miRNA isoform interactor analysis</h4>
-                                <p>This analysis provides the ability for the user to analyze the expression profile of the interactors of miRNA isoforms. 
-                                <br>The implemented script checks whether that provided miRNA has isoforms that are present in the RNA inter interaction file. This file contains the information of all miRNA (isoforms) - mRNA interactions
-                                that have been experimentally validated belonging to Homo sapiens. 
-                                </p>
-                                <br>
-                                The result obtained is a cluster map. On the rows the names of the patients and on the columns the name of the genes interacting with the miRNA isoform.
-                                Clustering was performed to highlight groups of genes with similar expression profile.
-
-                            </p>
                         </div>
                         </div>
                     </div>
-
+                    
 
                     <div class="accordion-item">
-                      <h2 class="accordion-header" id="flush-headingThree">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                      <h2 class="accordion-header" id="flush-headingSix">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseThree">
                         Differential expression analysis all tumor
                         </button>
                       </h2>
-                      <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
+                      <div id="flush-collapseSix" class="accordion-collapse collapse" aria-labelledby="flush-headingSix" data-bs-parent="#accordionFlushExample">
                         <div class="accordion-body">
-                            <h4>Differential expression analysis all tumor</h4>
+                            <h5>Differential expression analysis all tumor</h5>
                             <p>This analysis is the differential expression under two conditions of a gene, miRNA, or protein for all tumors for which data for the selected feature is available. 
                                 <br>This gives the user an overview of the expression of that particular gene in different tumors.
                                 <br>On the x-axis are shown all tumors for which analysis is available. On the y-axis the expression of the gene, miRNA or protein is shown.
                               </p></div>
+                      </div>
+                    </div>
+
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="flush-headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                          miRNA isoform interactor analysis
+                        </button>
+                      </h2>
+                      <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            <h5>miRNA isoform interactor analysis</h5>
+                            <p>This analysis provides the ability for the user to analyze the expression profile of the interactors of miRNA isoforms. 
+                              <br>The implemented script checks whether that provided miRNA has isoforms that are present in the RNA inter interaction file. This file contains the information of all miRNA (isoforms) - mRNA interactions
+                              that have been experimentally validated belonging to Homo sapiens. 
+                              </p>
+                              <br>
+                              The result obtained is a cluster map. On the rows the names of the patients and on the columns the name of the genes interacting with the miRNA isoform.
+                              Clustering was performed to highlight groups of genes with similar expression profile.
+                        </div>
                       </div>
                     </div>
                     <div class="accordion-item">
@@ -115,6 +122,39 @@
                             The PAS describes how active that pathway is in that given sample. GSVA is a nonparametric, unsupervised method for estimating the variation in gene set enrichment across samples in an expression dataset.
                             <br>The implemented script uses OS time data provided by TCGA in the clinical data file as time-to-event information. The time data are expressed in days.
                             </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-headingSeven">
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapsSeven">
+                            Mutation analyses
+                          </button>
+                        </h2>
+                        <div id="flush-collapseSeven" class="accordion-collapse collapse" aria-labelledby="flush-headingSeven" data-bs-parent="#accordionFlushExample">
+                          <div class="accordion-body">
+                            <h5>Mutation analyses</h5>
+                            <p></p>
+                            <br>
+                          </div>
+                        </div>
+                      </div>
+
+
+                      <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-heading8">
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse8" aria-expanded="false" aria-controls="flush-collapse8">
+                            Deconvolution
+                          </button>
+                        </h2>
+                        <div id="flush-collapse8" class="accordion-collapse collapse" aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushExample">
+                          <div class="accordion-body">
+                           <h5>Deconvolution</h5>
+                            <p>
+
+                            </p>
+                            <br>
                           </div>
                         </div>
                       </div>

@@ -149,7 +149,7 @@ def overall_survival(request):
             print(gene, tumor,methods)
             inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
             dir= os.path.join(output_data, inp3)
-            os.makedirs(dir)
+            #os.makedirs(dir)
             out=run([sys.executable,'script/overall_survival.py',gene,tumor,dir,methods],shell=False, stdout=PIPE)
             print(out)
             
@@ -157,23 +157,25 @@ def overall_survival(request):
             if os.path.isdir(dir): 
                 files=os.listdir(dir)
                 for file in files:
-                    if file[-3:]=='png':
+                    if 'jpeg' in file:
                         image=os.path.join('media/saveanalisi',inp3,file)
                         
-                form=formSurvival()
+                        form=formSurvival()
 
-                return render(request, 'rolls/overall_survival.html', {
-                    'form':form, 
-                    #'formresult': out.stdout.decode('ascii'),
-                    'image': image,
-                    'go':'Valid',
-                    'gene':gene ,
-                    'tumor':tumor,
-                    'method':methods,
-                    'dir':inp3})
+                        return render(request, 'rolls/overall_survival.html', {
+                            'form':form, 
+                            'formresult': out.stdout.decode('ascii'),
+                            'image': image,
+                            'go':'Valid',
+                            'gene':gene ,
+                            'tumor':tumor,
+                            'method':methods,
+                            'dir':inp3})
+
             else:
                 form=formSurvival()
                 return render(request, 'rolls/overall_survival.html', {'form':form,
+                'formresult': out.stdout.decode('ascii'),
                 'gene':gene,
                 'tumor':tumor, 
                 'go':'error'})
@@ -680,7 +682,7 @@ def tumor_mutation_analysis(request):
                     'image_oncoplot':image_oncoplot,
                     'image_titv':image_titv,
                     'image_interact':image_interact,
-                    'image_VAF':image_VAF,
+                    # 'image_VAF':image_VAF,
                     'go':'Valid',
                     'dir':inp3,
                     })

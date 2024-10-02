@@ -20,7 +20,6 @@ if __name__ == "__main__":
     tumor=sys.argv[2]
     cartella=sys.argv[3]
     column=sys.argv[4]
-    print(cartella)
 
     feature='median'
 
@@ -47,7 +46,7 @@ if __name__ == "__main__":
 
     OS1=OS.loc[oslist,:]
 
-    overall_survival_analysis(gene,tumor,feature, cartella,df1,OS1,gene)
+    overall_survival_analysis(gene,tumor,cartella,df1,OS1,gene)
 
 
 

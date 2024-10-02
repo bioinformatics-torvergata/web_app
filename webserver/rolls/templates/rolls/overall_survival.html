@@ -14,12 +14,26 @@
       </p>
       <div class="collapse" id="collapsedescription">
         <div class="card card-body">
-          <h4>Analysis of overall survival</h4>
+          <!-- <h4>Analysis of overall survival</h4>
           <p>Time is shown on the x-axis, and survival probability (conditional probability) is shown on the y-axis. 
           <br>The implemented script uses OS time data provided by TCGA in the clinical data file as time-to-event information.
           <br>The time data are expressed in days. 
           <br><br>The expression data used are Gene Expression Quantification HTSeq - FPKM, miRNA Expression Quantification and Protein Expression Quantification.
-        </p>
+        </p> -->
+        
+        <p>The analysis presented involves the investigation of overall survival (OS) data using Kaplan-Meier survival curves and log-rank tests to evaluate the association between gene, miRNA, and protein expression levels with patient outcomes. Specifically, OS data provided by The Cancer Genome Atlas (TCGA) is used as time-to-event information. The survival time, expressed in days, measures the duration from diagnosis or treatment initiation until the event of interest, such as death or last follow-up.</p>
+        <p>The expression data used are Gene Expression Quantification HTSeq - FPKM, miRNA Expression Quantification and Protein Expression Quantification</p>
+    
+        <p>The analysis consists of several key components:</p>
+        <p><b>1. Kaplan-Meier Survival Curves:</b> Kaplan-Meier estimators are used to compute the survival probabilities over time for patients stratified by their expression levels. For each gene, miRNA, or protein, patients are divided into two groups: those with expression levels above the median (higher expression) and those below the median (lower expression). The survival curves for each group are plotted to visualize differences in survival probabilities over time.</p>
+    
+        <p><b>2. Log-Rank Test:</b> To statistically compare the survival distributions between the higher and lower expression groups, the log-rank test is employed. This test assesses whether there are significant differences in overall survival between the two groups, with the resulting p-value indicating the level of statistical significance.</p>
+        <p><b>3. Survival Time in Days:</b> The x-axis of the Kaplan-Meier plot represents the time in days, reflecting the OS data. The y-axis displays the survival probability, which represents the conditional probability of surviving beyond a given time point.</p>
+        <p><b>4. Expression Level Impact on Survival:</b> By linking the OS data to gene, miRNA, and protein expression levels, this analysis aims to identify potential biomarkers of survival, providing insights into the biological mechanisms driving cancer progression and patient prognosis.</p>
+
+        <br>
+        <p>This integrative approach combining transcriptomic, proteomic, and survival data allows for a comprehensive assessment of how molecular alterations impact patient outcomes, potentially guiding personalized cancer therapies and improving prognostic predictions.</p>
+
         </div>
       </div>
         
@@ -39,7 +53,7 @@
                 <div class="collapse" id="collapseExample">
                   <div class="card card-body">
                     <p class="text-center" >Example: </p>
-                    <img src= "{%static 'media/examples/os.png' %}" width="750">
+                    <img src= "{%static 'media/examples/os.png' %}" width="600">
                   </div> 
                 </div>
                   {%if go == 'Valid' %}
@@ -50,11 +64,10 @@
                   <p>Tumor: {{tumor}}</p>
                   <p>Method: {{method}}</p>
                   {{formresult}}
-                  <br><br>
                   <div class="row">
                    
-                    <div class="zoom col shadow mb-3 bg-body rounded" style="max-width: 500px;">
-                      <a href="{%static image%}" target="_blank"><img src= '{%static image %}' width="500"></a>
+                    <div class="mb-3 bg-body rounded" style="max-width: 500px;text-align: center;">
+                      <a href="{%static image%}" target="_blank"><img src= '{%static image %}' width="700"></a>
                   </div>
                   </div>
                 </div>
