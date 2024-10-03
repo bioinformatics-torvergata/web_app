@@ -2,7 +2,7 @@
 {%load crispy_forms_tags%}
 {%block content%}
 {% load static %}
-<h4 style="color:navy">Proteomic analyses</h4>
+<h4 style="color:navy">Trascrittomic analyses</h4>
   <h2>Differential expression analysis</h2>
       <p>
         <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapsedescription" role="button" aria-expanded="false" aria-controls="collapsedescription">
@@ -15,12 +15,12 @@
       <div class="collapse" id="collapsedescription">
         <div class="card card-body">
           <h4>Single-gene differential expression analysis</h4>
-          <p>This analysis allows users to explore differences in the expression of protein between patients in two distinct conditions (based on the selected feature) within a given tumor type.</p>
-          <p>The results are visualized in a box plot, where the x-axis represents the two conditions under comparison (e.g., male vs. female), and the y-axis displays the expression levels of the specified protein. P-value, calculated using the Wilcoxon test, quantifies the significance of the observed expression differences between the two groups.</p>
+          <p>This analysis allows users to explore differences in the expression of a gene or miRNA between patients in two distinct conditions (based on the selected feature) within a given tumor type. The analysis leverages TCGA Gene Expression Quantification data (FPKM, normalized counts) to assess these differences.</p>
+          <p>The results are visualized in a box plot, where the x-axis represents the two conditions under comparison (e.g., male vs. female), and the y-axis displays the expression levels of the specified gene or miRNA.</p>
         
+          <p>A p-value, calculated using the Wilcoxon test, quantifies the significance of the observed expression differences between the two groups.</p>
           <p>For more details go to <a href="{% url 'documentation' %}" target="_blank">PANDA Documentation</a></p>
 
-      
         </div>
       </div>
         
@@ -40,7 +40,7 @@
                 <div class="collapse" id="collapseExample">
                   <div class="card card-body">
                     <p class="text-center" >Example: </p>
-                    <img src= "{%static 'media/examples/diff_ex_1gene_prot.png' %}" width="750">
+                    <img src= "{%static 'media/examples/diff_ex_single_tumor.png' %}" width="700">
                   </div> 
                 </div>
                   {%if go == 'Valid' %}
@@ -49,7 +49,7 @@
                   <hr>
                   <p><b>Tumor: </b>{{tumor}}</p>
                   <p><b>Feature: </b>{{feature}}</p>
-                  <p><b>Protein: </b> {{gene}}</p>
+                  <p><b>Gene: </b> {{gene}}</p>
                 
                   <p><b>P-value: </b>{{formresult}}</p>
                   <br><br>
@@ -91,10 +91,10 @@
 <!-- Script per il suggerimento con jQuery UI -->
 <script type="text/javascript">
   $(document).ready(function() {
-    $('#protein-input').autocomplete({
+    $('#gene-input').autocomplete({
       source: function(request, response) {
         $.ajax({
-          url: "{% url 'protein_suggestions' %}",  // L'URL che abbiamo aggiunto
+          url: "{% url 'gene_suggestions' %}",  // L'URL che abbiamo aggiunto
           data: {
             'term': request.term  // Il testo digitato dall'utente
           },

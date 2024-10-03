@@ -74,11 +74,9 @@
               <p><b>Parameters compared:</b> {{parametri}}</p>
             </div>
             <div class="mb-3 bg-body rounded" style="max-width: 800px;">
-              <iframe src="{% static image_plotly %}" width="800" height="600" frameborder="0"></iframe>
+              <iframe src="{% static image_plotly %}" width="700" height="600" frameborder="0"></iframe>
           </div> 
-            <!-- <div class="zoom col shadow mb-3 bg-body rounded" style="max-width: 450px;">
-              <a href="{%static image_plotly%}" target="_blank"><img src= '{%static image_plotly %}' width="350px"></a>
-           </div> -->
+          
           </div>
           
             <div class="card-group my-3 shadow mb-3 bg-body rounded">
@@ -111,38 +109,73 @@
           <button class="btn"><i class="fa-solid fa-download"></i></button></a>
       </p>
       
-      <div class="table-responsive" style="height: 400px; overflow-y: auto;">
-          <table class="table table-hover table-sm" style="width: 100%; margin: 0 auto; text-align: left; border-collapse: collapse; border: 1px solid white;">
-              <thead style="position: sticky; top: 0; background-color: white; z-index: auto;">
-                  <tr>
-                      {% for colonna in dati.0 %}
-                          <th style="border: 1px solid white; font-weight: bold;">{{ colonna }}</th> <!-- Bordo per le intestazioni -->
-                      {% endfor %}
-                  </tr>
-              </thead>
-              <tbody>
-                  {% for riga in dati|slice:"1:" %}
-                      <tr>
-                          {% for colonna in riga %}
-                              <td style="border: 1px solid white;">{{ colonna }}</td>
-                          {% endfor %}
-                      </tr>
-                  {% endfor %}
-              </tbody>
-          </table>
-      </div>
+      <div class="table-responsive" style="max-height: 400px;" >
+        <table id="Mytable" class="table table-hover table-sm" style="width: 100%; margin: 0 auto; text-align: left; border-collapse: collapse; border: 1px solid white;">
+            <thead style="position: sticky; top: 0; background-color: white; z-index: auto;">
+                <tr>
+                    {% for colonna in dati.0 %}
+                        <th style="border: 1px solid white; font-weight: bold;">{{ colonna }}</th> <!-- Bordo per le intestazioni -->
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for riga in dati|slice:"1:" %}
+                    <tr>
+                        {% for colonna in riga %}
+                            <td style="border: 1px solid white;">{{ colonna }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
       {%endif%}
 
-      </div>
-  <!-- Aggiungi questo stile per alternare i colori delle righe -->
-  <style>
-    tbody tr:nth-child(odd) {
-        background-color: white;
-    }
-    tbody tr:nth-child(even) {
-        background-color: rgba(208,231,231,0.5); /* Colore grigio chiaro */
-    }
+
+<!-- Include la libreria DataTables -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    $('#Mytable').DataTable();
+  });
+</script>
+
+
+<style>
+  /* Stile per le righe dispari */
+  .odd-row {
+      background-color: grey;  /* Colore per le righe dispari */
+  }
+
+  /* Stile per le righe pari */
+  .even-row {
+      background-color: #e0f7fa;  /* Colore per le righe pari */
+  }
+
+  /* Stile per il hover sulle righe */
+  tbody tr:hover {
+      background-color: #b2ebf2; /* Colore di sfondo al passaggio del mouse */
+  }
+
+  /* Stile per le celle */
+  td {
+      padding: 10px;
+      border: 1px solid #ddd; /* Bordo sottile per ogni cella */
+      text-align: left; /* Allineamento del testo a sinistra */
+  }
+
+  /* Optional: personalizzazione per la tabella DataTables */
+  .dataTables_wrapper {
+      font-size: 15px; /* Dimensione del testo nella tabella */
+  }
+
+  .table-hover tbody tr:hover {
+      background-color: #d1ecf1; /* Colore di hover per le righe della tabella */
+  }
 </style>
+
 
 {%endblock%}
     

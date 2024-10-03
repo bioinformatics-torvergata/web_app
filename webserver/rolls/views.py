@@ -14,6 +14,7 @@ import os.path
 from django.conf import settings
 import shutil
 import csv
+import pandas as pd
 
 from django.http import JsonResponse
 from rolls.models import Gene,Pathway,Protein, Gene_symbol
@@ -57,15 +58,17 @@ def documentation(request):
 
 def read_table(file_path):
     txt_data = []
+    
 
-    # Leggi il file TXT
-    with open(file_path, newline='', encoding='utf-8') as txtfile:
-        # Separa i dati usando il delimitatore di tabulazioni (\t) o un altro delimitatore
-        reader = csv.reader(txtfile, delimiter='\t')  # Cambia delimiter se necessario (es. ',' per CSV)
-        
-        for row in reader:
-            txt_data.append(row)
-
+    df = pd.read_csv(file_path, sep='\t')  # Cambia 'sep' se necessario, es. ',' per CSV
+    
+   
+    # Aggiungi l'intestazione (nomi delle colonne, incluso l'indice) alla lista
+    txt_data.append(df.columns.tolist())
+    
+    # Itera sulle righe del DataFrame e aggiungi ogni riga come lista
+    for index, row in df.iterrows():
+        txt_data.append(row.tolist())
     return(txt_data)
 
 
@@ -692,21 +695,27 @@ def deconvolution(request):
             
             out=run([sys.executable,'script/deconvolution.py',tumor,dir,dir_saveresults],shell=False, stdout=PIPE)
             
-            if os.path.isdir(dir): 
-                files=os.listdir(dir)
-                for file in files:
-                    print(file)
-                    if 'jpeg' in file:
-                        image=os.path.join('media/saveanalisi',inp3,file)
-                        print(image)
-                    if 'tsv' in file:
-                        result_tsv=os.path.join('media/saveanalisi',inp3,file)
-
+            # if os.path.isdir(dir): 
+            files=os.listdir(dir)
+            for file in files:
+                print(file)
+                if 'boxplot' in file:
+                    image_box=os.path.join('media/saveanalisi',inp3,file)
+                    print(image_box)
+                if 'heatmap' in file:
+                    image_heat=os.path.join('media/saveanalisi',inp3,file)
+                    print(image_heat)
+                if 'tsv' in file:
+                    result_tsv=os.path.join('media/saveanalisi',inp3,file)
+                    result_data=os.path.join(output_data,inp3,file)
+                    result=read_table(result_data)
                     
             form=Deseq2form()                         
             return render(request, 'rolls/deconvolution.html', {'form':form, 
                 'tumor':tumor,
-                'image':image,
+                'image1':image_box,
+                'image2':image_heat,
+                'dati':result,
                 'go':'Valid',
                 'dir':result_tsv,
                 })

@@ -36,7 +36,7 @@
         </div> 
         </div>
         {%if go == 'Valid' %}        
-        <h3>Results:</h3>You can download the p-value results calculated for this analysis <a href="{% static dir %}" download target="blank" ><button class="btn"><i class="fa-solid fa-download"></i></button></a>
+        <h3>Results:</h3>
 
         <hr>
         <div class="row">
@@ -45,8 +45,37 @@
           </div>
         <br>
         <div class="row">
-          <div class="zoom shadow mx-auto bg-body rounded" style="max-width: 800px;">
-            <a href="{%static image%}" target="_blank"><img src= '{%static image %}' width="700"></a>
+          <div class="mx-auto bg-body rounded" style="max-width: 800px;">
+            <a href="{%static image1%}" target="_blank"><img src= '{%static image1 %}' width="700"></a>
+        </div> 
+
+        <br><br>
+        <p>You can download the calculated cellular proportions for this tumor <a href="{% static dir %}" download target="blank" ><button class="btn"><i class="fa-solid fa-download"></i></button></a></p>
+        <div class="table-responsive" >
+          <table id="Mytable" class="table table-hover table-sm" style="width: 100%; margin: 0 auto; text-align: left; border-collapse: collapse; border: 1px solid white;">
+              <thead style="position: sticky; top: 0; background-color: white; z-index: auto;">
+                  <tr>
+                      {% for colonna in dati.0 %}
+                          <th style="border: 1px solid white; font-weight: bold;">{{ colonna }}</th> <!-- Bordo per le intestazioni -->
+                      {% endfor %}
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for riga in dati|slice:"1:" %}
+                      <tr>
+                          {% for colonna in riga %}
+                              <td style="border: 1px solid white;">{{ colonna }}</td>
+                          {% endfor %}
+                      </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+      </div>
+       
+        <br>
+        <p>Correlation cell types and pathways</p>
+        <div class="mx-auto bg-body rounded" style="max-width: 800px;">
+          <a href="{%static image2%}" target="_blank"><img src= '{%static image2 %}' width="700"></a>
         </div> 
         
         </div>
@@ -91,6 +120,51 @@
   });
 </script>
    
+
+<!-- Include la libreria DataTables -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    $('#Mytable').DataTable({
+      "stripeClasses": ['odd-row', 'even-row']  // Definisce le classi per le righe dispari e pari
+    });
+  });
+</script>
+
+<style>
+  /* Stile per le righe dispari */
+  .odd-row {
+      background-color: grey;  /* Colore per le righe dispari */
+  }
+
+  /* Stile per le righe pari */
+  .even-row {
+      background-color: #e0f7fa;  /* Colore per le righe pari */
+  }
+
+  /* Stile per il hover sulle righe */
+  tbody tr:hover {
+      background-color: #b2ebf2; /* Colore di sfondo al passaggio del mouse */
+  }
+
+  /* Stile per le celle */
+  td {
+      padding: 10px;
+      border: 1px solid #ddd; /* Bordo sottile per ogni cella */
+      text-align: left; /* Allineamento del testo a sinistra */
+  }
+
+  /* Optional: personalizzazione per la tabella DataTables */
+  .dataTables_wrapper {
+      font-size: 15px; /* Dimensione del testo nella tabella */
+  }
+
+  .table-hover tbody tr:hover {
+      background-color: #d1ecf1; /* Colore di hover per le righe della tabella */
+  }
+</style>
 
 {%endblock%}
     
