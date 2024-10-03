@@ -33,6 +33,7 @@ urlpatterns=[
     path('pathway_suggestions/', views.pathway_suggestions, name='pathway_suggestions'),
 
     path('tumor_mutation_analysis/', views.tumor_mutation_analysis, name='tumor_mutation_analysis'),
+    path('somatic_interaction_analysis/', views.somatic_interaction_analysis, name='somatic_interaction_analysis'),
     path('gene_mutation_analysis/', views.gene_mutation_analysis, name='gene_mutation_analysis'),
     path('gene_symbol_suggestions/', views.gene_symbol_suggestions, name='gene_symbol_suggestions'),
 

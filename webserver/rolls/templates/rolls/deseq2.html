@@ -15,25 +15,40 @@
   </p>
   <div class="collapse" id="collapsedescription">
     <div class="card card-body">
-      <p>The differential expression analysis performed with <a href="http://www.bioconductor.org/packages/release/bioc/html/DESeq2.html", target="_blank">DESeq2</a>, uses data from TCGA Gene Expression Quantification HTSeq - counts. This differential gene expression analysis is based on the negative binomial distribution.<br>
-        All DESeq2 analyses that the web server provides are precomputed, to save the user the computational time of the analysis itself. 
-        <br>
-        To perform the analysis, the user will have to 
-      </p>
-        <ol>
-          <li><i class="fa-solid fa-arrow-right"></i> Select the tumor of interest</li>
-          <li><i class="fa-solid fa-arrow-right"></i> Press the search button "Features"</li>
-          <li><i class="fa-solid fa-arrow-right"></i> This will display in the second select all the features for which it is possible to obtain the result of this analysis for that specific tumor.</li>
-          <li><i class="fa-solid fa-arrow-right"></i> Pressing "Submit" will display the results with graphs and related information of the data entered by the user.</li>
-        </ol>
+      
         <p>
-        A necessary information that will be specified is the Parameters compared, the order of the feature parameters compared (e.s. Tumor vs. Control).
-        <br><br>
-        <i class="fa-solid fa-square-poll-horizontal"></i> The analysis provides a downloadable results table where the calculated log2 Fold Change, p-value and adjusted p-value (padj) are associated for each gene. 
-        <br>In addition, several graphs such as Enhanced Volcano Plot, Heatmap, PCA and Heatmap top 100 can be viewed and downloaded.
-        
+          The differential expression analysis performed with <a href="http://www.bioconductor.org/packages/release/bioc/html/DESeq2.html", target="_blank">DESeq2</a> uses data from the <em>TCGA Gene Expression Quantification HTSeq - counts</em>. 
+          This analysis is based on the <strong>negative binomial distribution</strong> to identify differentially expressed genes.
       </p>
-    </div>
+      
+      <p>
+          All DESeq2 analyses provided by this web server are precomputed, ensuring that users do not need to spend time on computationally intensive tasks. 
+          This significantly reduces the time required to obtain results.
+      </p>
+      
+      <p>To perform the analysis,</p>
+      
+      <ol>
+        <li><i class="fa-solid fa-arrow-right"></i> Select the tumor of interest</li>
+        <li><i class="fa-solid fa-arrow-right"></i> Press the search button "Features"</li>
+        <li><i class="fa-solid fa-arrow-right"></i> This will display in the second select all the features for which it is possible to obtain the result of this analysis for that specific tumor.</li>
+        <li><i class="fa-solid fa-arrow-right"></i> Pressing "Submit" will display the results with graphs and related information of the data entered by the user.</li>
+      </ol>
+      
+      <p>
+          A key detail provided in the results is the comparison of parameters, specifically the order in which the feature parameters are compared (e.g., <em>Tumor vs. Control</em>).
+      </p>
+  
+      
+      <p>The analysis results in a downloadable table that includes:</p>
+      <ul>
+          <li>Log2 Fold Change: The calculated fold change between conditions.</li>
+          <li>p-value: The statistical significance of the differential expression.</li>
+          <li>Adjusted p-value (padj):The p-value adjusted for multiple testing to control the false discovery rate.</li>
+      </ul>
+        <br><p>In addition, several graphs such as Enhanced Volcano Plot, Heatmap, PCA and Heatmap top 100 can be viewed and downloaded.</p>
+        <p>For more details go to <a href="{% url 'documentation' %}" target="_blank">PANDA Documentation</a></p>
+      </div>
   </div>
 
   <div class="row my-3">
@@ -61,7 +76,7 @@
           <div class="collapse" id="collapseExample">
             <div class="card card-body">
               <p class="text-center" >Example: </p>
-              <img src= "{%static 'media/examples/DESeq2.png' %}" width="750">
+              <img src= "{%static 'media/examples/DESeq2.png' %}" width="700">
             </div> 
           </div>
           {%if go == 'Valid' %}
@@ -105,11 +120,11 @@
         </div>
         {%if go == 'Valid' %}
         <br>
-        <p>You can download the log2FoldChange of this analysis <a href="{% static dir %}" download target="_blank">
+        <p>The table shows the top 500 significant genes, you can download the full table <a href="{% static dir %}" download target="_blank">
           <button class="btn"><i class="fa-solid fa-download"></i></button></a>
       </p>
       
-      <div class="table-responsive" style="max-height: 400px;" >
+      <div class="table-responsive" >
         <table id="Mytable" class="table table-hover table-sm" style="width: 100%; margin: 0 auto; text-align: left; border-collapse: collapse; border: 1px solid white;">
             <thead style="position: sticky; top: 0; background-color: white; z-index: auto;">
                 <tr>
@@ -130,9 +145,10 @@
         </table>
     </div>
       {%endif%}
-
+  </div>
 
 <!-- Include la libreria DataTables -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 
@@ -168,7 +184,7 @@
 
   /* Optional: personalizzazione per la tabella DataTables */
   .dataTables_wrapper {
-      font-size: 15px; /* Dimensione del testo nella tabella */
+      font-size: 13px; /* Dimensione del testo nella tabella */
   }
 
   .table-hover tbody tr:hover {

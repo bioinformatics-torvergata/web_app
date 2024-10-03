@@ -3,7 +3,7 @@
 {%block content%}
 {% load static %}
 <h4 style="color:navy">Mutation Analyses</h4>
-<h2> Gene mutation analysis </h2>
+<h2> Somatic Interaction Analysis </h2>
    
     <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapsedescription" role="button" aria-expanded="false" aria-controls="collapsedescription">
       Description
@@ -32,61 +32,56 @@
         <div class="collapse" id="collapseExample">
         <div class="card card-body">
           <p class="text-center" >Example: </p>
-          <img src= "{%static 'media/examples/Gene_mut.png' %}" width="750">
+          <img src= "{%static 'media/examples/somatic_inter.png' %}" width="700">
         </div> 
         </div>
         {%if go == 'Valid' %}        
         <h3>Results:</h3> 
+
+
         <hr>
         <div class="row">
-            <div class="col mx-3">
-              <p>Gene: {{gene}}</p>
-              <p>Tumor: {{tumor}}</p>
-            </div>
+          <div class="col mx-3">
+            <p>Tumor: {{tumor}}</p>
+          </div>
+        <br>
+        <div class="row">
           
-          <div class="row">
-            <div class="mb-3 rounded" style="max-width: 800px;text-align: center; ">
-              <a href="{%static image_lolli%}" target="_blank"><img src= '{%static image_lolli %}' width="700"></a>
-            </div>
-            <br>
-            <p>You can download the results of this analysis shown in the table  <a href="{% static dir %}" download target="_blank"><button class="btn"><i class="fa-solid fa-download"></i></button></a></p>
-            <div class="table-responsive" >
-              <table id="Mytable" class="table table-hover table-sm" style="width: 100%; margin: 0 auto; text-align: left; border-collapse: collapse; border: 1px solid white;">
-                  <thead style="position: sticky; top: 0; background-color: white; z-index: auto;">
+          <div class="mx-auto bg-body rounded" style="max-width: 800px;">
+            <a href="{%static image_interact%}" target="_blank"><img src= '{%static image_interact %}' width="700"></a>
+        </div> 
+        <br>
+        <p>You can download the results of this analysis shown in the table  <a href="{% static dir %}" download target="_blank"><button class="btn"><i class="fa-solid fa-download"></i></button></a></p>
+        <div class="table-responsive" >
+          <table id="Mytable" class="table table-hover table-sm" style="width: 100%; margin: 0 auto; text-align: left; border-collapse: collapse; border: 1px solid white;">
+              <thead style="position: sticky; top: 0; background-color: white; z-index: auto;">
+                  <tr>
+                      {% for colonna in dati.0 %}
+                          <th style="border: 1px solid white; font-weight: bold;">{{ colonna }}</th> <!-- Bordo per le intestazioni -->
+                      {% endfor %}
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for riga in dati|slice:"1:" %}
                       <tr>
-                          {% for colonna in dati.0 %}
-                              <th style="border: 1px solid white; font-weight: bold;">{{ colonna }}</th> <!-- Bordo per le intestazioni -->
+                          {% for colonna in riga %}
+                              <td style="border: 1px solid white;">{{ colonna }}</td>
                           {% endfor %}
                       </tr>
-                  </thead>
-                  <tbody>
-                      {% for riga in dati|slice:"1:" %}
-                          <tr>
-                              {% for colonna in riga %}
-                                  <td style="border: 1px solid white;">{{ colonna }}</td>
-                              {% endfor %}
-                          </tr>
-                      {% endfor %}
-                  </tbody>
-              </table>
-          </div>
-            
-
-          </div> 
-      
-     
+                  {% endfor %}
+              </tbody>
+          </table>
+      </div>
         </div>
       </div>
         {%endif%}
   
         {%if go == 'error'%}
         <div class="alert alert-danger text-center" role="alert">
-          <p> (Error) </p>
-          <h5>Sorry! It is not possible to run the analysis with the data entered: "{{gene}}" in "{{tumor}}"</h5>
-          
+          <h5>There are no results for {{tumor}}</h5>
+          <p> Error: {{formresult}} </p>
           
         </div> 
-
 
         {%endif%}
       </div>
@@ -102,10 +97,10 @@
 <!-- Script per il suggerimento con jQuery UI -->
 <script type="text/javascript">
   $(document).ready(function() {
-    $('#gene_symbol-input').autocomplete({
+    $('#pathway-input').autocomplete({
       source: function(request, response) {
         $.ajax({
-          url: "{% url 'gene_symbol_suggestions' %}",  // L'URL che abbiamo aggiunto
+          url: "{% url 'pathway_suggestions' %}",  // L'URL che abbiamo aggiunto
           data: {
             'term': request.term  // Il testo digitato dall'utente
           },
@@ -118,6 +113,7 @@
     });
   });
 </script>
+  
 
 
 
@@ -159,14 +155,13 @@
 
   /* Optional: personalizzazione per la tabella DataTables */
   .dataTables_wrapper {
-      font-size: 14px; /* Dimensione del testo nella tabella */
+      font-size: 13px; /* Dimensione del testo nella tabella */
   }
 
   .table-hover tbody tr:hover {
       background-color: #d1ecf1; /* Colore di hover per le righe della tabella */
   }
 </style>
-
 
 {%endblock%}
     

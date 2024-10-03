@@ -14,23 +14,54 @@
                         </h2>
                         <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                           <div class="accordion-body">
-                            The differential expression analysis performed with <a href="http://www.bioconductor.org/packages/release/bioc/html/DESeq2.html", target="_blank">DESeq2</a>, uses data from TCGA Gene Expression Quantification HTSeq - counts. This differential gene expression analysis is based on the negative binomial distribution.<br>
-                            All DESeq2 analyses that the web server provides are precomputed, to save the user the computational time of the analysis itself. 
-                            <br>
-                            To perform the analysis, the user will have to 
-                         
-                            <ol>
-                              <li><i class="fa-solid fa-arrow-right"></i> Select the tumor of interest</li>
-                              <li><i class="fa-solid fa-arrow-right"></i> Press the search button "Features"</li>
-                              <li><i class="fa-solid fa-arrow-right"></i> This will display in the second select all the features for which it is possible to obtain the result of this analysis for that specific tumor.</li>
-                              <li><i class="fa-solid fa-arrow-right"></i> Pressing "Submit" will display the results with graphs and related information of the data entered by the user.</li>
-                            </ol>
-                         
-                            A necessary information that will be specified is the Parameters compared, the order of the feature parameters compared (e.s. Tumor vs. Control).
-                            <br><br>
-                            <i class="fa-solid fa-square-poll-horizontal"></i> The analysis provides a downloadable results table where the calculated log2 Fold Change, p-value and adjusted p-value (padj) are associated for each gene. 
-                            <br>In addition, several graphs such as Enhanced Volcano Plot, Heatmap, PCA and Heatmap top 100 can be viewed and downloaded.
-                            
+                            <p>
+                              The differential expression analysis performed with <a href="http://www.bioconductor.org/packages/release/bioc/html/DESeq2.html", target="_blank">DESeq2</a> uses data from the <em>TCGA Gene Expression Quantification HTSeq - counts</em>. 
+                              This analysis is based on the <strong>negative binomial distribution</strong> to identify differentially expressed genes.
+                          </p>
+                          
+                          <p>
+                              All DESeq2 analyses provided by this web server are precomputed, ensuring that users do not need to spend time on computationally intensive tasks. 
+                              This significantly reduces the time required to obtain results.
+                          </p>
+                          
+                          <p>To perform the analysis,</p>
+                          
+                          <ol>
+                            <li><i class="fa-solid fa-arrow-right"></i> Select the tumor of interest</li>
+                            <li><i class="fa-solid fa-arrow-right"></i> Press the search button "Features"</li>
+                            <li><i class="fa-solid fa-arrow-right"></i> This will display in the second select all the features for which it is possible to obtain the result of this analysis for that specific tumor.</li>
+                            <li><i class="fa-solid fa-arrow-right"></i> Pressing "Submit" will display the results with graphs and related information of the data entered by the user.</li>
+                          </ol>
+                          
+                          <p>
+                              A key detail provided in the results is the comparison of parameters, specifically the order in which the feature parameters are compared (e.g., <em>Tumor vs. Control</em>).
+                          </p>
+                          
+                          <h5>Results and Output</h5>
+                          
+                          <p>
+                              The analysis results in a downloadable table that includes:
+                          </p>
+                          <ul>
+                              <li>Log2 Fold Change: The calculated fold change between conditions.</li>
+                              <li>p-value: The statistical significance of the differential expression.</li>
+                              <li>Adjusted p-value (padj):The p-value adjusted for multiple testing to control the false discovery rate.</li>
+                          </ul>
+                          
+                          <p>
+                              Additionally, several graphical outputs are available to enhance interpretation, including:
+                          </p>
+                          
+                          <ul>
+                              <li>Enhanced Volcano Plot:A plot that highlights significantly differentially expressed genes.</li>
+                              <li>Heatmap: A visual representation of gene expression levels across samples.</li>
+                              <li>PCA Plot: A Principal Component Analysis plot to visualize sample clustering.</li>
+                              <li>Top 100 Heatmap: A heatmap showing the top 100 differentially expressed genes.</li>
+                          </ul>
+                          
+                          <p>
+                              These plots can be both viewed directly on the page and downloaded for further analysis or presentation purposes.
+                          </p>
                           </div>
                         </div>
                       </div>

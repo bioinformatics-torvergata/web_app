@@ -58,12 +58,8 @@ def documentation(request):
 
 def read_table(file_path):
     txt_data = []
-    
 
     df = pd.read_csv(file_path, sep='\t')  # Cambia 'sep' se necessario, es. ',' per CSV
-    
-   
-    # Aggiungi l'intestazione (nomi delle colonne, incluso l'indice) alla lista
     txt_data.append(df.columns.tolist())
     
     # Itera sulle righe del DataFrame e aggiungi ogni riga come lista
@@ -91,15 +87,14 @@ def yourdataset(request):
     return render(request,'rolls/yourdataset.html')
 
 
-
-# Funzione per l'autocomplete prova2
+##########################################
+# Funzioni per l'autocomplete
 def gene_suggestions(request):
     if 'term' in request.GET:
         qs = Gene.objects.filter(gene__icontains=request.GET.get('term'))[:10]  # Limita i risultati a 10
         genes = list(qs.values_list('gene', flat=True))
         return JsonResponse(genes, safe=False)
     
-
 def pathway_suggestions(request):
     if 'term' in request.GET:
         qs = Pathway.objects.filter(pathway__icontains=request.GET.get('term'))[:20]  # Limita i risultati a 10
@@ -258,7 +253,9 @@ def survival_with_gene_mutation_status(request):
     return render(request, 'rolls/survival_with_gene_mutation_status.html', {'form':form})
 
 
-############     DIFFERENTIAL EXPRESSION SINGLE TUMOR  TRASCRITTOMIC   ############
+
+
+############     DIFFERENTIAL EXPRESSION SINGLE TUMOR  TRASCRITTOMIC   ############ manca da gestire errori
 def diff_exp_single_tumor(request):
     if request.method == 'POST':
             form = Analisiformcompleto(request.POST)
@@ -314,7 +311,9 @@ def diff_exp_single_tumor(request):
     form=Analisiformcompleto()
     return render(request, 'rolls/diff_exp_single_tumor.html', {'form':form})
 
-#############      DIFFERENTIAL EXPRESSION ANALYSIS ALL TUMOR FOR FEATURE TRASCRITTOMIC   #############
+
+
+#############      DIFFERENTIAL EXPRESSION ANALYSIS ALL TUMOR FOR FEATURE TRASCRITTOMIC   ############# manca da gestire errori
 def differential_expression(request):
     if request.method == 'POST':
         form = Analisiform(request.POST)
@@ -335,7 +334,7 @@ def differential_expression(request):
                         image=os.path.join('media/saveanalisi',inp3,file)
                         #image='media/saveanalisi/'+inp3+'/'+file
 
-                    if 'txt' in file:
+                    if 'result' in file:
                         result_data=os.path.join(output_data,inp3,file)
                         result=read_table(result_data)
                     
@@ -368,7 +367,7 @@ def differential_expression(request):
 
 
 
-#############      DIFFERENTIAL EXPRESSION ANALYSIS ALL TUMOR FOR FEATURE   PROTEOMIC   #############
+#############      DIFFERENTIAL EXPRESSION ANALYSIS ALL TUMOR FOR FEATURE   PROTEOMIC   ############# manca da gestire errori
 def differential_expression_protein(request):
     if request.method == 'POST':
         form = Analisiform_protein(request.POST)
@@ -417,7 +416,7 @@ def differential_expression_protein(request):
     return render(request, 'rolls/differential_expression_protein.html', {'form':form})
 
 
-############     DIFFERENTIAL EXPRESSION SINGLE TUMOR PROTEOMIC   ############
+############     DIFFERENTIAL EXPRESSION SINGLE TUMOR PROTEOMIC   ############ manca da gestire errori
 def diff_exp_single_tumor_protein(request):
     if request.method == 'POST':
             form = Analisiformcompleto_protein(request.POST)
@@ -497,6 +496,25 @@ def choseimage(tumor,pathfiles,dir_saveresults):
         return()
 
 
+
+def read_table_deseq(file_path):
+    txt_data = []
+    
+
+    df = pd.read_csv(file_path, sep='\t')  # Cambia 'sep' se necessario, es. ',' per CSV
+    df = df.sort_values(by='padj', ascending=True).head(500)
+
+    
+   
+    # Aggiungi l'intestazione (nomi delle colonne, incluso l'indice) alla lista
+    txt_data.append(df.columns.tolist())
+    
+    # Itera sulle righe del DataFrame e aggiungi ogni riga come lista
+    for index, row in df.iterrows():
+        txt_data.append(row.tolist())
+    return(txt_data)
+
+
 def deseq2(request):
     if request.method == 'POST':
 
@@ -527,14 +545,14 @@ def deseq2(request):
                 print(dir_saveresults)
                 os.makedirs(dir_saveresults)
 
-                
-                out=run([sys.executable,'script/deseq2.py',tumor,dir,dir_saveresults],shell=False, stdout=PIPE)
+                result_file='result_' + tumor + '_2.txt'
+                out=run([sys.executable,'script/deseq2.py',tumor,dir,dir_saveresults,result_file],shell=False, stdout=PIPE)
                 
                 images=choseimage(tumor,dir,dir_saveresults)
-                result_file='result_' + tumor + '.txt'
-                file_txt=os.path.join(output_data,inp3,'result_' + tumor + '.txt')
+                
+                file_txt=os.path.join(output_data,inp3,result_file)
                 print(file_txt)
-                result=read_table(file_txt)
+                result=read_table_deseq(file_txt)
                 form=Deseq2form()                         
                 return render(request, 'rolls/deseq2.html', {'form':form, 
                     'feature': feature,
@@ -546,7 +564,7 @@ def deseq2(request):
                     'image_plotly':os.path.join('media/saveanalisi',inp3,images[4]),
                     'go':'Valid',
                     'parametri': parametri[feature],
-                    'dir':'media/saveanalisi/'+inp3+'/result_' + tumor + '.txt', 
+                    'dir':'media/saveanalisi/'+inp3+'/'+result_file, 
                     'dati':result,
                     })
 
@@ -593,10 +611,7 @@ def tumor_mutation_analysis(request):
                             image_oncoplot=os.path.join('media/saveanalisi',inp3,file)
                         if 'Titv' in file:
                             image_titv=os.path.join('media/saveanalisi',inp3,file)
-                        if 'somaticInteractions' in file:
-                            image_interact=os.path.join('media/saveanalisi',inp3,file)  
-                        if 'TumorVAF' in file: 
-                            image_VAF=os.path.join('media/saveanalisi',inp3,file) 
+                        
 
                         
                 form=FormTumorMutation()
@@ -605,8 +620,6 @@ def tumor_mutation_analysis(request):
                     'image_summary':image_summary,
                     'image_oncoplot':image_oncoplot,
                     'image_titv':image_titv,
-                    'image_interact':image_interact,
-                    # 'image_VAF':image_VAF,
                     'go':'Valid',
                     'dir':inp3,
                     })
@@ -621,6 +634,70 @@ def tumor_mutation_analysis(request):
 
     form = FormTumorMutation()       
     return render(request, 'rolls/tumor_mutation_analysis.html', {'form':form})
+
+
+############somatic_interaction_analysis ########
+
+def read_table_comma(file_path):
+    txt_data = []
+
+    df = pd.read_csv(file_path, sep=',')  # Cambia 'sep' se necessario, es. ',' per CSV
+    txt_data.append(df.columns.tolist())
+    
+    # Itera sulle righe del DataFrame e aggiungi ogni riga come lista
+    for index, row in df.iterrows():
+        txt_data.append(row.tolist())
+    return(txt_data)
+
+def somatic_interaction_analysis(request):
+    if request.method == 'POST':
+
+        form = FormTumorMutation(request.POST)
+        if form.is_valid(): 
+            tumor=request.POST['tumor'] 
+            
+            inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
+            dir=os.path.join(output_data, inp3)
+            
+            os.makedirs(dir)
+            
+            out = subprocess.run(['Rscript', 'script/somatic_interaction_analysis.R',tumor,dir], capture_output=True, text=True)
+            print(out)
+            
+            if os.path.isdir(dir): 
+                files=os.listdir(dir)
+                print(files)
+                for file in files:
+                    if file[-3:]=='png':
+                        if 'somaticInteractions' in file:
+                            image_interact=os.path.join('media/saveanalisi',inp3,file)  
+                    if 'results' in file:
+                        name=file
+                        result_data=os.path.join(output_data,inp3,file)
+                        result=read_table_comma(result_data)
+                        
+                form=FormTumorMutation()
+                return render(request, 'rolls/somatic_interaction_analysis.html', {'form':form, 
+                    'tumor':tumor,
+                    'image_interact':image_interact,
+                    'go':'Valid',
+                    'dir':inp3,
+                    'dati':result,
+                    'dir':'media/saveanalisi/'+inp3+'/'+name,
+                    })
+
+            else:
+                form=FormTumorMutation()
+                return render(request, 'rolls/somatic_interaction_analysis.html', {'form':form,
+                'tumor':tumor, 
+                'go':'error'})
+
+
+
+    form = FormTumorMutation()       
+    return render(request, 'rolls/somatic_interaction_analysis.html', {'form':form})
+
+
 
 
 def gene_mutation_analysis(request):

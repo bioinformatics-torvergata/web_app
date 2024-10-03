@@ -17,14 +17,15 @@ if __name__ == "__main__":
     tumor= sys.argv[1]
     dir= sys.argv[2]
     dir_saveresults=sys.argv[3]
-
+    file_result=sys.argv[4]
     
     #copia i file nella cartella dei risulati dir_saveresults
     copyfile(tumor,dir,dir_saveresults)
 
     #generare file html plotly per volcano plot nella cartella risultati
-    path_result=os.path.join(dir_saveresults,'result_'+tumor+'.txt')
+    path_result=os.path.join(dir_saveresults,file_result)
     print(path_result)
+    
     df=pd.read_csv(path_result,sep="\t")
     df['padj']=np.log10(df['padj'])*(-1)
     #plt

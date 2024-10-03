@@ -415,7 +415,7 @@ def plotly_volcano(df,cartella,tumor):
         x=df['log2FoldChange'],
         y=df['padj'],
         mode='markers',
-        hovertext=list(df.index),
+        hovertext=list(df['GeneSymbol']),
         marker=dict(
             color=df['color'],  # Usa la colonna color per colorare i punti
             size=10
