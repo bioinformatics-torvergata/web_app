@@ -11,7 +11,7 @@ Transcriptomic analyses
     <li><a href="{%url 'deseq2'%}"><i class="fas fa-solid fa-square-poll-vertical"></i> DESeq2 analysis</a></li>
     <li><a href="{%url 'diff_exp_single_tumor'%}"><i class="fas fa-solid fa-square-poll-vertical"></i> Differential expression analysis</a></li>
     <li><a href="{%url 'differential_expression'%}"><i class="fas fa-solid fa-square-poll-vertical"></i> Differential expression analysis all tumor</a></li>
-    <li><a href="{%url 'rna_interactor'%}"><i class="fa-solid fa-square-poll-horizontal"></i> Correlation Analysis RNA interactor</a></li> 
+    <!-- <li><a href="{%url 'rna_interactor'%}"><i class="fa-solid fa-square-poll-horizontal"></i> Correlation Analysis RNA interactor</a></li>  -->
 </ul>
 
 <br>
@@ -42,7 +42,7 @@ Survival Analysis
 <ul id="category3" style="display: none; padding-left: 20px;">
     <li><a href="{%url 'overall_survival'%}"><i class="fas fa-solid fa-chart-line"></i> Overall Survival</a></li>
     <li><a href="{%url 'OS_pathway'%}"><i class="fas fa-solid fa-chart-line"></i> Overall Survival with Pathway activity score</a></li>
-    <li><a href="{%url 'survival_with_gene_mutation_status'%}"><i class="fas fa-solid fa-square-poll-horizontal"></i> Overall Survival with gene mutation status</a></li>
+    <li><a href="{%url 'survival_with_gene_mutation_status'%}"><i class="fas fa-solid fa-chart-line"></i> Overall Survival with gene mutation status</a></li>
 </ul>
 <br>
 
@@ -56,8 +56,10 @@ Mutational analyses
 </button>
 <ul id="category4" style="display: none; padding-left: 20px;">
     <li><a href="{%url 'tumor_mutation_analysis'%}"><i class="fas fa-solid fa-square-poll-horizontal"></i> Tumour mutation analysis</a></li>
+    <li><a href="{% url 'tumor_oncoplot' %}"><i class="fas fa-solid fa-square-poll-horizontal"></i>Oncoplot</a></li>
     <li><a href="{% url 'somatic_interaction_analysis' %}"><i class="fas fa-solid fa-square-poll-horizontal"></i>Somatic interaction analysis</a></li>
     <li><a href="{%url 'gene_mutation_analysis'%}"><i class="fas fa-solid fa-square-poll-horizontal"></i> Gene mutation analysis</a></li>
+    <li><a href="{% url 'de_mut' %}"><i class="fas fa-solid fa-square-poll-horizontal"></i>Differential expression for mutated status</a></li>
 </ul>
 <br>
 
@@ -71,6 +73,7 @@ Cell types analyses
 
  <ul id="category5" style="display: none; padding-left: 20px;">
     <li><a href="{%url 'deconvolution'%}"><i class="fas fa-solid fa-square-poll-horizontal"></i> Deconvolution Analysis</a></li>
+    <li><a href="{%url 'corr_cell_pathway'%}"><i class="fas fa-solid fa-square-poll-horizontal"></i> Correlation cell type and Pathways</a></li>
 </ul>
 
 

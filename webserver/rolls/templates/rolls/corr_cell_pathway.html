@@ -3,7 +3,7 @@
 {%block content%}
 {% load static %}
 <h4 style="color:navy">Cell types analyses</h4>
-<h2> Deconvolution Analysis </h2>
+<h2> Correlation cell type and Pathways </h2>
    
     <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapsedescription" role="button" aria-expanded="false" aria-controls="collapsedescription">
       Description
@@ -32,7 +32,7 @@
         <div class="collapse" id="collapseExample">
         <div class="card card-body">
           <p class="text-center" >Example: </p>
-          <img src= "{%static 'media/home/BRCA_boxplot.jpeg' %}" width="750">
+          <img src= "{%static 'media/examples/corr_cell.png' %}" width="750">
         </div> 
         </div>
         {%if go == 'Valid' %}        
@@ -46,7 +46,7 @@
         <br>
         <div class="row">
           <div class="mx-auto bg-body rounded" style="max-width: 800px;">
-            <a href="{%static image1%}" target="_blank"><img src= '{%static image1 %}' width="700"></a>
+            <a href="{%static image2%}" target="_blank"><img src= '{%static image2 %}' width="900"></a>
         </div> 
 
         <br><br>
@@ -74,6 +74,7 @@
        
         <br>
        
+        
         </div>
       </div>
         {%endif%}

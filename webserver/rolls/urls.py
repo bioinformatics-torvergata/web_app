@@ -33,10 +33,14 @@ urlpatterns=[
     path('pathway_suggestions/', views.pathway_suggestions, name='pathway_suggestions'),
 
     path('tumor_mutation_analysis/', views.tumor_mutation_analysis, name='tumor_mutation_analysis'),
+    path('tumor_oncoplot/', views.tumor_oncoplot, name='tumor_oncoplot'),
     path('somatic_interaction_analysis/', views.somatic_interaction_analysis, name='somatic_interaction_analysis'),
     path('gene_mutation_analysis/', views.gene_mutation_analysis, name='gene_mutation_analysis'),
+    path('de_mut/', views.de_mut, name='de_mut'),
     path('gene_symbol_suggestions/', views.gene_symbol_suggestions, name='gene_symbol_suggestions'),
 
     path('survival_with_gene_mutation_status/', views.survival_with_gene_mutation_status, name='survival_with_gene_mutation_status'),
     path('deconvolution/', views.deconvolution,name='deconvolution'),
+    path('corr_cell_pathway/', views.corr_cell_pathway,name='corr_cell_pathway'),
+
 ]

@@ -607,8 +607,7 @@ def tumor_mutation_analysis(request):
                         if 'summary' in file:
                             image_summary=os.path.join('media/saveanalisi',inp3,file)  
                             
-                        if 'oncoplot' in file:
-                            image_oncoplot=os.path.join('media/saveanalisi',inp3,file)
+                       
                         if 'Titv' in file:
                             image_titv=os.path.join('media/saveanalisi',inp3,file)
                         
@@ -618,7 +617,6 @@ def tumor_mutation_analysis(request):
                 return render(request, 'rolls/tumor_mutation_analysis.html', {'form':form, 
                     'tumor':tumor,
                     'image_summary':image_summary,
-                    'image_oncoplot':image_oncoplot,
                     'image_titv':image_titv,
                     'go':'Valid',
                     'dir':inp3,
@@ -634,6 +632,104 @@ def tumor_mutation_analysis(request):
 
     form = FormTumorMutation()       
     return render(request, 'rolls/tumor_mutation_analysis.html', {'form':form})
+
+
+############## oncoplot #############
+def tumor_oncoplot(request):
+    if request.method == 'POST':
+
+        form = FormTumorMutation(request.POST)
+        if form.is_valid(): 
+            tumor=request.POST['tumor'] 
+            
+            inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
+            dir=os.path.join(output_data, inp3)
+            
+            os.makedirs(dir)
+            
+            out = subprocess.run(['Rscript', 'script/tumor_oncoplot.R',tumor,dir], capture_output=True, text=True)
+            print(out)
+            
+            if os.path.isdir(dir): 
+                files=os.listdir(dir)
+                print(files)
+                for file in files:
+                    if file[-3:]=='png':                            
+                        if 'oncoplot' in file:
+                            image_oncoplot=os.path.join('media/saveanalisi',inp3,file)
+                    
+                        
+                form=FormTumorMutation()
+                return render(request, 'rolls/tumor_oncoplot.html', {'form':form, 
+                    'tumor':tumor,
+                    'image_oncoplot':image_oncoplot,
+                    'go':'Valid',
+                    'dir':inp3,
+                    })
+
+            else:
+                form=FormTumorMutation()
+                return render(request, 'rolls/tumor_oncoplot.html', {'form':form,
+                'tumor':tumor, 
+                'go':'error'})
+
+
+
+    form = FormTumorMutation()       
+    return render(request, 'rolls/tumor_oncoplot.html', {'form':form})
+
+
+
+###########differential expression mutato vs non mutato #############
+def de_mut(request):
+    if request.method == 'POST':
+
+        form = FormTumorMutation(request.POST)
+        if form.is_valid(): 
+            tumor=request.POST['tumor'] 
+            
+            inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
+            dir=os.path.join(output_data, inp3)
+            
+            os.makedirs(dir)
+            
+            out = subprocess.run(['Rscript', 'script/tumor_mutation_analysis.R',tumor,dir], capture_output=True, text=True)
+            print(out)
+            
+            if os.path.isdir(dir): 
+                files=os.listdir(dir)
+                print(files)
+                for file in files:
+                    if file[-3:]=='png':
+                        if 'summary' in file:
+                            image_summary=os.path.join('media/saveanalisi',inp3,file)  
+                            
+                       
+                        if 'Titv' in file:
+                            image_titv=os.path.join('media/saveanalisi',inp3,file)
+                        
+
+                        
+                form=FormTumorMutation()
+                return render(request, 'rolls/de_mut.html', {'form':form, 
+                    'tumor':tumor,
+                    'image_summary':image_summary,
+                    'image_titv':image_titv,
+                    'go':'Valid',
+                    'dir':inp3,
+                    })
+
+            else:
+                form=FormTumorMutation()
+                return render(request, 'rolls/de_mut.html', {'form':form,
+                'tumor':tumor, 
+                'go':'error'})
+
+
+
+    form = FormTumorMutation()       
+    return render(request, 'rolls/de_mut.html', {'form':form})
+
 
 
 ############somatic_interaction_analysis ########
@@ -809,7 +905,58 @@ def deconvolution(request):
     return render(request, 'rolls/deconvolution.html', {'form':form})
 
 
+def corr_cell_pathway(request):
+    if request.method == 'POST':
+        form = Deseq2form(request.POST)
+        tumor=request.POST['tumor'] 
+        
+        dir= os.path.join(base_dir,'deconvolution','results',tumor)
+        
+        
+        if os.path.isdir(dir): 
+            inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
+            dir_saveresults= os.path.join(output_data, inp3)
+            print(dir_saveresults)
+            os.makedirs(dir_saveresults)
 
+            
+            out=run([sys.executable,'script/deconvolution.py',tumor,dir,dir_saveresults],shell=False, stdout=PIPE)
+            
+            # if os.path.isdir(dir): 
+            files=os.listdir(dir)
+            for file in files:
+                print(file)
+                if 'boxplot' in file:
+                    image_box=os.path.join('media/saveanalisi',inp3,file)
+                    print(image_box)
+                if 'heatmap' in file:
+                    image_heat=os.path.join('media/saveanalisi',inp3,file)
+                    print(image_heat)
+                if 'tsv' in file:
+                    result_tsv=os.path.join('media/saveanalisi',inp3,file)
+                    result_data=os.path.join(output_data,inp3,file)
+                    result=read_table(result_data)
+                    
+            form=Deseq2form()                         
+            return render(request, 'rolls/corr_cell_pathway.html', {'form':form, 
+                'tumor':tumor,
+                'image1':image_box,
+                'image2':image_heat,
+                'dati':result,
+                'go':'Valid',
+                'dir':result_tsv,
+                })
+
+        else:
+            form=Deseq2form()
+            return render(request, 'rolls/corr_cell_pathway.html', {'form':form,
+            'tumor':tumor, 
+            'go':'error'})
+
+
+
+    form = Deseq2form()       
+    return render(request, 'rolls/corr_cell_pathway.html', {'form':form})
 
 
 #### bozze da revisionare##########################

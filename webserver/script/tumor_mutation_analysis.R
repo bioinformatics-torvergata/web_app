@@ -16,18 +16,20 @@ png(output_file, width = 1200, height = 800, res = 150)
 plotmafSummary(maf = cx, rmOutlier = TRUE, addStat = 'median', dashboard = TRUE, titvRaw = FALSE)
 dev.off()
 
-#oncoplot for top ten mutated genes.
-output_file <- paste0(output_dir, "/", tumore, "_oncoplot.png")
-png(output_file, width = 1200, height = 800, res = 150)
-oncoplot(maf = cx, top = 15)
-dev.off()
-
 #plot titv summary
 output_file <- paste0(output_dir, "/", tumore, "_Titv.png")
 png(output_file, width = 1200, height = 800, res = 150)
 cx.titv = titv(maf = cx, plot = FALSE, useSyn = TRUE)
 plotTiTv(res = cx.titv)
 dev.off()
+
+
+# #oncoplot for top ten mutated genes.
+# output_file <- paste0(output_dir, "/", tumore, "_oncoplot.png")
+# png(output_file, width = 1200, height = 800, res = 150)
+# oncoplot(maf = cx, top = 15)
+# dev.off()
+
 
 # #somaticInteractions
 # output_file <- paste0( output_dir, "/", tumore, "_somaticInteractions.png")

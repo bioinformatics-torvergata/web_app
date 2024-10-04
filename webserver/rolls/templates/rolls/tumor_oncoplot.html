@@ -3,7 +3,7 @@
 {%block content%}
 {% load static %}
 <h4 style="color:navy">Mutation Analyses</h4>
-<h2> Tumor mutation analysis </h2>
+<h2> Oncoplot </h2>
    
     <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapsedescription" role="button" aria-expanded="false" aria-controls="collapsedescription">
       Description
@@ -32,7 +32,7 @@
         <div class="collapse" id="collapseExample">
         <div class="card card-body">
           <p class="text-center" >Example: </p>
-          <img src= "{%static 'media/examples/tumor_mutation_analysis.png' %}" width="750">
+          <img src= "{%static 'media/examples/oncoplot.png' %}" width="600">
         </div> 
         </div>
         {%if go == 'Valid' %}        
@@ -45,17 +45,11 @@
             <p>Tumor: {{tumor}}</p>
           </div>
         <br>
-        <div class="row">
-          <div class=" mx-auto bg-body rounded" style="max-width: 800px;">
-            <a href="{%static image_summary%}" target="_blank"><img src= '{%static image_summary %}' width="800"></a>
-        </div> 
-        <br>
-        <p class="text-center"> Transition-transversion (Ti/Tv) ratio summary plot </p>
+     
         <div class="mx-auto bg-body rounded" style="max-width: 800px;">
-          <a href="{%static image_titv%}" target="_blank"><img src= '{%static image_titv %}' width="700"></a>
+        <a href="{%static image_oncoplot%}" target="_blank"><img src= '{%static image_oncoplot %}' width="700"></a>
         </div>
         <br>
-        
   
         </div>
       </div>

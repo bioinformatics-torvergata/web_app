@@ -90,7 +90,7 @@
               <li><a href="{% url 'deseq2' %}">DESeq2 analysis</a></li>
               <li><a href="{% url 'diff_exp_single_tumor' %}">Differential expression analysis</a></li>
               <li><a href="{% url 'differential_expression' %}">Differential expression analysis all tumor</a></li>
-              <li><a href="{% url 'rna_interactor' %}">Correlation Analysis RNA interactor</a></li>
+              <!-- <li><a href="{% url 'rna_interactor' %}">Correlation Analysis RNA interactor</a></li> -->
             </small></p>
           </div>
         </div>
@@ -116,8 +116,10 @@
             <p class="card-text">Analysis with mutational data by selecting the tumour or gene of interest</p>
             <p class="card-text"><small class="text-muted">
               <li><a href="{% url 'tumor_mutation_analysis' %}">Tumour mutation analysis</a></li>
+              <li><a href="{% url 'tumor_oncoplot' %}">Oncoplot</a></li>
               <li><a href="{% url 'somatic_interaction_analysis' %}">Somatic interaction analysis</a></li>
               <li><a href="{% url 'gene_mutation_analysis' %}">Gene mutation analysis</a></li>
+              <li><a href="{% url 'de_mut' %}">Differential expression for mutated status</a></li>
             </small></p>
           </div>
         </div>
@@ -148,6 +150,7 @@
             <p class="card-text">Deconvolution analysis</p>
             <p class="card-text"><small class="text-muted">
               <li><a href="{% url 'deconvolution' %}"> Deconvolution Analysis</a></li>
+              <li><a href="{%url 'corr_cell_pathway'%}"> Correlation cell type and Pathways</a></li>
             </small></p>
           </div>
         </div>
