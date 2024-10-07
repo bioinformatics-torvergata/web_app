@@ -38,6 +38,7 @@ urlpatterns=[
     path('somatic_interaction_analysis/', views.somatic_interaction_analysis, name='somatic_interaction_analysis'),
     path('gene_mutation_analysis/', views.gene_mutation_analysis, name='gene_mutation_analysis'),
     path('de_mut/', views.de_mut, name='de_mut'),
+    path('de_mut_clinical_feature/', views.de_mut_clinical_feature, name='de_mut_clinical_feature'),
     path('gene_symbol_suggestions/', views.gene_symbol_suggestions, name='gene_symbol_suggestions'),
 
     path('survival_with_gene_mutation_status/', views.survival_with_gene_mutation_status, name='survival_with_gene_mutation_status'),

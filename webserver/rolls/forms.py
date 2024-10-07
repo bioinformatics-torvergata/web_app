@@ -29,7 +29,7 @@ class Analisiformcompleto(forms.ModelForm):
             attrs={
                 "placeholder": "ENSG/Gene symbol/miRNA",
                 "id": "gene-input",  # Aggiungi l'id qui per collegarlo all'autocomplete
-                "autocomplete": "on",  # Disabilita l'autocomplete del browser
+               
             }
         )
     )
@@ -251,3 +251,8 @@ class tumorGeneform(forms.ModelForm):
         model= Analisi_mutation
         fields=('gene','tumor')
 
+
+class featuremutationform(forms.ModelForm):
+    class Meta:
+        model= Analisi_mutation
+        fields=('tumor','feature',)

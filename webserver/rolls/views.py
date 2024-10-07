@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from subprocess import run,PIPE
 import sys
 from matplotlib import image
-from rolls.forms import Gene, FormMutationChoice,Analisiform_protein,Analisiformcompleto_protein,formSurvival,Analisiform, Deseq2form, Analisiform1, Analisiformcompleto, Analisi_interaction,Analisipath,tumorGeneform,FormTumorMutation
+from rolls.forms import Gene, FormMutationChoice,featuremutationform,Analisiform_protein,Analisiformcompleto_protein,formSurvival,Analisiform, Deseq2form, Analisiform1, Analisiformcompleto, Analisi_interaction,Analisipath,tumorGeneform,FormTumorMutation
 import os
 from django.http import StreamingHttpResponse
 from wsgiref.util import FileWrapper
@@ -74,12 +74,16 @@ def read_table(file_path):
 def dataset(request):
     file_path = os.path.join(output_data_Table,'table','campioni_TCGA.txt')
     file_path_genetype=os.path.join(output_data_Table,'table','gene_type.txt')
+    file_feature_tumor=os.path.join(output_data_Table,'table','Features_tumor.txt')
+
     txt_data_clinical=read_table(file_path)
 
-    txt_data_typegene=read_table(file_path_genetype)    
+    txt_data_typegene=read_table(file_path_genetype)   
+    txt_feature_tumor= read_table(file_feature_tumor) 
     return render(request, 'rolls/dataset.html', {
         'dati': txt_data_clinical, 
         'dati_genetype':txt_data_typegene,
+        'dati_feature':txt_feature_tumor,
  })
 
 
@@ -786,6 +790,57 @@ def de_mut(request):
 
     form = FormTumorMutation()       
     return render(request, 'rolls/de_mut.html', {'form':form})
+
+
+#DE_mutated gene by clinical feature
+def de_mut_clinical_feature(request):
+    if request.method == 'POST':
+
+        form = featuremutationform(request.POST)
+        if form.is_valid(): 
+            tumor=request.POST['tumor'] 
+            feature=request.POST['feature']
+            inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
+            dir=os.path.join(output_data, inp3)
+            
+            os.makedirs(dir)
+            
+            out = subprocess.run(['Rscript', 'script/de_mut_clinical_feature.R',tumor,feature,dir], capture_output=True, text=True)
+            print(out)
+            
+            if os.path.isdir(dir): 
+                files=os.listdir(dir)
+                print(files)
+                for file in files:
+                    if file[-3:]=='png':
+                        if 'ForestPlot' in file:
+                            image_forest=os.path.join('media/saveanalisi',inp3,file)  
+                            
+                       
+                        if 'coBarplot' in file:
+                            image_coBarplot=os.path.join('media/saveanalisi',inp3,file)
+                        
+
+                        
+                form=featuremutationform()
+                return render(request, 'rolls/de_mut_clinical_feature.html', {'form':form, 
+                    'tumor':tumor,
+                    'image_forest':image_forest,
+                    'image_coBarplot':image_coBarplot,
+                    'go':'Valid',
+                    'dir':inp3,
+                    })
+
+            else:
+                form=featuremutationform()
+                return render(request, 'rolls/de_mut_clinical_feature.html', {'form':form,
+                'tumor':tumor, 
+                'go':'error'})
+
+
+
+    form = featuremutationform()       
+    return render(request, 'rolls/de_mut_clinical_feature.html', {'form':form})
 
 
 

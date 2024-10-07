@@ -1,0 +1,176 @@
+{%extends 'rolls/layoutpagine.html' %}
+{%load crispy_forms_tags%}
+{%block content%}
+{% load static %}
+<h4 style="color:navy">Mutation Analyses</h4>
+<h2> Differential mutated gene by clinical feature - work in progress</h2>
+   
+    <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapsedescription" role="button" aria-expanded="false" aria-controls="collapsedescription">
+      Description
+    </a>
+    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+      Example
+    </button>
+  </p>
+  <div class="collapse" id="collapsedescription">
+    <div class="card card-body">
+      <p>text</p>
+    </div>
+  </div>
+
+  <div class="row my-3">
+    <div class="col-sm-3 my-3">
+        <form method="post" >
+            {%csrf_token%}
+            {{form|crispy}}         
+            <div class="d-grid gap-2 d-md-flex justify-content-md">
+                <button class="btn btn-primary me-md-2 my-3" type="Submit" name="Submit">Submit</button>
+            </div>
+        </form>
+      </div>
+      <div class="col mx-3" style="border:1px; border-left-style: solid; border-color:rgba(0, 0, 128, 0.301)">
+        <div class="collapse" id="collapseExample">
+        <div class="card card-body">
+          <p class="text-center" >Example: </p>
+          <img src= "{%static 'media/examples/Gene_mut.png' %}" width="750">
+        </div> 
+        </div>
+        {%if go == 'Valid' %}        
+        <h3>Results:</h3> 
+        <hr>
+        <div class="row">
+            <div class="col mx-3">
+              <p>Gene: {{gene}}</p>
+              <p>Tumor: {{tumor}}</p>
+            </div>
+          
+          <div class="row">
+            <div class="mb-3 rounded" style="max-width: 800px;text-align: center; ">
+              <a href="{%static image_forest%}" target="_blank"><img src= '{%static image_forest %}' width="700"></a>
+            </div>
+
+            <!-- <div class="mb-3 rounded" style="max-width: 800px;text-align: center; ">
+                <a href="{%static image_coBarplot%}" target="_blank"><img src= '{%static image_coBarplot %}' width="700"></a>
+              </div> -->
+            <br>
+            <p>You can download the results of this analysis shown in the table  <a href="{% static dir %}" download target="_blank"><button class="btn"><i class="fa-solid fa-download"></i></button></a></p>
+            <div class="table-responsive" >
+              <table id="Mytable" class="table table-hover table-sm" style="width: 100%; margin: 0 auto; text-align: left; border-collapse: collapse; border: 1px solid white;">
+                  <thead style="position: sticky; top: 0; background-color: white; z-index: auto;">
+                      <tr>
+                          {% for colonna in dati.0 %}
+                              <th style="border: 1px solid white; font-weight: bold;">{{ colonna }}</th> <!-- Bordo per le intestazioni -->
+                          {% endfor %}
+                      </tr>
+                  </thead>
+                  <tbody>
+                      {% for riga in dati|slice:"1:" %}
+                          <tr>
+                              {% for colonna in riga %}
+                                  <td style="border: 1px solid white;">{{ colonna }}</td>
+                              {% endfor %}
+                          </tr>
+                      {% endfor %}
+                  </tbody>
+              </table>
+          </div>
+            
+
+          </div> 
+      
+     
+        </div>
+      </div>
+        {%endif%}
+  
+        {%if go == 'error'%}
+        <div class="alert alert-danger text-center" role="alert">
+          <p> (Error) </p>
+          <h5>Sorry! It is not possible to run the analysis with the data entered: "{{gene}}" in "{{tumor}}"</h5>
+          
+          
+        </div> 
+
+
+        {%endif%}
+      </div>
+      
+    </div>
+
+
+   <!-- Includi jQuery UI e il suo CSS -->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<!-- Script per il suggerimento con jQuery UI -->
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#gene_symbol-input').autocomplete({
+      source: function(request, response) {
+        $.ajax({
+          url: "{% url 'gene_symbol_suggestions' %}",  // L'URL che abbiamo aggiunto
+          data: {
+            'term': request.term  // Il testo digitato dall'utente
+          },
+          success: function(data) {
+            response(data);  // Restituisci i risultati all'autocomplete
+          }
+        });
+      },
+      minLength: 1,  // Numero minimo di caratteri per avviare l'autocomplete
+    });
+  });
+</script>
+
+
+
+<!-- Include la libreria DataTables -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    $('#Mytable').DataTable({
+      "stripeClasses": ['odd-row', 'even-row']  // Definisce le classi per le righe dispari e pari
+    });
+  });
+</script>
+
+
+<style>
+  /* Stile per le righe dispari */
+  .odd-row {
+      background-color: grey;  /* Colore per le righe dispari */
+  }
+
+  /* Stile per le righe pari */
+  .even-row {
+      background-color: #e0f7fa;  /* Colore per le righe pari */
+  }
+
+  /* Stile per il hover sulle righe */
+  tbody tr:hover {
+      background-color: #b2ebf2; /* Colore di sfondo al passaggio del mouse */
+  }
+
+  /* Stile per le celle */
+  td {
+      padding: 10px;
+      border: 1px solid #ddd; /* Bordo sottile per ogni cella */
+      text-align: left; /* Allineamento del testo a sinistra */
+  }
+
+  /* Optional: personalizzazione per la tabella DataTables */
+  .dataTables_wrapper {
+      font-size: 14px; /* Dimensione del testo nella tabella */
+  }
+
+  .table-hover tbody tr:hover {
+      background-color: #d1ecf1; /* Colore di hover per le righe della tabella */
+  }
+</style>
+
+
+{%endblock%}
+    

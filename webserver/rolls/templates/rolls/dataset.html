@@ -14,8 +14,11 @@
             <li class="nav-item" role="presentation">
                 <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Gene type</a>
             </li>
-            <li class="nav-item" role="presentation">
+            <!-- <li class="nav-item" role="presentation">
                 <a class="nav-link" id="messages-tab" data-bs-toggle="tab" href="#messages" role="tab" aria-controls="messages" aria-selected="false">Interaction RNA-RNA</a>
+            </li> -->
+            <li class="nav-item" role="presentation"></li>
+                <a class="nav-link" id="messages-tab" data-bs-toggle="tab" href="#messages" role="tab" aria-controls="messages" aria-selected="false">Clinical Feature avaible</a>
             </li>
         </ul>
     
@@ -75,9 +78,33 @@
             
             
             
-            <div class="tab-pane fade" id="messages" role="tabpanel" aria-labelledby="messages-tab">
+            <!-- <div class="tab-pane fade" id="messages" role="tabpanel" aria-labelledby="messages-tab">
                 <br>
                 <p>Interaction data RNA-RNA were obtained from <a href="http://www.rnainter.org/download/" target="_blank"> RNAinter </a></p>
+            </div> -->
+
+            <div class="tab-pane fade" id="messages" role="tabpanel" aria-labelledby="messages-tab"></div>
+                <br>
+                <p>List of clinical Feature avaible for tumor </p>
+                <table class="table table-hover table-sm" style="width: 100%; margin: 0 auto; text-align: left; border-collapse: collapse; border: 1px solid white;">
+                    <thead style="position: sticky; top: 0; background-color: white; font-weight: bold;">
+                        <tr>
+                            {% for colonna in dati_feature.0 %}
+                                <th style="border: 1px solid white; font-weight: bold;">{{ colonna }}</th> <!-- Bordo per le intestazioni -->
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody style="height: auto; overflow-y: auto;">
+                        {% for riga in dati_feature|slice:"1:" %}
+                            <tr>
+                                {% for colonna in riga %}
+                                    <td style="border: 1px solid white;">{{ colonna }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            
             </div>
         </div>
     </div>
