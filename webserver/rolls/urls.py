@@ -25,7 +25,8 @@ urlpatterns=[
     path('diff_exp_single_tumor_protein', views.diff_exp_single_tumor_protein, name= 'diff_exp_single_tumor_protein'),
     path('protein_suggestions/', views.protein_suggestions, name='protein_suggestions'),
     
-    
+    path('get-features/', views.get_features, name='get_features'),  # L'URL per la richiesta AJAX
+
 
 
     path('rna_interactor',views.correlation_analysis, name= 'rna_interactor'),

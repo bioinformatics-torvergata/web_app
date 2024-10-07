@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from subprocess import run,PIPE
 import sys
 from matplotlib import image
-from rolls.forms import Gene, Analisiform_protein,Analisiformcompleto_protein,formSurvival,Analisiform, Deseq2form, Analisiform1, Analisiformcompleto, Analisi_interaction,Analisipath,tumorGeneform,FormTumorMutation
+from rolls.forms import Gene, FormMutationChoice,Analisiform_protein,Analisiformcompleto_protein,formSurvival,Analisiform, Deseq2form, Analisiform1, Analisiformcompleto, Analisi_interaction,Analisipath,tumorGeneform,FormTumorMutation
 import os
 from django.http import StreamingHttpResponse
 from wsgiref.util import FileWrapper
@@ -49,6 +49,9 @@ parametri={
     'alcohol_history_documented': 'YES vs NO',
     'age_at_initial_pathologic_diagnosis': 'Above the median vs Below the median' ,
 }
+
+
+
 
 def rolls(request):
     return render(request, 'rolls/home.html')
@@ -113,6 +116,60 @@ def gene_symbol_suggestions(request):
         gene_symbol = list(qs.values_list('gene_symbol', flat=True))
         return JsonResponse(gene_symbol, safe=False)
 ##########################################
+
+
+
+
+TUMOR_FEATURE_MAPPING = {
+    "ACC":['age_at_initial_pathologic_diagnosis','gender','pathologic_stage','radiation_therapy'],
+    "BLCA":['age_at_initial_pathologic_diagnosis','gender','pathologic_stage','patient_status','radiation_therapy','tobacco_smoking_history'],
+    "BRCA":['age_at_initial_pathologic_diagnosis','menopause_status','pathologic_stage','patient_status','radiation_therapy'],
+    "CESC":['age_at_initial_pathologic_diagnosis','menopause_status','radiation_therapy','tobacco_smoking_history'],
+    "CHOL":['age_at_initial_pathologic_diagnosis','gender','pathologic_stage'],
+    "COAD":['age_at_initial_pathologic_diagnosis','gender','pathologic_stage','patient_status','radiation_therapy'],
+    "DLBC":['age_at_initial_pathologic_diagnosis','gender','radiation_therapy'],
+    "ESCA":['age_at_initial_pathologic_diagnosis','alcohol_history_documented','gender','pathologic_stage','radiation_therapy','tobacco_smoking_history'],
+    "GBM":['age_at_initial_pathologic_diagnosis','gender','radiation_therapy'],
+    "HNSC":['age_at_initial_pathologic_diagnosis','alcohol_history_documented','gender','pathologic_stage','patient_status','radiation_therapy','tobacco_smoking_history'],
+    "KICH":['age_at_initial_pathologic_diagnosis','gender','pathologic_stage','patient_status','tobacco_smoking_history'],
+    "KIRC":['age_at_initial_pathologic_diagnosis','gender','pathologic_stage','patient_status','radiation_therapy','tobacco_smoking_history'],
+    "KIRP":['age_at_initial_pathologic_diagnosis','gender','pathologic_stage','patient_status','radiation_therapy','tobacco_smoking_history'],
+    "LGG":['age_at_initial_pathologic_diagnosis','gender','radiation_therapy'],
+    "LIHC":['age_at_initial_pathologic_diagnosis','gender','pathologic_stage','patient_status','radiation_therapy'],
+    "LUAD":['age_at_initial_pathologic_diagnosis','gender','pathologic_stage','patient_status','radiation_therapy','tobacco_smoking_history'],
+    "LUSC":['age_at_initial_pathologic_diagnosis','gender','pathologic_stage','patient_status','radiation_therapy','tobacco_smoking_history'],
+    "MESO":['age_at_initial_pathologic_diagnosis','gender','pathologic_stage','radiation_therapy'],
+    "OV":['age_at_initial_pathologic_diagnosis','radiation_therapy'],
+    "PAAD":['age_at_initial_pathologic_diagnosis','alcohol_history_documented','gender','pathologic_stage','radiation_therapy','tobacco_smoking_history'],
+    "PCPG":['age_at_initial_pathologic_diagnosis','gender','radiation_therapy'],
+    "PRAD":['age_at_initial_pathologic_diagnosis','patient_status','radiation_therapy'],
+    "READ":['age_at_initial_pathologic_diagnosis','gender','pathologic_stage','radiation_therapy'],
+    "SARC":['age_at_initial_pathologic_diagnosis','gender','radiation_therapy'],
+    "SKCM":['age_at_initial_pathologic_diagnosis','gender','pathologic_stage','radiation_therapy'],
+    "STAD":['age_at_initial_pathologic_diagnosis','gender','pathologic_stage','patient_status','radiation_therapy'],
+    "TGCT":['age_at_initial_pathologic_diagnosis','pathologic_stage','radiation_therapy'],
+    "THCA":['age_at_initial_pathologic_diagnosis','gender','pathologic_stage','patient_status','radiation_therapy'],
+    "THYM":['age_at_initial_pathologic_diagnosis','gender','radiation_therapy'],
+    "UCEC":['age_at_initial_pathologic_diagnosis','diabetes','menopause_status','patient_status','radiation_therapy'],
+    "UCS":['age_at_initial_pathologic_diagnosis','diabetes','radiation_therapy'],
+    "UVM":['age_at_initial_pathologic_diagnosis','gender','pathologic_stage','radiation_therapy'],
+}
+
+
+def get_features(request):
+    # Ottieni il valore del tumore selezionato
+    tumor = request.GET.get('tumor')
+    
+    # Ottieni le feature corrispondenti dal dizionario
+    features = TUMOR_FEATURE_MAPPING.get(tumor, [])
+    
+    # Restituisci le feature come tuple (valore, etichetta)
+    feature_list = [(feature, feature) for feature in features]
+    
+    return JsonResponse(feature_list, safe=False)
+
+
+
 
 
 
@@ -638,16 +695,16 @@ def tumor_mutation_analysis(request):
 def tumor_oncoplot(request):
     if request.method == 'POST':
 
-        form = FormTumorMutation(request.POST)
+        form = FormMutationChoice(request.POST)
         if form.is_valid(): 
             tumor=request.POST['tumor'] 
-            
+            number=request.POST['number'] 
             inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
             dir=os.path.join(output_data, inp3)
             
             os.makedirs(dir)
             
-            out = subprocess.run(['Rscript', 'script/tumor_oncoplot.R',tumor,dir], capture_output=True, text=True)
+            out = subprocess.run(['Rscript', 'script/tumor_oncoplot.R',tumor,dir,number], capture_output=True, text=True)
             print(out)
             
             if os.path.isdir(dir): 
@@ -659,7 +716,7 @@ def tumor_oncoplot(request):
                             image_oncoplot=os.path.join('media/saveanalisi',inp3,file)
                     
                         
-                form=FormTumorMutation()
+                form=FormMutationChoice()
                 return render(request, 'rolls/tumor_oncoplot.html', {'form':form, 
                     'tumor':tumor,
                     'image_oncoplot':image_oncoplot,
@@ -668,14 +725,14 @@ def tumor_oncoplot(request):
                     })
 
             else:
-                form=FormTumorMutation()
+                form=FormMutationChoice()
                 return render(request, 'rolls/tumor_oncoplot.html', {'form':form,
                 'tumor':tumor, 
                 'go':'error'})
 
 
 
-    form = FormTumorMutation()       
+    form = FormMutationChoice()       
     return render(request, 'rolls/tumor_oncoplot.html', {'form':form})
 
 
@@ -748,16 +805,16 @@ def read_table_comma(file_path):
 def somatic_interaction_analysis(request):
     if request.method == 'POST':
 
-        form = FormTumorMutation(request.POST)
+        form = FormMutationChoice(request.POST)
         if form.is_valid(): 
             tumor=request.POST['tumor'] 
-            
+            number=request.POST['number'] 
             inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
             dir=os.path.join(output_data, inp3)
             
             os.makedirs(dir)
             
-            out = subprocess.run(['Rscript', 'script/somatic_interaction_analysis.R',tumor,dir], capture_output=True, text=True)
+            out = subprocess.run(['Rscript', 'script/somatic_interaction_analysis.R',tumor,dir,number], capture_output=True, text=True)
             print(out)
             
             if os.path.isdir(dir): 
@@ -772,9 +829,10 @@ def somatic_interaction_analysis(request):
                         result_data=os.path.join(output_data,inp3,file)
                         result=read_table_comma(result_data)
                         
-                form=FormTumorMutation()
+                form=FormMutationChoice()
                 return render(request, 'rolls/somatic_interaction_analysis.html', {'form':form, 
                     'tumor':tumor,
+                    'number':number,
                     'image_interact':image_interact,
                     'go':'Valid',
                     'dir':inp3,
@@ -783,14 +841,14 @@ def somatic_interaction_analysis(request):
                     })
 
             else:
-                form=FormTumorMutation()
+                form=FormMutationChoice()
                 return render(request, 'rolls/somatic_interaction_analysis.html', {'form':form,
                 'tumor':tumor, 
                 'go':'error'})
 
 
 
-    form = FormTumorMutation()       
+    form = FormMutationChoice()       
     return render(request, 'rolls/somatic_interaction_analysis.html', {'form':form})
 
 

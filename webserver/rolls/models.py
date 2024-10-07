@@ -94,6 +94,8 @@ CHOICE_FEATURE =[
     )
 ]
 
+
+
 class Analisi(models.Model):
     gene= models.CharField(
         max_length=20,)
@@ -124,7 +126,15 @@ class Analisi_mutation(models.Model):
     feature=models.CharField(
         max_length=50,
         choices= FEATURES,
-        default= 'Choice..',)       
+        default= 'Choice..',) 
+
+    NUMBER_CHOICES = [
+        (10, '10'),
+        (15, '15'),
+        (20, '20'),
+        (25, '25'),
+    ]
+    number = models.IntegerField(choices=NUMBER_CHOICES, default=10)
         
 #class Downloadfileszip(models.Model)
 
