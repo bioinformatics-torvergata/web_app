@@ -256,3 +256,17 @@ class featuremutationform(forms.ModelForm):
     class Meta:
         model= Analisi_mutation
         fields=('tumor','feature',)
+
+
+class formcorrelation(forms.ModelForm):
+    
+    Db = forms.ChoiceField(
+        choices=[
+            ('hallmark', 'Hallmark'),
+            ('kegg', 'KEGG'),
+        ],
+        label='Select Pathways DB'
+    )
+    class Meta:
+        model= Analisi
+        fields=('tumor','Db') 

@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from subprocess import run,PIPE
 import sys
 from matplotlib import image
-from rolls.forms import Gene, FormMutationChoice,featuremutationform,Analisiform_protein,Analisiformcompleto_protein,formSurvival,Analisiform, Deseq2form, Analisiform1, Analisiformcompleto, Analisi_interaction,Analisipath,tumorGeneform,FormTumorMutation
+from rolls.forms import Gene, FormMutationChoice,featuremutationform,formcorrelation,Analisiform_protein,Analisiformcompleto_protein,formSurvival,Analisiform, Deseq2form, Analisiform1, Analisiformcompleto, Analisi_interaction,Analisipath,tumorGeneform,FormTumorMutation
 import os
 from django.http import StreamingHttpResponse
 from wsgiref.util import FileWrapper
@@ -741,7 +741,7 @@ def tumor_oncoplot(request):
 
 
 
-###########differential expression mutato vs non mutato #############
+###########differential expression mutato vs non mutato ############# da implementare
 def de_mut(request):
     if request.method == 'POST':
 
@@ -908,7 +908,7 @@ def somatic_interaction_analysis(request):
 
 
 
-
+############ gene mutation analysis ##############
 def gene_mutation_analysis(request):
     if request.method == 'POST':
 
@@ -969,7 +969,7 @@ def deconvolution(request):
         form = Deseq2form(request.POST)
         tumor=request.POST['tumor'] 
         
-        dir= os.path.join(base_dir,'deconvolution','results',tumor)
+        dir= os.path.join(base_dir,'deconvolution','results_deconvolution',tumor)
         
         
         if os.path.isdir(dir): 
@@ -988,10 +988,8 @@ def deconvolution(request):
                 if 'boxplot' in file:
                     image_box=os.path.join('media/saveanalisi',inp3,file)
                     print(image_box)
-                if 'heatmap' in file:
-                    image_heat=os.path.join('media/saveanalisi',inp3,file)
-                    print(image_heat)
-                if 'tsv' in file:
+                
+                if 'stat_tabel' in file:
                     result_tsv=os.path.join('media/saveanalisi',inp3,file)
                     result_data=os.path.join(output_data,inp3,file)
                     result=read_table(result_data)
@@ -1000,7 +998,7 @@ def deconvolution(request):
             return render(request, 'rolls/deconvolution.html', {'form':form, 
                 'tumor':tumor,
                 'image1':image_box,
-                'image2':image_heat,
+                
                 'dati':result,
                 'go':'Valid',
                 'dir':result_tsv,
@@ -1020,10 +1018,10 @@ def deconvolution(request):
 
 def corr_cell_pathway(request):
     if request.method == 'POST':
-        form = Deseq2form(request.POST)
+        form = formcorrelation(request.POST)
         tumor=request.POST['tumor'] 
-        
-        dir= os.path.join(base_dir,'deconvolution','results',tumor)
+        db=request.POST['Db']
+        dir= os.path.join(base_dir,'deconvolution','results_correlation_pathways',db,tumor)
         
         
         if os.path.isdir(dir): 
@@ -1039,21 +1037,19 @@ def corr_cell_pathway(request):
             files=os.listdir(dir)
             for file in files:
                 print(file)
-                if 'boxplot' in file:
-                    image_box=os.path.join('media/saveanalisi',inp3,file)
-                    print(image_box)
+               
                 if 'heatmap' in file:
                     image_heat=os.path.join('media/saveanalisi',inp3,file)
-                    print(image_heat)
+                    #print(image_heat)
                 if 'tsv' in file:
                     result_tsv=os.path.join('media/saveanalisi',inp3,file)
                     result_data=os.path.join(output_data,inp3,file)
                     result=read_table(result_data)
                     
-            form=Deseq2form()                         
+            form=formcorrelation()                         
             return render(request, 'rolls/corr_cell_pathway.html', {'form':form, 
                 'tumor':tumor,
-                'image1':image_box,
+                'db':db,
                 'image2':image_heat,
                 'dati':result,
                 'go':'Valid',
@@ -1061,14 +1057,14 @@ def corr_cell_pathway(request):
                 })
 
         else:
-            form=Deseq2form()
+            form=formcorrelation()
             return render(request, 'rolls/corr_cell_pathway.html', {'form':form,
             'tumor':tumor, 
             'go':'error'})
 
 
 
-    form = Deseq2form()       
+    form = formcorrelation()       
     return render(request, 'rolls/corr_cell_pathway.html', {'form':form})
 
 
