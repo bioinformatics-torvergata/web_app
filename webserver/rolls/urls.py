@@ -26,6 +26,7 @@ urlpatterns=[
     path('protein_suggestions/', views.protein_suggestions, name='protein_suggestions'),
     
     path('get-features/', views.get_features, name='get_features'),  # L'URL per la richiesta AJAX
+    path('get-features_R/', views.get_features_R, name='get_features_R'),  # L'URL per la richiesta AJAX
 
 
 

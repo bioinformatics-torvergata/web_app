@@ -3,7 +3,7 @@
 {%block content%}
 {% load static %}
 <h4 style="color:navy">Mutation Analyses</h4>
-<h2> Differential mutated gene by clinical feature - work in progress</h2>
+<h2> Differential mutated gene by clinical feature</h2>
    
     <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapsedescription" role="button" aria-expanded="false" aria-controls="collapsedescription">
       Description
@@ -14,7 +14,15 @@
   </p>
   <div class="collapse" id="collapsedescription">
     <div class="card card-body">
-      <p>text</p>
+      <p>
+        <h4> Differential mutated gene by clinical feature</h4>
+        <p>
+            This analysis compares two cohorts of cancer patients using genomic data from TCGA to analyze genetic mutations by stratifying patients by clinical characteristics. It generates a forest plot highlighting the 10 genes with the most significant mutations between the groups, showing differences in mutational profiles. It also produces a coBarplot illustrating the distribution of mutations in the two groups. 
+        </p>
+        <p>
+            These graphs provide a clear view of mutational differences, helping to identify key genes associated with different clinical responses. The results are also saved in a CSV file for further analysis.
+        </p></p>
+        <p>For more details go to <a href="{% url 'documentation' %}" target="_blank">PANDA Documentation</a></p>
     </div>
   </div>
 
@@ -32,7 +40,7 @@
         <div class="collapse" id="collapseExample">
         <div class="card card-body">
           <p class="text-center" >Example: </p>
-          <img src= "{%static 'media/examples/Gene_mut.png' %}" width="750">
+          <img src= "{%static 'media/examples/de_clinical.png' %}" width="750">
         </div> 
         </div>
         {%if go == 'Valid' %}        
@@ -40,41 +48,22 @@
         <hr>
         <div class="row">
             <div class="col mx-3">
-              <p>Gene: {{gene}}</p>
+              
               <p>Tumor: {{tumor}}</p>
+              <p>Feature selected: {{feature}}</p>
+              <p>You can download the results for all genes with their p-value here <a href="{% static dir %}" download target="_blank"><button class="btn"><i class="fa-solid fa-download"></i></button></a></p>
             </div>
           
           <div class="row">
             <div class="mb-3 rounded" style="max-width: 800px;text-align: center; ">
               <a href="{%static image_forest%}" target="_blank"><img src= '{%static image_forest %}' width="700"></a>
             </div>
-
-            <!-- <div class="mb-3 rounded" style="max-width: 800px;text-align: center; ">
-                <a href="{%static image_coBarplot%}" target="_blank"><img src= '{%static image_coBarplot %}' width="700"></a>
-              </div> -->
             <br>
-            <p>You can download the results of this analysis shown in the table  <a href="{% static dir %}" download target="_blank"><button class="btn"><i class="fa-solid fa-download"></i></button></a></p>
-            <div class="table-responsive" >
-              <table id="Mytable" class="table table-hover table-sm" style="width: 100%; margin: 0 auto; text-align: left; border-collapse: collapse; border: 1px solid white;">
-                  <thead style="position: sticky; top: 0; background-color: white; z-index: auto;">
-                      <tr>
-                          {% for colonna in dati.0 %}
-                              <th style="border: 1px solid white; font-weight: bold;">{{ colonna }}</th> <!-- Bordo per le intestazioni -->
-                          {% endfor %}
-                      </tr>
-                  </thead>
-                  <tbody>
-                      {% for riga in dati|slice:"1:" %}
-                          <tr>
-                              {% for colonna in riga %}
-                                  <td style="border: 1px solid white;">{{ colonna }}</td>
-                              {% endfor %}
-                          </tr>
-                      {% endfor %}
-                  </tbody>
-              </table>
-          </div>
-            
+            <br>
+
+            <div class="mb-3 rounded" style="max-width: 800px;text-align: center; ">
+              <a href="{%static image_coBarplot%}" target="_blank"><img src= '{%static image_coBarplot %}' width="700"></a>
+            </div>
 
           </div> 
       
@@ -103,7 +92,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-<!-- Script per il suggerimento con jQuery UI -->
+<!-- Script per il suggerimento con jQuery UI
 <script type="text/javascript">
   $(document).ready(function() {
     $('#gene_symbol-input').autocomplete({
@@ -121,55 +110,36 @@
       minLength: 1,  // Numero minimo di caratteri per avviare l'autocomplete
     });
   });
-</script>
+</script> -->
 
-
-
-<!-- Include la libreria DataTables -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 
 <script>
   $(document).ready(function() {
-    $('#Mytable').DataTable({
-      "stripeClasses": ['odd-row', 'even-row']  // Definisce le classi per le righe dispari e pari
-    });
+      $('#id_tumor').change(function() {
+          var tumor = $(this).val();  // Ottieni il tumore selezionato
+          
+          // Invia la richiesta AJAX per ottenere le feature corrispondenti
+          $.ajax({
+              url: "{% url 'get_features_R' %}",  // Assicurati che l'URL punti alla vista giusta
+              data: {
+                  'tumor': tumor  // Passa il tumore selezionato come parametro
+              },
+              success: function(data) {
+                  // Svuota il campo feature
+                  $('#feature-select').empty();
+
+                  // Aggiungi le nuove opzioni delle feature
+                  $.each(data, function(index, feature) {
+                      $('#feature-select').append(
+                          $('<option></option>').val(feature[0]).html(feature[1])
+                      );
+                  });
+              }
+          });
+      });
   });
 </script>
 
-
-<style>
-  /* Stile per le righe dispari */
-  .odd-row {
-      background-color: grey;  /* Colore per le righe dispari */
-  }
-
-  /* Stile per le righe pari */
-  .even-row {
-      background-color: #e0f7fa;  /* Colore per le righe pari */
-  }
-
-  /* Stile per il hover sulle righe */
-  tbody tr:hover {
-      background-color: #b2ebf2; /* Colore di sfondo al passaggio del mouse */
-  }
-
-  /* Stile per le celle */
-  td {
-      padding: 10px;
-      border: 1px solid #ddd; /* Bordo sottile per ogni cella */
-      text-align: left; /* Allineamento del testo a sinistra */
-  }
-
-  /* Optional: personalizzazione per la tabella DataTables */
-  .dataTables_wrapper {
-      font-size: 14px; /* Dimensione del testo nella tabella */
-  }
-
-  .table-hover tbody tr:hover {
-      background-color: #d1ecf1; /* Colore di hover per le righe della tabella */
-  }
-</style>
 
 
 {%endblock%}

@@ -428,6 +428,7 @@ def differential_expression(request):
 
 
 
+
 #############      DIFFERENTIAL EXPRESSION ANALYSIS ALL TUMOR FOR FEATURE   PROTEOMIC   ############# manca da gestire errori
 def differential_expression_protein(request):
     if request.method == 'POST':
@@ -793,13 +794,61 @@ def de_mut(request):
 
 
 #DE_mutated gene by clinical feature
+TUMOR_FEATURE_MAPPING_R = {
+    "ACC":['gender','person_neoplasm_cancer_status','radiation_therapy'],
+    "BLCA":['gender','person_neoplasm_cancer_status','radiation_therapy'],
+    "BRCA":['person_neoplasm_cancer_status','radiation_therapy'],
+    "CESC":['radiation_therapy'],
+    "CHOL":['gender','person_neoplasm_cancer_status'],
+    "COAD":['gender','person_neoplasm_cancer_status','radiation_therapy'],
+    "DLBC":['gender','radiation_therapy'],
+    "ESCA":['alcohol_history_documented','gender','person_neoplasm_cancer_status','radiation_therapy'],
+    "GBM":['gender','radiation_therapy'],
+    "HNSC":['alcohol_history_documented','gender','person_neoplasm_cancer_status','radiation_therapy'],
+    "KICH":['gender','person_neoplasm_cancer_status'],
+    "KIRC":['gender','person_neoplasm_cancer_status','radiation_therapy'],
+    "KIRP":['gender','person_neoplasm_cancer_status','radiation_therapy'],
+    "LGG":['gender','radiation_therapy'],
+    "LIHC":['gender','person_neoplasm_cancer_status','radiation_therapy'],
+    "LUAD":['gender','person_neoplasm_cancer_status','radiation_therapy'],
+    "LUSC":['gender','person_neoplasm_cancer_status','radiation_therapy'],
+    "MESO":['gender','person_neoplasm_cancer_status','radiation_therapy'],
+    "OV":['person_neoplasm_cancer_status'],
+    "PAAD":['alcohol_history_documented','gender','person_neoplasm_cancer_status','radiation_therapy'],
+    "PCPG":['gender','radiation_therapy'],
+    "PRAD":['radiation_therapy'],
+    "READ":['gender','person_neoplasm_cancer_status','radiation_therapy'],
+    "SARC":['gender','radiation_therapy'],
+    "SKCM":['gender','person_neoplasm_cancer_status','radiation_therapy'],
+    "STAD":['gender','person_neoplasm_cancer_status','radiation_therapy'],
+    "TGCT":['person_neoplasm_cancer_status','radiation_therapy'],
+    "THCA":['gender','person_neoplasm_cancer_status','radiation_therapy'],
+    "THYM":['gender','radiation_therapy'],
+    "UCEC":['radiation_therapy'],
+    "UCS":['radiation_therapy'],
+    "UVM":['gender','person_neoplasm_cancer_status','radiation_therapy'],
+}
+
+def get_features_R(request):
+    # Ottieni il valore del tumore selezionato
+    tumor = request.GET.get('tumor')
+    
+    # Ottieni le feature corrispondenti dal dizionario
+    features = TUMOR_FEATURE_MAPPING_R.get(tumor, [])
+    
+    # Restituisci le feature come tuple (valore, etichetta)
+    feature_list = [(feature, feature) for feature in features]
+    
+    return JsonResponse(feature_list, safe=False)
+
+
 def de_mut_clinical_feature(request):
     if request.method == 'POST':
 
         form = featuremutationform(request.POST)
         if form.is_valid(): 
             tumor=request.POST['tumor'] 
-            feature=request.POST['feature']
+            feature=request.POST['feature_selected']
             inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
             dir=os.path.join(output_data, inp3)
             
@@ -812,8 +861,11 @@ def de_mut_clinical_feature(request):
                 files=os.listdir(dir)
                 print(files)
                 for file in files:
-                    if file[-3:]=='png':
-                        if 'ForestPlot' in file:
+                    if 'csv' in file:
+                        result=file
+
+                    if 'png' in file:
+                        if 'forestPlot' in file:
                             image_forest=os.path.join('media/saveanalisi',inp3,file)  
                             
                        
@@ -825,10 +877,11 @@ def de_mut_clinical_feature(request):
                 form=featuremutationform()
                 return render(request, 'rolls/de_mut_clinical_feature.html', {'form':form, 
                     'tumor':tumor,
+                    'feature':feature,
                     'image_forest':image_forest,
                     'image_coBarplot':image_coBarplot,
                     'go':'Valid',
-                    'dir':inp3,
+                    'dir':'media/saveanalisi/'+inp3+'/'+result,
                     })
 
             else:

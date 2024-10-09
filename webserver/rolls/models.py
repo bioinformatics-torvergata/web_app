@@ -135,7 +135,11 @@ class Analisi_mutation(models.Model):
         (25, '25'),
     ]
     number = models.IntegerField(choices=NUMBER_CHOICES, default=10)
-        
+
+    feature_selected=models.CharField(
+        max_length=50,
+        default= 'Choice..',)
+
 #class Downloadfileszip(models.Model)
 
 #class link(models.Model):
