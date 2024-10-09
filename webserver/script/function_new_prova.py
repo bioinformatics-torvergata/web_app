@@ -56,7 +56,10 @@ if 'clinical' in config:
 
 if 'os' in config:
     os_pathway=get_full_path(config['os']['os_pathway'])
-    
+
+if 'TCGA' in config:
+    TCGA_path=get_full_path(config['tcga']['split_count'])
+
 
 
 #######################################################################################

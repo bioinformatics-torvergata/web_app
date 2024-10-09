@@ -232,9 +232,8 @@
                         <div id="flush-collapse10" class="accordion-collapse collapse" aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushExample">
                           <div class="accordion-body">
                            <h5>Tumor mutation analysis</h5>
-                            <p>
-                              add text
-                            </p>
+                           <p> This analysis uses the maftools library to analyze genomic data of a specific tumour from the TCGA database. It generates a mutation summary image (maf summary) and a graph comparing mutation transitions and transversions (TiTv). Each graph provides a visual analysis of the mutations, highlighting key statistics and distributions characteristic of the selected tumour.
+                          </p>
                             <br>
                           </div>
                         </div>
@@ -249,9 +248,9 @@
                         <div id="flush-collapse11" class="accordion-collapse collapse" aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushExample">
                           <div class="accordion-body">
                            <h5>Oncoplot</h5>
-                            <p>
-                              add text
-                            </p>
+                           <p>This analysis generates an oncoplot displaying the number of selected genes (top 10, 15, 20 or 25) most frequently mutated in a specific tumour type, using data from the TCGA database. Each column represents a sample, while the rows indicate the genes, with the mutations highlighted in distinctive colours. 
+                          </p>
+                          <p>This graph provides a clear overview of prevalent mutations, facilitating the identification of key genes associated with the disease.</p>
                             <br>
                           </div>
                         </div>
@@ -266,9 +265,9 @@
                         <div id="flush-collapse12" class="accordion-collapse collapse" aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushExample">
                           <div class="accordion-body">
                            <h5>Somatic interaction analysis</h5>
-                            <p>
-                              add text
-                            </p>
+                           <p>
+                            This analysis generates a graph of somatic interactions using the somaticInteractions function of the maftools library to analyse the interactions between mutated genes in a selected specific tumor. You can select the number of genes to be analysed
+                        </p>
                             <br>
                           </div>
                         </div>
@@ -284,9 +283,9 @@
                         <div id="flush-collapse13" class="accordion-collapse collapse" aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushExample">
                           <div class="accordion-body">
                            <h5> Gene mutation analysis</h5>
-                            <p>
-                              add text
-                            </p>
+                           <p>
+                            This analysis produces a lollipop graph using the maftools library to visualise mutations in a specific gene within a tumour selected from the TCGA genomic data. Mutations are annotated according to the Protein_Change column, which indicates the types of amino acid changes. The graph represents the frequency of mutations along the length of the gene, highlighting significant mutations at the corresponding points.
+                        </p>
                             <br>
                           </div>
                         </div>
@@ -295,14 +294,14 @@
                       <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-heading14">
                           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse14" aria-expanded="false" aria-controls="flush-collapse14">
-                            Differential expression for mutated status
+                            Differential expression for mutated status - Deseq2
                           </button>
                         </h2>
                         <div id="flush-collapse14" class="accordion-collapse collapse" aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushExample">
                           <div class="accordion-body">
-                           <h5> Differential expression for mutated status</h5>
+                           <h5> Differential expression for mutated status - Deseq2</h5>
                             <p>
-                              add text
+                              <p>This analysis investigates the expression differences between mutated and wild-type samples of a specific gene in a chosen tumor type using TCGA data. It employs the DESeq2 package to perform differential expression analysis, generating results saved as a text file. Visualization includes a heatmap of sample distances, PCA plots, a heatmap of the top 50 most variable genes, and an Enhanced Volcano plot to highlight significant gene expression changes. The results provide insights into the impact of mutations on gene expression within the tumor context.</p>
                             </p>
                             <br>
                           </div>

@@ -38,6 +38,10 @@ config.read(config_file)
 output_data = config['Paths']['output_data']
 base_dir = config.get('Paths', 'base_dir', fallback='')
 output_data_Table=config['Paths']['output_data_Table']
+
+def get_full_path(relative_path):
+    return os.path.join(base_dir, relative_path)
+
 parametri={
     'patient_status':'Tumor vs Ctrl',
     'gender':'Female vs Male',
@@ -746,51 +750,73 @@ def tumor_oncoplot(request):
 def de_mut(request):
     if request.method == 'POST':
 
-        form = FormTumorMutation(request.POST)
+        form = tumorGeneform(request.POST)
         if form.is_valid(): 
             tumor=request.POST['tumor'] 
-            
+            gene=request.POST['gene']
             inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
             dir=os.path.join(output_data, inp3)
             
+            TCGA_path=get_full_path(config['tcga']['split_count'])
+
+            input_file=os.path.join(TCGA_path,tumor+".tsv")
             os.makedirs(dir)
             
-            out = subprocess.run(['Rscript', 'script/tumor_mutation_analysis.R',tumor,dir], capture_output=True, text=True)
+            out = subprocess.run(['Rscript', 'script/MUT_deseq2.R',tumor,gene,dir,input_file], capture_output=True, text=True)
             print(out)
             
             if os.path.isdir(dir): 
                 files=os.listdir(dir)
                 print(files)
+                n=0
                 for file in files:
-                    if file[-3:]=='png':
-                        if 'summary' in file:
-                            image_summary=os.path.join('media/saveanalisi',inp3,file)  
-                            
-                       
-                        if 'Titv' in file:
-                            image_titv=os.path.join('media/saveanalisi',inp3,file)
-                        
+                    if 'png' in file:
+                        if 'Enhanced' in file:
+                            image1=os.path.join('media/saveanalisi',inp3,file)  
+                            n+=1
+                        if 'heatmap' in file:
+                            image2=os.path.join('media/saveanalisi',inp3,file)
+                            n+=1
+                        if 'PCA' in file:
+                            image3=os.path.join('media/saveanalisi',inp3,file)
+                            n+=1
+                        if 'Top50genes' in file:
+                            image4=os.path.join('media/saveanalisi',inp3,file)
+                            n+=1
 
-                        
-                form=FormTumorMutation()
-                return render(request, 'rolls/de_mut.html', {'form':form, 
-                    'tumor':tumor,
-                    'image_summary':image_summary,
-                    'image_titv':image_titv,
-                    'go':'Valid',
-                    'dir':inp3,
-                    })
+                    if 'res' in file:
+                            dir=os.path.join('media/saveanalisi',inp3,file)
+                            file_txt=os.path.join(output_data,inp3,file)
+                            result=read_table_deseq(file_txt)
+                if n>1:
+                    form=tumorGeneform()
+                    return render(request, 'rolls/de_mut.html', {'form':form, 
+                        'tumor':tumor,
+                        'gene':gene,
+                        'image1':image1,
+                        'image2':image2,
+                        'image3':image3,
+                        'image4':image4,
+                        'go':'Valid',
+                        'dir':dir,
+                        'dati':result,
+                        })
+                else:
+                    form=tumorGeneform()
+                    return render(request, 'rolls/de_mut.html', {'form':form,
+                    'tumor':tumor, 
+                    'go':'error'})
 
             else:
-                form=FormTumorMutation()
+                form=tumorGeneform()
                 return render(request, 'rolls/de_mut.html', {'form':form,
                 'tumor':tumor, 
                 'go':'error'})
 
 
 
-    form = FormTumorMutation()       
-    return render(request, 'rolls/de_mut.html', {'form':form})
+    form = tumorGeneform()       
+    return render(request, 'rolls/de_mut.html', {'form':form,'go':'base'})
 
 
 #DE_mutated gene by clinical feature

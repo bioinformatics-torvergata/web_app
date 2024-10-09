@@ -3,7 +3,7 @@
 {%block content%}
 {% load static %}
 <h4 style="color:navy">Mutation Analyses</h4>
-<h2> Differential expression for mutated status - work in progress </h2>
+<h2> Differential expression for mutated status - Deseq2 </h2>
    
     <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapsedescription" role="button" aria-expanded="false" aria-controls="collapsedescription">
       Description
@@ -14,7 +14,8 @@
   </p>
   <div class="collapse" id="collapsedescription">
     <div class="card card-body">
-      <p>text</p>
+      <p>This analysis investigates the expression differences between mutated and wild-type samples of a specific gene in a chosen tumor type using TCGA data. It employs the DESeq2 package to perform differential expression analysis, generating results saved as a text file. Visualization includes a heatmap of sample distances, PCA plots, a heatmap of the top 50 most variable genes, and an Enhanced Volcano plot to highlight significant gene expression changes. The results provide insights into the impact of mutations on gene expression within the tumor context.</p>
+      <p>For more details go to <a href="{% url 'documentation' %}" target="_blank">PANDA Documentation</a></p>
     </div>
   </div>
 
@@ -32,9 +33,13 @@
         <div class="collapse" id="collapseExample">
         <div class="card card-body">
           <p class="text-center" >Example: </p>
-          <img src= "{%static 'media/examples/tumor_mutation_analysis.png' %}" width="750">
+          <img src= "{%static 'media/examples/mut_deseq.png' %}" width="750">
         </div> 
         </div>
+        {%if go == 'base' %}   
+        *this analysis takes a few minutes do not leave the page when the analysis starts*
+        {%endif%}
+
         {%if go == 'Valid' %}        
         <h3>Results:</h3> 
 
@@ -43,20 +48,49 @@
         <div class="row">
           <div class="col mx-3">
             <p>Tumor: {{tumor}}</p>
+            <p>Gene: {{gene}}</p>
           </div>
         <br>
-        <div class="row">
-          <div class=" mx-auto bg-body rounded" style="max-width: 800px;">
-            <a href="{%static image_summary%}" target="_blank"><img src= '{%static image_summary %}' width="800"></a>
-        </div> 
-        <br>
-        <p class="text-center"> Transition-transversion (Ti/Tv) ratio summary plot </p>
-        <div class="mx-auto bg-body rounded" style="max-width: 800px;">
-          <a href="{%static image_titv%}" target="_blank"><img src= '{%static image_titv %}' width="700"></a>
-        </div>
-        <br>
+        <div class="mb-3 bg-body rounded" style="max-width: 800px;">
+              <a href="{%static image1%}" target="_blank"><img src= '{%static image1 %}' width="700px"></a>
+           </div>
+          
+          
+            <div class="card-group my-3 shadow mb-3 bg-body rounded">
+              <div class="card zoom">
+                <a href="{%static image2%}" target="_blank"><img src='{%static image2%}' class="card-img-top" alt="..."></a>
+              </div>
+              <div class="card zoom">
+                <a href="{%static image3%}" target="_blank"><img src='{%static image3%}' class="card-img-top" alt="..."></a>
+              </div>
+              <div class="card zoom">
+                <a href="{%static image4%}" target="_blank"><img src='{%static image4%}' class="card-img-top" alt="..."></a>
+              </div>
+            </div>
         
-  
+            <p>The table shows the top 500 significant genes, you can download the full table <a href="{% static dir %}" download target="_blank">
+              <button class="btn"><i class="fa-solid fa-download"></i></button></a>
+          </p>
+            <div class="table-responsive" >
+              <table id="Mytable" class="table table-hover table-sm" style="width: 100%; margin: 0 auto; text-align: left; border-collapse: collapse; border: 1px solid white;">
+                  <thead style="position: sticky; top: 0; background-color: white; z-index: auto;">
+                      <tr>
+                          {% for colonna in dati.0 %}
+                              <th style="border: 1px solid white; font-weight: bold;">{{ colonna }}</th> <!-- Bordo per le intestazioni -->
+                          {% endfor %}
+                      </tr>
+                  </thead>
+                  <tbody>
+                      {% for riga in dati|slice:"1:" %}
+                          <tr>
+                              {% for colonna in riga %}
+                                  <td style="border: 1px solid white;">{{ colonna }}</td>
+                              {% endfor %}
+                          </tr>
+                      {% endfor %}
+                  </tbody>
+              </table>
+          </div>
         </div>
       </div>
         {%endif%}
@@ -74,7 +108,7 @@
     </div>
 
 
-   <!-- Includi jQuery UI e il suo CSS -->
+<!-- Includi jQuery UI e il suo CSS -->
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -82,10 +116,10 @@
 <!-- Script per il suggerimento con jQuery UI -->
 <script type="text/javascript">
   $(document).ready(function() {
-    $('#pathway-input').autocomplete({
+    $('#gene_symbol-input').autocomplete({
       source: function(request, response) {
         $.ajax({
-          url: "{% url 'pathway_suggestions' %}",  // L'URL che abbiamo aggiunto
+          url: "{% url 'gene_symbol_suggestions' %}",  // L'URL che abbiamo aggiunto
           data: {
             'term': request.term  // Il testo digitato dall'utente
           },
@@ -98,7 +132,51 @@
     });
   });
 </script>
-   
+
+
+<!-- Include la libreria DataTables -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    $('#Mytable').DataTable();
+  });
+</script>
+
+
+<style>
+  /* Stile per le righe dispari */
+  .odd-row {
+      background-color: grey;  /* Colore per le righe dispari */
+  }
+
+  /* Stile per le righe pari */
+  .even-row {
+      background-color: #e0f7fa;  /* Colore per le righe pari */
+  }
+
+  /* Stile per il hover sulle righe */
+  tbody tr:hover {
+      background-color: #b2ebf2; /* Colore di sfondo al passaggio del mouse */
+  }
+
+  /* Stile per le celle */
+  td {
+      padding: 10px;
+      border: 1px solid #ddd; /* Bordo sottile per ogni cella */
+      text-align: left; /* Allineamento del testo a sinistra */
+  }
+
+  /* Optional: personalizzazione per la tabella DataTables */
+  .dataTables_wrapper {
+      font-size: 13px; /* Dimensione del testo nella tabella */
+  }
+
+  .table-hover tbody tr:hover {
+      background-color: #d1ecf1; /* Colore di hover per le righe della tabella */
+  }
+</style>
 
 {%endblock%}
     
