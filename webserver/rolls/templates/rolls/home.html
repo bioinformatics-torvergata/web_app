@@ -82,7 +82,9 @@
       <!-- First row: 3 cards -->
       <div class="col-md-4">
         <div class="card h-100">
-          <img src="{% static 'media/home/volcano.png' %}" class="card-img-top" alt="PCA" style="width: 100%; height: 300px; object-fit: contain;">
+          <a href="{% url 'deseq2' %}">
+          <img src="{% static 'media/home/volcano.jpg' %}" class="card-img-top" alt="PCA" style="width: 100%; height: 300px; object-fit: contain;">
+        </a>
           <div class="card-body">
             <h5 class="card-title">Transcriptomic analyses</h5>
             <p class="card-text">Differential expression analyses and correlation analysis by selecting tumour, clinical features, gene and miRNA</p>
@@ -97,7 +99,9 @@
       </div>
       <div class="col-md-4">
         <div class="card h-100">
-          <img src="{% static 'media/home/boxplot_protein.png' %}" class="card-img-top" alt="boxplot_protein" style="width: 100%; height: 300px; object-fit: contain;">
+          <a href="{% url 'diff_exp_single_tumor_protein' %}">
+          <img src="{% static 'media/home/boxplot_protein.jpg' %}" class="card-img-top" alt="boxplot_protein" style="width: 100%; height: 300px; object-fit: contain;">
+        </a>
           <div class="card-body">
             <h5 class="card-title">Proteomic analyses</h5>
             <p class="card-text">Differential expression analysis available by selecting tumour, clinical features and protein name</p>
@@ -110,7 +114,9 @@
       </div>
       <div class="col-md-4">
         <div class="card h-100">
+          <a href="{% url 'tumor_mutation_analysis' %}">
           <img src="{% static 'media/home/BRCA_maf_summary.png' %}" class="card-img-top" alt="BRCA maf summary" style="width: 100%; height: 300px; object-fit: contain;">
+        </a>
           <div class="card-body">
             <h5 class="card-title">Mutational analyses</h5>
             <p class="card-text">Analysis with mutational data by selecting the tumour or gene of interest</p>
@@ -131,7 +137,9 @@
     <div class="row justify-content-center">
       <div class="col-md-4">
         <div class="card h-100">
-          <img src="{% static 'media/home/overall.png' %}" class="card-img-top" alt="Overall survival" style="width: 100%; height: 300px; object-fit: contain;">
+          <a href="{% url 'overall_survival' %}">
+          <img src="{% static 'media/home/overall.jpg' %}" class="card-img-top" alt="Overall survival" style="width: 100%; height: 300px; object-fit: contain;">
+        </a>
           <div class="card-body">
             <h5 class="card-title">Survival Analysis</h5>
             <p class="card-text">Survival analysis with mutational, transcriptomic and proteomic data by tumour and clinical characteristics</p>
@@ -145,7 +153,9 @@
       </div>
       <div class="col-md-4">
         <div class="card h-100">
-          <img src="{% static 'media/home/BRCA_boxplot.jpeg' %}" class="card-img-top" alt="BRCA boxplot" style="width: 100%; height: 300px; object-fit: contain;">
+          <a href="{% url 'deconvolution' %}"> 
+          <img src="{% static 'media/home/deconvolution.jpg' %}" class="card-img-top" alt="deconvolution" style="width: 100%; height: 300px; object-fit: contain;">
+          </a>
           <div class="card-body">
             <h5 class="card-title">Cell types analyses</h5>
             <p class="card-text">Deconvolution analysis</p>
