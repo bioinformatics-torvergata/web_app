@@ -826,7 +826,19 @@ def de_mut(request):
                 print(files)
                 n=0
                 for file in files:
+                    if 'res' in file:
+                        dir=os.path.join('media/saveanalisi',inp3,file)
+                        file_txt=os.path.join(output_data,inp3,file)
+                        result=read_table_deseq(file_txt)
+                        #dir_saveresults= os.path.join(output_data, inp3)
+                        # out_plotly=run([sys.executable,'script/MUT_deseq2.py',tumor,file_txt,dir_saveresults],shell=False, stdout=PIPE)
+
+                        # if 'html' in file:
+                        #     image_plotly=file
+
+
                     if 'png' in file:
+                        
                         if 'Enhanced' in file:
                             image1=os.path.join('media/saveanalisi',inp3,file)  
                             n+=1
@@ -840,15 +852,13 @@ def de_mut(request):
                             image4=os.path.join('media/saveanalisi',inp3,file)
                             n+=1
 
-                    if 'res' in file:
-                            dir=os.path.join('media/saveanalisi',inp3,file)
-                            file_txt=os.path.join(output_data,inp3,file)
-                            result=read_table_deseq(file_txt)
+                    
                 if n>1:
                     form=tumorGeneform()
                     return render(request, 'rolls/de_mut.html', {'form':form, 
                         'tumor':tumor,
                         'gene':gene,
+                        #'image_plotly':image_plotly,
                         'image1':image1,
                         'image2':image2,
                         'image3':image3,
@@ -861,12 +871,14 @@ def de_mut(request):
                     form=tumorGeneform()
                     return render(request, 'rolls/de_mut.html', {'form':form,
                     'tumor':tumor, 
+                    'gene':gene,
                     'go':'error'})
 
             else:
                 form=tumorGeneform()
                 return render(request, 'rolls/de_mut.html', {'form':form,
                 'tumor':tumor, 
+                'gene':gene,
                 'go':'error'})
 
 
