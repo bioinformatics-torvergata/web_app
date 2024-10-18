@@ -75,7 +75,33 @@
                         </tbody>
                     </table>
                 </div>
-
+            
+                <div class="tab-pane fade" id="messages" role="tabpanel" aria-labelledby="messages-tab">
+                    <br>
+                    <p>List of clinical Feature avaible for tumor </p>
+        
+    
+                    <div class="table-responsive" >
+                        <table id="Mytable" class="table table-hover table-sm" style="width: 100%; margin: 0 auto; text-align: left; border-collapse: collapse; border: 1px solid white; font-size: 12px;">
+                            <thead style="position: sticky; top: 0; background-color: white; z-index: auto;">
+                                <tr>
+                                    {% for colonna in dati_feature.0 %}
+                                        <th style="border: 1px solid white; font-weight: bold;">{{ colonna }}</th> <!-- Bordo per le intestazioni -->
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for riga in dati_feature|slice:"1:" %}
+                                    <tr>
+                                        {% for colonna in riga %}
+                                            <td style="border: 1px solid white;">{{ colonna }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             
             
             

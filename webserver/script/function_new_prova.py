@@ -15,7 +15,7 @@ from statsmodels.stats import multitest as multi
 import plotly.express as px
 import plotly.graph_objects as go 
 import shutil
-from statannotations.Annotator import Annotator
+#from statannotations.Annotator import Annotator
 
 #######################################################################################
 #                              Carica il file di configurazione                       #
@@ -233,12 +233,12 @@ def p_value(df, cartella,feature,gene):
         list1= list(filtered_df[gene])
 
         w, p_value = ranksums(list0, list1)
-        #print(tumor, p)
-        #f.write(tumor+"\t"+str(p_value)+"\n")
-        p_value_scientific = "{:.2e}".format(p_value)
+        print(tumor, p)
+        f.write(tumor+"\t"+str(p_value)+"\n")
+        # p_value_scientific = "{:.2e}".format(p_value)
         
-        print(tumor, p_value_scientific)
-        f.write(tumor + "\t" + p_value_scientific + "\n")
+        # print(tumor, p_value_scientific)
+        # f.write(tumor + "\t" + p_value_scientific + "\n")
        
 
 
