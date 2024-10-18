@@ -79,15 +79,20 @@ def dataset(request):
     file_path = os.path.join(output_data_Table,'table','campioni_TCGA.txt')
     file_path_genetype=os.path.join(output_data_Table,'table','gene_type.txt')
     file_feature_tumor=os.path.join(output_data_Table,'table','Features_tumor.txt')
+    file_tumor=os.path.join(output_data_Table,'table','tumor_abbreviations.txt')
+
 
     txt_data_clinical=read_table(file_path)
 
     txt_data_typegene=read_table(file_path_genetype)   
-    txt_feature_tumor= read_table(file_feature_tumor) 
+    txt_feature_tumor= read_table(file_feature_tumor)
+    txt_tumor= read_table(file_tumor) 
+
     return render(request, 'rolls/dataset.html', {
         'dati': txt_data_clinical, 
         'dati_genetype':txt_data_typegene,
         'dati_feature':txt_feature_tumor,
+        'dati_tumor':txt_tumor,
  })
 
 
@@ -584,21 +589,6 @@ def read_table_deseq(file_path):
 def deseq2(request):
     if request.method == 'POST':
 
-        if 'features' in request.POST:
-            form = Deseq2form(request.POST)
-            if form.is_valid():
-                tumor=request.POST['tumor'] 
-                out=run([sys.executable,'script/search_feature_deseq2.py',tumor],shell=False, stdout=PIPE)
-                stringa=(out.stdout.decode('ascii')).strip()
-                lista=stringa.split(',')
-
-                return render(request, 'rolls/deseq2.html', {
-                    'form':form,
-                    'lista':lista,
-                    'tumor':tumor,
-                    })
-        elif 'Submit' in request.POST:
-            go='Valid'
             form = Deseq2form(request.POST)
             tumor=request.POST['tumor'] 
             feature=request.POST.get('feature', False)
@@ -645,6 +635,72 @@ def deseq2(request):
 
     form = Deseq2form()       
     return render(request, 'rolls/deseq2.html', {'form':form})
+
+
+# def deseq2_old(request):
+#     if request.method == 'POST':
+
+#         if 'features' in request.POST:
+#             form = Deseq2form(request.POST)
+#             if form.is_valid():
+#                 tumor=request.POST['tumor'] 
+#                 out=run([sys.executable,'script/search_feature_deseq2.py',tumor],shell=False, stdout=PIPE)
+#                 stringa=(out.stdout.decode('ascii')).strip()
+#                 lista=stringa.split(',')
+
+#                 return render(request, 'rolls/deseq2.html', {
+#                     'form':form,
+#                     'lista':lista,
+#                     'tumor':tumor,
+#                     })
+#         elif 'Submit' in request.POST:
+#             go='Valid'
+#             form = Deseq2form(request.POST)
+#             tumor=request.POST['tumor'] 
+#             feature=request.POST.get('feature', False)
+#             dir= os.path.join(base_dir,'deseq2', feature,tumor)
+            
+            
+#             if os.path.isdir(dir): 
+#                 inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
+#                 dir_saveresults= os.path.join(output_data, inp3)
+#                 print(dir_saveresults)
+#                 os.makedirs(dir_saveresults)
+
+#                 result_file='result_' + tumor + '_2.txt'
+#                 out=run([sys.executable,'script/deseq2.py',tumor,dir,dir_saveresults,result_file],shell=False, stdout=PIPE)
+                
+#                 images=choseimage(tumor,dir,dir_saveresults)
+                
+#                 file_txt=os.path.join(output_data,inp3,result_file)
+#                 print(file_txt)
+#                 result=read_table_deseq(file_txt)
+#                 form=Deseq2form()                         
+#                 return render(request, 'rolls/deseq2.html', {'form':form, 
+#                     'feature': feature,
+#                     'tumor':tumor,
+#                     'enhancedimage': os.path.join('media/saveanalisi',inp3,images[0]),
+#                     'images1': os.path.join('media/saveanalisi',inp3,images[1]),
+#                     'images2': os.path.join('media/saveanalisi',inp3,images[2]),
+#                     'images3': os.path.join('media/saveanalisi',inp3,images[3]),
+#                     'image_plotly':os.path.join('media/saveanalisi',inp3,images[4]),
+#                     'go':'Valid',
+#                     'parametri': parametri[feature],
+#                     'dir':'media/saveanalisi/'+inp3+'/'+result_file, 
+#                     'dati':result,
+#                     })
+
+#             else:
+#                 form=Deseq2form()
+#                 return render(request, 'rolls/deseq2.html', {'form':form,
+#                 'feature': feature,
+#                 'tumor':tumor, 
+#                 'go':'error'})
+
+
+
+#     form = Deseq2form()       
+#     return render(request, 'rolls/deseq2.html', {'form':form})
 
 
 

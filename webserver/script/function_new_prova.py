@@ -15,6 +15,7 @@ from statsmodels.stats import multitest as multi
 import plotly.express as px
 import plotly.graph_objects as go 
 import shutil
+from statannotations.Annotator import Annotator
 
 #######################################################################################
 #                              Carica il file di configurazione                       #
@@ -135,6 +136,9 @@ def open_dataframe_gene_boxplot_all_tumor(gene,listanomi01, path_dataframe, inde
 
 
 
+
+
+
 def box_plot_all_tumor(df1, cartella, gene, feature,type_gene):
     
     sns.set_theme(rc={'figure.figsize':(25.7,8.27)})
@@ -228,9 +232,14 @@ def p_value(df, cartella,feature,gene):
         filtered_df = df1[df1[feature].eq(p[1])]
         list1= list(filtered_df[gene])
 
-        w, p = ranksums(list0, list1)
-        print(tumor, p)
-        f.write(tumor+"\t"+str(p)+"\n")
+        w, p_value = ranksums(list0, list1)
+        #print(tumor, p)
+        #f.write(tumor+"\t"+str(p_value)+"\n")
+        p_value_scientific = "{:.2e}".format(p_value)
+        
+        print(tumor, p_value_scientific)
+        f.write(tumor + "\t" + p_value_scientific + "\n")
+       
 
 
 #######################################################################################

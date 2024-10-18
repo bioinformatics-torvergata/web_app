@@ -56,16 +56,16 @@
         <form method="post" >
             {%csrf_token%}
             {{form|crispy}}
-            <div class="d-grid gap-2 d-md-flex justify-content-md">
+            <!-- <div class="d-grid gap-2 d-md-flex justify-content-md">
               <button class="btn btn-primary me-md-2 my-3" data-toggle="tooltip" data-placement="right" title="Click here for search features" type="submit" name="features"><i class="fa-solid fa-magnifying-glass"></i> Features</button>
-          </div>
-          <label class="mr-sm-2" for="inlineFormCustomSelect">Select feature:*</label>
+          </div> -->
+          <!-- <label class="mr-sm-2" for="inlineFormCustomSelect">Select feature:*</label>
           <select name='feature' class="custom-select mr-sm-2" id="inlineFormCustomSelect">
               {%for el in lista%}
               <option value={{el}}>{{el}}</option>    
               {%endfor%}
                      
-          </select>
+          </select> -->
             <div class="d-grid gap-2 d-md-flex justify-content-md">
                 <button class="btn btn-primary me-md-2 my-3" type="Submit" name="Submit">Submit</button>
             </div>
@@ -192,6 +192,35 @@
   }
 </style>
 
+
+<!-- per selezionare la feature del tumore -->
+
+<script>
+  $(document).ready(function() {
+      $('#id_tumor').change(function() {
+          var tumor = $(this).val();  // Ottieni il tumore selezionato
+          
+          // Invia la richiesta AJAX per ottenere le feature corrispondenti
+          $.ajax({
+              url: "{% url 'get_features' %}",  // Assicurati che l'URL punti alla vista giusta
+              data: {
+                  'tumor': tumor  // Passa il tumore selezionato come parametro
+              },
+              success: function(data) {
+                  // Svuota il campo feature
+                  $('#feature-select').empty();
+
+                  // Aggiungi le nuove opzioni delle feature
+                  $.each(data, function(index, feature) {
+                      $('#feature-select').append(
+                          $('<option></option>').val(feature[0]).html(feature[1])
+                      );
+                  });
+              }
+          });
+      });
+  });
+</script>
 
 {%endblock%}
     

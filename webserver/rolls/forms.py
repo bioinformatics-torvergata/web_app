@@ -178,7 +178,34 @@ class formSurvival(forms.ModelForm):
         model = Analisi
         fields = ('gene', 'tumor','Methods')
 
+
+
 class Deseq2form(forms.ModelForm): 
+    tumor = forms.ChoiceField(
+        choices=TUMOR_MUTATION,
+        widget=forms.Select(
+            attrs={
+                "id": "id_tumor"  # ID per il campo tumor, necessario per il JavaScript
+            }
+        )
+    )
+    feature = forms.ChoiceField(
+        choices=FEATURES,
+        widget=forms.Select(
+            attrs={
+                "id": "feature-select"  # ID per il campo feature
+            }
+        ),
+        label="Select clinical feature"
+    )
+
+
+    class Meta:
+        model=Analisi
+        fields=('tumor','feature')
+
+
+class Deseq2form_old(forms.ModelForm): 
 
     class Meta:
         model=Analisi
