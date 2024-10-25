@@ -16,6 +16,7 @@ import plotly.express as px
 import plotly.graph_objects as go 
 import shutil
 #from statannotations.Annotator import Annotator
+from decimal import Decimal
 
 #######################################################################################
 #                              Carica il file di configurazione                       #
@@ -234,11 +235,11 @@ def p_value(df, cartella,feature,gene):
 
         w, p_value = ranksums(list0, list1)
         print(tumor, p)
-        f.write(tumor+"\t"+str(p_value)+"\n")
-        # p_value_scientific = "{:.2e}".format(p_value)
+        #f.write(tumor+"\t"+str(p_value)+"\n")
+        p_value_scientific = "%.2E" %Decimal(p_value)
         
         # print(tumor, p_value_scientific)
-        # f.write(tumor + "\t" + p_value_scientific + "\n")
+        f.write(tumor + "\t" + p_value_scientific + "\n")
        
 
 
@@ -324,10 +325,11 @@ def ranksum_test(gene,d,feature,cartella,tumor):
     w, p_value = ranksums(list(dp0[gene]), list(dp1[gene]))
     if p_value=='':
         p_value='not significant'
+    
     # Dimensione dei campioni
     size_dp0 = len(dp0)
     size_dp1 = len(dp1)
-    
+    p_value_scientific = "%.2E" %Decimal(p_value)
     # Creazione del dizionario dei risultati
     results = {
         "Gene": gene,
@@ -335,9 +337,9 @@ def ranksum_test(gene,d,feature,cartella,tumor):
         "Feature": feature,
         "Group 1":p[0],
         "Group 2":p[1],
-        "Sample Size Group 1": size_dp0,
-        "Sample Size Group 2": size_dp1,
-        "P-value": p_value
+        "n.Sample Group 1": size_dp0,
+        "n.Sample Group 2": size_dp1,
+        "P-value": p_value_scientific
     }
     
     # Creazione di un DataFrame per facilitare l'output
@@ -419,8 +421,8 @@ def crealista(dffeat,df,feature):
 #######  ->                               Deseq2                            <-  #######
 
 def copyfile(tumor,pathfiles,dir_saveresults):
-    print('siamo nel copy file')
-    print(' i file li pesca da qui ', pathfiles)
+    # print('siamo nel copy file')
+    # print(' i file li pesca da qui ', pathfiles)
     files=os.listdir(pathfiles)
     print(files)
     for file in files:
@@ -428,10 +430,10 @@ def copyfile(tumor,pathfiles,dir_saveresults):
         if tumor in file:
             
             path_file=os.path.join(pathfiles,file)
-            print('prende da qui : ',path_file)
+            # print('prende da qui : ',path_file)
             
             copy_filepath=os.path.join(dir_saveresults, os.path.basename(file))
-            print('copia qui: ',copy_filepath)
+            # print('copia qui: ',copy_filepath)
        
             shutil.copy(path_file,copy_filepath )
 

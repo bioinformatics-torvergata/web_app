@@ -15,7 +15,7 @@ from django.conf import settings
 import shutil
 import csv
 import pandas as pd
-
+from decimal import Decimal
 from django.http import JsonResponse
 from rolls.models import Gene,Pathway,Protein, Gene_symbol
 

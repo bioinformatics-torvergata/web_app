@@ -80,64 +80,6 @@ Cell types analyses
 
 
 <!-- script per rendere animato il menu-->
-<!-- <script>
-function toggleCategory(categoryId, button) {
-  var category = document.getElementById(categoryId);
-  var arrow = button.querySelector('.arrow');
-  if (category.style.display === "none" || category.style.display === "") {
-      category.style.display = "block"; // Mostra il contenuto
-      arrow.style.transform = "rotate(90deg)"; // Ruota la freccia a destra
-  } else {
-      category.style.display = "none"; // Nascondi il contenuto
-      arrow.style.transform = "rotate(0deg)"; // Riporta la freccia dritta
-  }
-}
-</script> -->
-
-<!-- 
-<script>
-    // Function to toggle the category and save its state
-    function toggleCategory(categoryId, button) {
-      var category = document.getElementById(categoryId);
-      var arrow = button.querySelector('.arrow');
-    
-      // Check current display state
-      if (category.style.display === "none" || category.style.display === "") {
-          category.style.display = "block"; // Show the content
-          arrow.style.transform = "rotate(90deg)"; // Rotate arrow to the right
-          localStorage.setItem(categoryId, 'open'); // Save state in localStorage
-      } else {
-          category.style.display = "none"; // Hide the content
-          arrow.style.transform = "rotate(0deg)"; // Reset the arrow
-          localStorage.setItem(categoryId, 'closed'); // Save state in localStorage
-      }
-    }
-    
-    // Function to restore menu state on page load
-    window.onload = function() {
-      // Select all buttons that toggle categories
-      var toggles = document.querySelectorAll('[data-category]');
-    
-      toggles.forEach(function(button) {
-        var categoryId = button.getAttribute('data-category');
-        var category = document.getElementById(categoryId);
-        var arrow = button.querySelector('.arrow');
-        
-        // Check the saved state in localStorage
-        var state = localStorage.getItem(categoryId);
-        
-        if (state === 'open') {
-            category.style.display = "block"; // Show the content
-            arrow.style.transform = "rotate(90deg)"; // Rotate the arrow
-        } else {
-            category.style.display = "none"; // Hide the content
-            arrow.style.transform = "rotate(0deg)"; // Reset the arrow
-        }
-      });
-    };
-    </script> -->
-
-
 <script>
     // Function to toggle the category and ensure only one stays open at a time
     function toggleCategory(categoryId, button) {
