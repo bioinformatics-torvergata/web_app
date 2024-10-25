@@ -348,6 +348,15 @@ def diff_exp_single_tumor(request):
                     'formresult': out.stdout.decode('ascii'),
                     'gene':gene,
                     'go':'error_name'})
+                
+                if debug_error=='2':
+                    form=Analisiformcompleto()
+                    return render(request, 'rolls/diff_exp_single_tumor.html', {'form':form,
+                    'formresult': out.stdout.decode('ascii'),
+                    'gene':gene,
+                    'tumor':tumor,
+                    'feature':feature,
+                    'go':'error'})
                 else:
                     
                     if os.path.isdir(dir): 
@@ -523,6 +532,15 @@ def diff_exp_single_tumor_protein(request):
                     'formresult': out.stdout.decode('ascii'),
                     'gene':gene,
                     'go':'error_name'})
+                
+                if debug_error=='2':
+                    form=Analisiformcompleto()
+                    return render(request, 'rolls/diff_exp_single_tumor.html', {'form':form,
+                    'formresult': out.stdout.decode('ascii'),
+                    'gene':gene,
+                    'tumor':tumor,
+                    'feature':feature,
+                    'go':'error'})
                 else:
                 
                     if os.path.isdir(dir): 
@@ -1110,10 +1128,6 @@ def gene_mutation_analysis(request):
                     files=os.listdir(dir)
                     for file in files:
                         if file[-3:]=='png':
-                            # if 'somaticInteractions' in file:
-                            #     image_interact=os.path.join('media/saveanalisi',inp3,file)  
-                            # if 'TumorVAF' in file: 
-                            #     image_VAF=os.path.join('media/saveanalisi',inp3,file)  
                             if 'lollipopPlot' in file:
                                 image_lolli=os.path.join('media/saveanalisi',inp3,file)  
                         if 'txt' in file:

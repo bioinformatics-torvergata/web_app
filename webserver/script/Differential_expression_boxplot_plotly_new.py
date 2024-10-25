@@ -31,7 +31,7 @@ if __name__ == "__main__":
     feature= sys.argv[3]
     cartella=sys.argv[4]
     control=sys.argv[5]
-
+    error=1
     #df di interesse:
     ogg=open_dataframe(gene,tumor,feature,cartella,control)
    
@@ -39,6 +39,7 @@ if __name__ == "__main__":
         gene=ogg[2]
         df=ogg[0]
         dffeat=df_feature(ogg[1], tumor, feature) #df features
+        
         
         if feature== 'patient_status':
             listaf0= crealista(dffeat, df,feature)
@@ -61,8 +62,9 @@ if __name__ == "__main__":
                 else:
                     c+=1
             if t==0 or c==0:
-                print('there is not enough data')               
-            
+                error=2
+                #print('there is not enough data')               
+
             
             
             d=pd.DataFrame({'nome01':listaf0, gene: lista_exp, feature: lista_feature})
@@ -85,9 +87,12 @@ if __name__ == "__main__":
 
         #plt
         plotly_plot(feature,d, gene,cartella,ogg)
-
-        #p-value
-        print(ranksum_test(gene,d,feature,cartella,tumor))
+        
+        if error!=2:
+            #p-value
+            print(ranksum_test(gene,d,feature,cartella,tumor))
+        else: 
+            print(2)
     else:
         print(0)
        
