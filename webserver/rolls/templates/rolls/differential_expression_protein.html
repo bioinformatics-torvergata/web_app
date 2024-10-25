@@ -90,6 +90,14 @@
                   </div> 
 
                   {%endif%}
+
+                  {%if go == 'error_name' %}
+                  <div class="alert alert-danger text-center" role="alert">
+                    <h5>There are no results for "{{gene}}"</h5> 
+                    <p>Error: the entered gene name is incorrect</p>
+                    <p>Please select an option from those proposed at the time of entry</p> 
+                  </div> 
+                  {%endif%}
               
             </div>
       

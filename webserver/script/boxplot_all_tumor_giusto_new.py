@@ -38,9 +38,9 @@ if __name__ == "__main__":
 
     #aprire df
     ogg_analisi=gene_mirna_proteina(gene, cartella,control) #es. miRNA, miRNA_ID, 'pathdataframe.csv'
-    gene=ogg_analisi[3]
+    
     if ogg_analisi!=0:
-
+        gene=ogg_analisi[3]
         #lista samples df expression gene/miRNA/prot
         dd=pd.read_csv(ogg_analisi[2],nrows=1)
         listamiRNA=list(dd.columns[1:])
@@ -104,4 +104,4 @@ if __name__ == "__main__":
         p_value(df, cartella,feature,gene)
 
     else:
-        print('Ricerca non disponibile per il nome inserito')
+        print(0)

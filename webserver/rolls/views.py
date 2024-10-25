@@ -417,6 +417,15 @@ def differential_expression(request):
             dir= os.path.join(output_data, inp3)
             out=run([sys.executable,'script/boxplot_all_tumor_giusto_new.py',gene,feature,dir,control],shell=False, stdout=PIPE)
             print(out)
+            debug_error=out.stdout.decode().strip()
+            print((debug_error))
+            
+            if debug_error=='0':
+                form=Analisiform()
+                return render(request, 'rolls/differential_expression.html', {'form':form,
+                'formresult': out.stdout.decode('ascii'),
+                'gene':gene,
+                'go':'error_name'})
             
             if os.path.isdir(dir): 
                 files=os.listdir(dir)
@@ -472,6 +481,15 @@ def differential_expression_protein(request):
             dir= os.path.join(output_data, inp3)
             out=run([sys.executable,'script/boxplot_all_tumor_giusto_new.py',gene,feature,dir,control],shell=False, stdout=PIPE)
             print(out)
+            debug_error=out.stdout.decode().strip()
+            print(debug_error)
+            
+            if debug_error=='0':
+                form=Analisiform_protein()
+                return render(request, 'rolls/differential_expression_protein.html', {'form':form,
+                'formresult': out.stdout.decode('ascii'),
+                'gene':gene,
+                'go':'error_name'})
             
             if os.path.isdir(dir): 
                 files=os.listdir(dir)

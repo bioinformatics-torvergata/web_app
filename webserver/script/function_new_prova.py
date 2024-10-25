@@ -131,7 +131,7 @@ def open_dataframe_gene_boxplot_all_tumor(gene,listanomi01, path_dataframe, inde
         df=df.set_index(index)
         return (df)
     else: 
-        print("per il nome inserito non è disponibile la ricerca")
+        #print("per il nome inserito non è disponibile la ricerca")
         return 0
 
 
