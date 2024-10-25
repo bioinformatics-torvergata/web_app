@@ -16,6 +16,7 @@
 
 
 
+
 import pandas as pd
 import os 
 import sys
@@ -60,7 +61,7 @@ if __name__ == "__main__":
                 else:
                     c+=1
             if t==0 or c==0:
-                print('non ci sono abbastanza dati')               
+                print('there is not enough data')               
             
             
             
@@ -68,6 +69,7 @@ if __name__ == "__main__":
         
         
         else:
+            dffeat = dffeat.dropna(subset=[feature]) #delete row with nan value for this feature selected
             listaf, listaf01= crealista(dffeat, df,feature)
             dffeat=dffeat[['bcr_patient_barcode',feature]]
 
@@ -85,6 +87,7 @@ if __name__ == "__main__":
         plotly_plot(feature,d, gene,cartella,ogg)
 
         #p-value
-        print(ranksum_test(gene,d,feature))
-
+        print(ranksum_test(gene,d,feature,cartella,tumor))
+    else:
+        print(0)
        

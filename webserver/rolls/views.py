@@ -104,7 +104,7 @@ def yourdataset(request):
 
 
 ##########################################
-# Funzioni per l'autocomplete
+# Function for autocomplete
 def gene_suggestions(request):
     if 'term' in request.GET:
         qs = Gene.objects.filter(gene__icontains=request.GET.get('term'))[:10]  # Limita i risultati a 10
@@ -339,43 +339,55 @@ def diff_exp_single_tumor(request):
                 control=''
                 os.makedirs(dir)
                 out=run([sys.executable,'script/Differential_expression_boxplot_plotly_new.py',gene,tumor,feature,dir,control],shell=False, stdout=PIPE)
-                print(out)
+                debug_error=out.stdout.decode().strip()
+                print((debug_error))
                 
-                
-                if os.path.isdir(dir): 
-                    files=os.listdir(dir)
-                    n=0
-                    for file in files:
-                        
-                        if file[-4:]=='html':
-                            n+=1
-                           # image='/media/saveanalisi/'+time_dir+'/'+file
-                            image=os.path.join('media/saveanalisi',time_dir,file)
-                            form=Analisiformcompleto()
-                            return render(request, 'rolls/diff_exp_single_tumor.html', {
-                                'form':form, 
-                                'formresult': out.stdout.decode('ascii'),
-                                'image': image,
-                                'go':'Valid',
-                                'gene':gene,
-                                'tumor':tumor,
-                                'feature':feature,
-                                'parametri': parametri[feature],})
-                    if n==0:
-                      
-                        form=Analisiformcompleto()
-                        return render(request, 'rolls/diff_exp_single_tumor.html', {'form':form,
-                        'formresult': out,
-                        'feature': feature,
-                        'tumor':tumor, 
-                        'go':'error'})
-                else:
+                if debug_error=='0':
                     form=Analisiformcompleto()
                     return render(request, 'rolls/diff_exp_single_tumor.html', {'form':form,
                     'formresult': out.stdout.decode('ascii'),
-                    'feature': feature,
-                    'tumor':tumor, 
-                    'go':'error'})
+                    'gene':gene,
+                    'go':'error_name'})
+                else:
+                    
+                    if os.path.isdir(dir): 
+                        files=os.listdir(dir)
+                        n=0
+                        for file in files:
+                            
+                            if 'html' in file :
+                                image=os.path.join('media/saveanalisi',time_dir,file)
+                                n+=1
+
+                            if 'Result' in file:
+                               
+                                result_data=os.path.join(output_data,dir,file)
+                                result=read_table_comma(result_data)
+                                n+=1
+                            # image='/media/saveanalisi/'+time_dir+'/'+file
+                        if n>0:       
+                            form=Analisiformcompleto()
+                            return render(request, 'rolls/diff_exp_single_tumor.html', {
+                                        'form':form, 
+                                        'formresult': out.stdout.decode('ascii'),
+                                        'image': image,
+                                        'go':'Valid',
+                                        'gene':gene,
+                                        'tumor':tumor,
+                                        'feature':feature,
+                                        'parametri': parametri[feature],
+                                        'dati':result,
+                                        })
+                        if n==0:
+                        
+                            form=Analisiformcompleto()
+                            return render(request, 'rolls/diff_exp_single_tumor.html', {'form':form,
+                            'formresult': out,
+                            'feature': feature,
+                            'tumor':tumor, 
+                            'gene':gene,
+                            'go':'error'})
+                
 
 
     form=Analisiformcompleto()
@@ -502,14 +514,33 @@ def diff_exp_single_tumor_protein(request):
                 os.makedirs(dir)
                 out=run([sys.executable,'script/Differential_expression_boxplot_plotly_new.py',gene,tumor,feature,dir,control],shell=False, stdout=PIPE)
                 print(out)
+                debug_error=out.stdout.decode().strip()
+                print((debug_error))
                 
+                if debug_error=='0':
+                    form=Analisiformcompleto()
+                    return render(request, 'rolls/diff_exp_single_tumor.html', {'form':form,
+                    'formresult': out.stdout.decode('ascii'),
+                    'gene':gene,
+                    'go':'error_name'})
+                else:
                 
-                if os.path.isdir(dir): 
-                    files=os.listdir(dir)
-                    for file in files:
-                        if file[-4:]=='html':
-                           # image='/media/saveanalisi/'+time_dir+'/'+file
-                            image=os.path.join('media/saveanalisi',time_dir,file)
+                    if os.path.isdir(dir): 
+                        files=os.listdir(dir)
+                        n=0
+                        for file in files:
+                            
+                            if 'html' in file :
+                                image=os.path.join('media/saveanalisi',time_dir,file)
+                                n+=1
+
+                            if 'Result' in file:
+                               
+                                result_data=os.path.join(output_data,dir,file)
+                                result=read_table_comma(result_data)
+                                n+=1
+                           
+                        if n>0:       
                             form=Analisiformcompleto_protein()
                             return render(request, 'rolls/diff_exp_single_tumor_protein.html', {
                                 'form':form, 
@@ -519,13 +550,15 @@ def diff_exp_single_tumor_protein(request):
                                 'gene':gene,
                                 'tumor':tumor,
                                 'feature':feature,
-                                'parametri': parametri[feature],})
-                else:
-                    form=Analisiformcompleto_protein()
-                    return render(request, 'rolls/diff_exp_single_tumor_protein.html', {'form':form,
-                    'feature': feature,
-                    'tumor':tumor, 
-                    'go':'error'})
+                                'parametri': parametri[feature],
+                                'dati':result,})
+                    else:
+                        form=Analisiformcompleto_protein()
+                        return render(request, 'rolls/diff_exp_single_tumor_protein.html', {'form':form,
+                        'feature': feature,
+                        'tumor':tumor, 
+                        'gene':gene,
+                        'go':'error'})
 
 
     form=Analisiformcompleto_protein()
@@ -1213,6 +1246,10 @@ def corr_cell_pathway(request):
 
     form = formcorrelation()       
     return render(request, 'rolls/corr_cell_pathway.html', {'form':form})
+
+
+
+
 
 
 #### bozze da revisionare##########################

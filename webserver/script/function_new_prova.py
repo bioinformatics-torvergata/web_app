@@ -298,7 +298,7 @@ def open_dataframe(gene,tumor,feature,cartella,control):
             df=df.set_index(input[2])
             return(df,input[1],input[0])
     else: 
-        print("non è disponibile la ricerca per il nome inserito")
+        # print("not avaible name for analysis")
         return(0)
     
 
@@ -311,7 +311,7 @@ def plotly_plot(feature,d, gene,cartella,ogg):
 
 
 
-def ranksum_test(gene,d,feature):
+def ranksum_test(gene,d,feature,cartella,tumor):
     #ranksum test per p-value
     p=list(set(d[feature]))
     
@@ -321,9 +321,33 @@ def ranksum_test(gene,d,feature):
     df1_mask=d[feature]== p[1]
     dp1=d[df1_mask]
 
-    w, p = ranksums(list(dp0[gene]), list(dp1[gene]))
-
-    return(p)
+    w, p_value = ranksums(list(dp0[gene]), list(dp1[gene]))
+    if p_value=='':
+        p_value='not significant'
+    # Dimensione dei campioni
+    size_dp0 = len(dp0)
+    size_dp1 = len(dp1)
+    
+    # Creazione del dizionario dei risultati
+    results = {
+        "Gene": gene,
+        "Tumor":tumor,
+        "Feature": feature,
+        "Group 1":p[0],
+        "Group 2":p[1],
+        "Sample Size Group 1": size_dp0,
+        "Sample Size Group 2": size_dp1,
+        "P-value": p_value
+    }
+    
+    # Creazione di un DataFrame per facilitare l'output
+    results_df = pd.DataFrame([results])
+    
+    # Scrittura su file CSV
+    output_file=os.path.join(cartella,'Result.txt')
+    results_df.to_csv(output_file, index=False)
+    
+    return(p_value)
 
 
 
