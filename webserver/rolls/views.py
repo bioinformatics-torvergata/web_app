@@ -66,7 +66,9 @@ def documentation(request):
 def read_table(file_path):
     txt_data = []
 
-    df = pd.read_csv(file_path, sep='\t')  # Cambia 'sep' se necessario, es. ',' per CSV
+    df = pd.read_csv(file_path, sep='\t',dtype=str)
+    print(df)
+
     txt_data.append(df.columns.tolist())
     
     # Itera sulle righe del DataFrame e aggiungi ogni riga come lista
@@ -325,7 +327,7 @@ def survival_with_gene_mutation_status(request):
 
 
 
-############     DIFFERENTIAL EXPRESSION SINGLE TUMOR  TRASCRITTOMIC   ############ manca da gestire errori
+############     DIFFERENTIAL EXPRESSION SINGLE TUMOR  TRASCRITTOMIC   ############
 def diff_exp_single_tumor(request):
     if request.method == 'POST':
             form = Analisiformcompleto(request.POST)
@@ -404,7 +406,7 @@ def diff_exp_single_tumor(request):
 
 
 
-#############      DIFFERENTIAL EXPRESSION ANALYSIS ALL TUMOR FOR FEATURE TRASCRITTOMIC   ############# manca da gestire errori
+#############      DIFFERENTIAL EXPRESSION ANALYSIS ALL TUMOR FOR FEATURE TRASCRITTOMIC   #############
 def differential_expression(request):
     if request.method == 'POST':
         form = Analisiform(request.POST)
@@ -468,7 +470,7 @@ def differential_expression(request):
 
 
 
-#############      DIFFERENTIAL EXPRESSION ANALYSIS ALL TUMOR FOR FEATURE   PROTEOMIC   ############# manca da gestire errori
+#############      DIFFERENTIAL EXPRESSION ANALYSIS ALL TUMOR FOR FEATURE   PROTEOMIC   ############# 
 def differential_expression_protein(request):
     if request.method == 'POST':
         form = Analisiform_protein(request.POST)
@@ -526,7 +528,7 @@ def differential_expression_protein(request):
     return render(request, 'rolls/differential_expression_protein.html', {'form':form})
 
 
-############     DIFFERENTIAL EXPRESSION SINGLE TUMOR PROTEOMIC   ############ manca da gestire errori
+############     DIFFERENTIAL EXPRESSION SINGLE TUMOR PROTEOMIC   ############
 def diff_exp_single_tumor_protein(request):
     if request.method == 'POST':
             form = Analisiformcompleto_protein(request.POST)
@@ -706,71 +708,6 @@ def deseq2(request):
     return render(request, 'rolls/deseq2.html', {'form':form})
 
 
-# def deseq2_old(request):
-#     if request.method == 'POST':
-
-#         if 'features' in request.POST:
-#             form = Deseq2form(request.POST)
-#             if form.is_valid():
-#                 tumor=request.POST['tumor'] 
-#                 out=run([sys.executable,'script/search_feature_deseq2.py',tumor],shell=False, stdout=PIPE)
-#                 stringa=(out.stdout.decode('ascii')).strip()
-#                 lista=stringa.split(',')
-
-#                 return render(request, 'rolls/deseq2.html', {
-#                     'form':form,
-#                     'lista':lista,
-#                     'tumor':tumor,
-#                     })
-#         elif 'Submit' in request.POST:
-#             go='Valid'
-#             form = Deseq2form(request.POST)
-#             tumor=request.POST['tumor'] 
-#             feature=request.POST.get('feature', False)
-#             dir= os.path.join(base_dir,'deseq2', feature,tumor)
-            
-            
-#             if os.path.isdir(dir): 
-#                 inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
-#                 dir_saveresults= os.path.join(output_data, inp3)
-#                 print(dir_saveresults)
-#                 os.makedirs(dir_saveresults)
-
-#                 result_file='result_' + tumor + '_2.txt'
-#                 out=run([sys.executable,'script/deseq2.py',tumor,dir,dir_saveresults,result_file],shell=False, stdout=PIPE)
-                
-#                 images=choseimage(tumor,dir,dir_saveresults)
-                
-#                 file_txt=os.path.join(output_data,inp3,result_file)
-#                 print(file_txt)
-#                 result=read_table_deseq(file_txt)
-#                 form=Deseq2form()                         
-#                 return render(request, 'rolls/deseq2.html', {'form':form, 
-#                     'feature': feature,
-#                     'tumor':tumor,
-#                     'enhancedimage': os.path.join('media/saveanalisi',inp3,images[0]),
-#                     'images1': os.path.join('media/saveanalisi',inp3,images[1]),
-#                     'images2': os.path.join('media/saveanalisi',inp3,images[2]),
-#                     'images3': os.path.join('media/saveanalisi',inp3,images[3]),
-#                     'image_plotly':os.path.join('media/saveanalisi',inp3,images[4]),
-#                     'go':'Valid',
-#                     'parametri': parametri[feature],
-#                     'dir':'media/saveanalisi/'+inp3+'/'+result_file, 
-#                     'dati':result,
-#                     })
-
-#             else:
-#                 form=Deseq2form()
-#                 return render(request, 'rolls/deseq2.html', {'form':form,
-#                 'feature': feature,
-#                 'tumor':tumor, 
-#                 'go':'error'})
-
-
-
-#     form = Deseq2form()       
-#     return render(request, 'rolls/deseq2.html', {'form':form})
-
 
 
 
@@ -896,16 +833,15 @@ def de_mut(request):
                 n=0
                 for file in files:
                     if 'res' in file:
+                        dir_saveresults= os.path.join(output_data, inp3)
+                        out_plotly=run([sys.executable,'script/MUT_deseq2_volcano_plotly.py',tumor,file,dir_saveresults],shell=False, stdout=PIPE)
+                        #print(out_plotly)
                         dir=os.path.join('media/saveanalisi',inp3,file)
                         file_txt=os.path.join(output_data,inp3,file)
                         result=read_table_deseq(file_txt)
-                        #dir_saveresults= os.path.join(output_data, inp3)
-                        # out_plotly=run([sys.executable,'script/MUT_deseq2.py',tumor,file_txt,dir_saveresults],shell=False, stdout=PIPE)
-
-                        # if 'html' in file:
-                        #     image_plotly=file
-
-
+                        
+                        file_html=tumor+'.html'
+                        image_plotly=os.path.join('media/saveanalisi',inp3,file_html)
                     if 'png' in file:
                         
                         if 'Enhanced' in file:
@@ -920,15 +856,19 @@ def de_mut(request):
                         if 'Top50genes' in file:
                             image4=os.path.join('media/saveanalisi',inp3,file)
                             n+=1
-
-                    
+                
+                # files=os.listdir(dir)
+                # for file in files:
+                #     if 'html' in file:
+                #         image_plotly=os.path.join('media/saveanalisi',inp3,file)
+                #         print(image_plotly)
                 if n>1:
                     form=tumorGeneform()
                     return render(request, 'rolls/de_mut.html', {'form':form, 
                         'tumor':tumor,
                         'gene':gene,
-                        #'image_plotly':image_plotly,
-                        'image1':image1,
+                        'image_plotly':image_plotly,
+                        #'image1':image1,
                         'image2':image2,
                         'image3':image3,
                         'image4':image4,
@@ -1065,7 +1005,8 @@ def de_mut_clinical_feature(request):
 def read_table_comma(file_path):
     txt_data = []
 
-    df = pd.read_csv(file_path, sep=',')  # Cambia 'sep' se necessario, es. ',' per CSV
+    df = pd.read_csv(file_path, sep=',',dtype=str) 
+    print(df)
     txt_data.append(df.columns.tolist())
     
     # Itera sulle righe del DataFrame e aggiungi ogni riga come lista

@@ -56,13 +56,13 @@
             <p>Gene: {{gene}}</p>
           </div>
         <br>
-        <div class="mb-3 bg-body rounded" style="max-width: 800px;">
+        <!-- <div class="mb-3 bg-body rounded" style="max-width: 800px;">
               <a href="{%static image1%}" target="_blank"><img src= '{%static image1 %}' width="700px"></a>
-           </div>
+           </div> -->
 
-           <!-- <div class="mb-3 bg-body rounded" style="max-width: 800px;">
+           <div class="mb-3 bg-body rounded" style="max-width: 800px;">
             <iframe src="{% static image_plotly %}" width="700" height="600" frameborder="0"></iframe>
-        </div> -->
+        </div>
           
           
             <div class="card-group my-3 shadow mb-3 bg-body rounded">
@@ -106,9 +106,7 @@
   
         {%if go == 'error'%}
         <div class="alert alert-danger text-center" role="alert">
-          <h5>There are no results for {{tumor}} and {{gene}}</h5>
-          <p> Error: {{formresult}} </p>
-          
+          <h5>There are no mutations for this gene {{gene}} in the tumor {{tumor}}</h5>
         </div> 
 
         {%endif%}

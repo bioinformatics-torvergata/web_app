@@ -46,6 +46,7 @@ if 'gene' in config:
     gene_name_ENSG = get_full_path(config['gene']['name_ENSG'])
     gene_dataframe = get_full_path(config['gene']['dataframe'])
     gene_dataframe_FPKM = get_full_path(config['gene']['dataframe_FPKM'])
+    mapped_ENSG=get_full_path(config['gene']['mapped_ENSG'])
 
 if 'protein' in config:
     protein_name = get_full_path(config['protein']['name'])
@@ -318,9 +319,12 @@ def ranksum_test(gene,d,feature,cartella,tumor):
     
     df1_mask=d[feature]== p[0]
     dp0=d[df1_mask]
-    
+    dp0[gene]=dp0[gene].fillna(0)
+
+
     df1_mask=d[feature]== p[1]
     dp1=d[df1_mask]
+    dp1[gene]=dp1[gene].fillna(0)
 
     w, p_value = ranksums(list(dp0[gene]), list(dp1[gene]))
     if p_value=='':
@@ -329,7 +333,7 @@ def ranksum_test(gene,d,feature,cartella,tumor):
     # Dimensione dei campioni
     size_dp0 = len(dp0)
     size_dp1 = len(dp1)
-    p_value_scientific = "%.2E" %Decimal(p_value)
+    p_value_scientific = '%.2E' %Decimal(p_value)
     # Creazione del dizionario dei risultati
     results = {
         "Gene": gene,
@@ -628,3 +632,8 @@ def open_gsva_df(tumor):
 
 
 #######################################################################################
+
+#Deseq2_mutation
+
+def mapping_ensg():
+    return(mapped_ENSG)
