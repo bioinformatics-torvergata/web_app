@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     file_mapped=mapping_ensg()
     ens2sym=pd.read_csv(file_mapped,sep="\t",index_col=0)
-
+    
 
     GS=[]
     for i in df.ENSG:
@@ -37,19 +37,22 @@ if __name__ == "__main__":
 
     df=df.loc[:,col].set_index("ENSG")
 
-    #df.padj=['%.2E' % Decimal(x) for x in df.padj]
+  
     df.log2FoldChange=[round(x, 3) for x in df.log2FoldChange]
-
+    
     
    
-
-    df['padj']=np.log10(df['padj'])*(-1)
     #plt
-    plotly_volcano(df,dir_saveresults,tumor)
+    df_plot=df.copy()
+    #df_plot['padj']=np.log10(df_plot['padj'])*(-1)
+    df_plot['padj']=np.log10(df_plot['padj'])*(-1)
+    plotly_volcano(df_plot,dir_saveresults,tumor)
 
     #sovrascrive il file di risultati
-    df.padj=['%.2E' % Decimal(x) for x in df.padj]
-    df.to_csv(path_result,sep="\t")
+    #df.padj=['%.2E' % Decimal(x) for x in df.padj]
+    #df.to_csv(path_result,sep="\t")
+    df.to_csv(os.path.join(dir_saveresults,'result.txt'), sep="\t")
+
 
 
 

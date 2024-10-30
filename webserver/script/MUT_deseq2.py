@@ -18,11 +18,7 @@ if __name__ == "__main__":
     dir= sys.argv[2] #path file result.txt
     cartella=sys.argv[3] #where save html
     
-    
-    
-    
-   
-    
+
     df=pd.read_csv(dir,sep="\t")
     df['padj']=np.log10(df['padj'])*(-1)
     #plt
