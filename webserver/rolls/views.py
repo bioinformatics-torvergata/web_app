@@ -727,12 +727,8 @@ def read_table_deseq(file_path):
     df = pd.read_csv(file_path, sep='\t')  # Cambia 'sep' se necessario, es. ',' per CSV
     df = df.sort_values(by='padj', ascending=True).head(500)
 
-
+    df.padj=['%.2E' % Decimal(x) for x in df.padj]
     
-   
- 
-    
-   
     # Aggiungi l'intestazione (nomi delle colonne, incluso l'indice) alla lista
     txt_data.append(df.columns.tolist())
     
