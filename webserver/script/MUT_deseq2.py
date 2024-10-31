@@ -20,6 +20,7 @@ if __name__ == "__main__":
     
 
     df=pd.read_csv(dir,sep="\t")
+    df['padj'] = pd.to_numeric(df['padj'], errors='coerce')
     df['padj']=np.log10(df['padj'])*(-1)
     #plt
     plotly_volcano(df,cartella,tumor)
