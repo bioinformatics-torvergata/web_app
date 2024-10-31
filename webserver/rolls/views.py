@@ -719,14 +719,13 @@ def choseimage(tumor,pathfiles,dir_saveresults):
         return()
 
 
-
 def read_table_deseq(file_path):
     txt_data = []
     
-
     df = pd.read_csv(file_path, sep='\t') 
     df['padj'] = pd.to_numeric(df['padj'], errors='coerce')
-    df = df.sort_values(by='padj', ascending=True).head(500)
+    #df = df.sort_values(by='padj', ascending=True).head(500)
+    df=df[df['padj'] < 0.05].sort_values(by='padj', ascending=True) #.head(500)
 
     df.padj=['%.2E' % Decimal(x) for x in df.padj]
     
@@ -903,17 +902,12 @@ def tumor_oncoplot(request):
 ###########differential expression mutato vs non mutato #############
 def read_table_deseq_demut(file_path):
     txt_data = []
-    
 
     df = pd.read_csv(file_path, sep='\t',dtype=str) 
-    #aggiugere conversione e ordinarlo su questo padjust
-
-    #df['padj']=np.log10(df['padj'])*(-1)
-    #df = df.sort_values(by='padj', ascending=False).head(500)
-    #-log10padj
+    #trasforma padj in valore numerico per sortarlo dal piu piccolo al piu grande
     df['padj'] = pd.to_numeric(df['padj'], errors='coerce')
-
-    df = df.sort_values(by='padj', ascending=True).head(500)
+    df=df[df['padj'] < 0.05].sort_values(by='padj', ascending=True) #.head(500)
+    #df = df.sort_values(by='padj', ascending=True).head(500)
     
     df.padj=['%.2E' % Decimal(x) for x in df.padj]
     
