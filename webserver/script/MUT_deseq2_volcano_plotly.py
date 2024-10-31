@@ -31,7 +31,6 @@ if __name__ == "__main__":
         else:
             GS.append(i)
 
-
     df["GeneSymbol"]=GS
     col=["GeneSymbol","ENSG","log2FoldChange","padj"]
 
@@ -40,17 +39,11 @@ if __name__ == "__main__":
   
     df.log2FoldChange=[round(x, 3) for x in df.log2FoldChange]
     
-    
-   
     #plt
     df_plot=df.copy()
-    #df_plot['padj']=np.log10(df_plot['padj'])*(-1)
     df_plot['padj']=np.log10(df_plot['padj'])*(-1)
     plotly_volcano(df_plot,dir_saveresults,tumor)
 
-    #sovrascrive il file di risultati
-    #df.padj=['%.2E' % Decimal(x) for x in df.padj]
-    #df.to_csv(path_result,sep="\t")
     df.to_csv(os.path.join(dir_saveresults,'result.txt'), sep="\t")
 
 

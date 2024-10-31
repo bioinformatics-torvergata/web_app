@@ -724,7 +724,8 @@ def read_table_deseq(file_path):
     txt_data = []
     
 
-    df = pd.read_csv(file_path, sep='\t')  # Cambia 'sep' se necessario, es. ',' per CSV
+    df = pd.read_csv(file_path, sep='\t') 
+    df['padj'] = pd.to_numeric(df['padj'], errors='coerce')
     df = df.sort_values(by='padj', ascending=True).head(500)
 
     df.padj=['%.2E' % Decimal(x) for x in df.padj]
@@ -910,8 +911,9 @@ def read_table_deseq_demut(file_path):
     #df['padj']=np.log10(df['padj'])*(-1)
     #df = df.sort_values(by='padj', ascending=False).head(500)
     #-log10padj
-    
-    df = df.sort_values(by='padj', ascending=False).head(500)
+    df['padj'] = pd.to_numeric(df['padj'], errors='coerce')
+
+    df = df.sort_values(by='padj', ascending=True).head(500)
     
     df.padj=['%.2E' % Decimal(x) for x in df.padj]
     
@@ -952,7 +954,9 @@ def de_mut(request):
                         dir_saveresults= os.path.join(output_data, inp3)
                         out_plotly=run([sys.executable,'script/MUT_deseq2_volcano_plotly.py',tumor,file,dir_saveresults],shell=False, stdout=PIPE)
                         #print(out_plotly)
-                        dir=os.path.join('media/saveanalisi',inp3,file)
+                        #dir=os.path.join('media/saveanalisi',inp3,file)
+                        dir=os.path.join('media/saveanalisi',inp3,'result.txt')
+
                         file_txt=os.path.join(output_data,inp3,'result.txt')
                         result=read_table_deseq_demut(file_txt)
                         
