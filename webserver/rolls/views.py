@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from subprocess import run,PIPE
 import sys
 from matplotlib import image
-from rolls.forms import Gene, FormMutationChoice,featuremutationform,formcorrelation,Analisiform_protein,Analisiformcompleto_protein,formSurvival,Analisiform, Deseq2form, Analisiform1, Analisiformcompleto, Analisi_interaction,Analisipath,tumorGeneform,FormTumorMutation
+from rolls.forms import Gene, deconvolution_form,FormMutationChoice,featuremutationform,formcorrelation,Analisiform_protein,Analisiformcompleto_protein,formSurvival,Analisiform, Deseq2form, Analisiform1, Analisiformcompleto, Analisi_interaction,Analisipath,tumorGeneform,FormTumorMutation
 import os
 from django.http import StreamingHttpResponse
 from wsgiref.util import FileWrapper
@@ -1248,7 +1248,7 @@ def gene_mutation_analysis(request):
 def deconvolution(request):
     count = get_counter()
     if request.method == 'POST':
-        form = Deseq2form(request.POST)
+        form = deconvolution_form(request.POST)
         tumor=request.POST['tumor'] 
         
         dir= os.path.join(base_dir,'deconvolution','results_deconvolution',tumor)
@@ -1276,7 +1276,7 @@ def deconvolution(request):
                     result_data=os.path.join(output_data,inp3,file)
                     result=read_table(result_data)
                     
-            form=Deseq2form()                         
+            form=deconvolution_form()                         
             return render(request, 'rolls/deconvolution.html', {'form':form, 
                 'tumor':tumor,
                 'image1':image_box,
@@ -1287,7 +1287,7 @@ def deconvolution(request):
                 })
 
         else:
-            form=Deseq2form()
+            form=deconvolution_form()
             return render(request, 'rolls/deconvolution.html', {'form':form,
             'count': count,
             'tumor':tumor, 
@@ -1295,7 +1295,7 @@ def deconvolution(request):
 
 
 
-    form = Deseq2form()       
+    form = deconvolution_form()       
     return render(request, 'rolls/deconvolution.html', {'form':form,'count': count,})
 
 

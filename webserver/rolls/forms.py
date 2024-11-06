@@ -205,11 +205,12 @@ class Deseq2form(forms.ModelForm):
         fields=('tumor','feature')
 
 
-class Deseq2form_old(forms.ModelForm): 
+class deconvolution_form(forms.ModelForm): 
 
     class Meta:
         model=Analisi
         fields=('tumor',)
+
 
 
    
@@ -247,6 +248,7 @@ class FormTumorMutation(forms.ModelForm):
     class Meta:
         model=Analisi_mutation
         fields=('tumor',)
+
 
 class FormMutationChoice(forms.ModelForm):
     number = forms.ChoiceField(
