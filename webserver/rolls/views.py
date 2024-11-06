@@ -625,7 +625,7 @@ def diff_exp_single_tumor_protein(request):
                 
                 if debug_error=='0':
                     form=Analisiformcompleto()
-                    return render(request, 'rolls/diff_exp_single_tumor.html', {'form':form,
+                    return render(request, 'rolls/diff_exp_single_tumor_protein.html', {'form':form,
                     'formresult': out.stdout.decode('ascii'),
                     'gene':gene,
                     'count': count,
@@ -633,7 +633,7 @@ def diff_exp_single_tumor_protein(request):
                 
                 if debug_error=='2':
                     form=Analisiformcompleto()
-                    return render(request, 'rolls/diff_exp_single_tumor.html', {'form':form,
+                    return render(request, 'rolls/diff_exp_single_tumor_protein.html', {'form':form,
                     'formresult': out.stdout.decode('ascii'),
                     'gene':gene,
                     'tumor':tumor,

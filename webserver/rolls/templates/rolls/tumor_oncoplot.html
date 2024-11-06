@@ -25,7 +25,7 @@
 
   <div class="row my-3">
     <div class="col-sm-3 my-3">
-        <form method="post" >
+        <form method="post" id="analysis-form" >
             {%csrf_token%}
             {{form|crispy}}         
             <div class="d-grid gap-2 d-md-flex justify-content-md">

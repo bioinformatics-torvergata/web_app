@@ -46,13 +46,8 @@
         <div class="col-sm-3 offcanvas-body" style="max-width: 290px;">
           {% include 'rolls/menu.html' %} 
         </div>
-        <!-- Overlay per la GIF di caricamento -->
-        <div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); z-index: 9999; text-align: center;">
-            <img src="{% static 'media/loading.gif' %}" alt="Caricamento..." style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 150px; height: 150px;">
-        </div>
-        
-        <div class="col my-3 shadow p-3 mb-5 bg-body rounded" style="max-width: 1250px;">
 
+        <div class="col my-3 shadow p-3 mb-5 bg-body rounded" style="max-width: 1250px;">
             {% block content %}
             {% endblock %}
         </div>
@@ -63,18 +58,9 @@
         <p>Analyses performed: {{ count }}</p>
         © 2024, Centre for Molecular Bioinformatics, University of Rome "Tor Vergata".
     </div>
-        <!-- Script per mostrare l'overlay al submit del form -->
-        <script type="text/javascript">
-            document.getElementById("analysis-form").onsubmit = function(event) {
-                event.preventDefault();  // Blocca l'invio immediato del form
-                document.getElementById("loading-overlay").style.display = "block"; // Mostra l'overlay con la GIF
-                setTimeout(() => {
-                    this.submit();  // Esegue l'invio del form dopo 100 ms
-                }, 1);  // Attesa di 100 ms per garantire il rendering della GIF
-            };
-        </script>
-  
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
 </body>
 
 </html>
