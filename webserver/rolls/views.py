@@ -69,7 +69,7 @@ def read_table(file_path):
     txt_data = []
 
     df = pd.read_csv(file_path, sep='\t',dtype=str)
-    print(df)
+    #print(df)
 
     txt_data.append(df.columns.tolist())
     

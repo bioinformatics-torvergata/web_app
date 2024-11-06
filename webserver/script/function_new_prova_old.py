@@ -79,22 +79,16 @@ def read_clinical_data():
 
 
 def gene_mirna_proteina(gene, cartella,control):
-    if control == 'protein':
-        with open(protein_name) as f:
-            protein_names = f.read().splitlines()
-        for protein in protein_names:
-            if protein.lower() == gene.lower():  # Use case-insensitive comparison to find if gene is in the list
-                os.mkdir(cartella)
-                return ['protein', "peptide_target", protein_dataframe, protein] # Return the correct-cased protein name along with other info
-        return 0   # If gene not found in any case, return 0
-    
+    if control=='protein':
+        if gene in open(protein_name).read().split("\n"):
+            os.mkdir(cartella)
+            return(['protein', "peptide_target",protein_dataframe,gene])
+        else:
+            return(0)#nome errato
     else:
         #controllare se è gene symbol:
         df_ensg= pd.read_csv(gene_name_ENSG,sep='\t')
-
-        result_index = df_ensg[(df_ensg['gene_id_version'].str.lower() == gene.lower()) | (df_ensg['gene_id'].str.lower() == gene.lower()) | (df_ensg['gene_symbol'].str.lower() == gene.lower())].index
-    
-        #result_index = df_ensg[(df_ensg['gene_id_version'] == gene) | (df_ensg['gene_id'] == gene) | (df_ensg['gene_symbol'] == gene)].index
+        result_index = df_ensg[(df_ensg['gene_id_version'] == gene) | (df_ensg['gene_id'] == gene) | (df_ensg['gene_symbol'] == gene)].index
         if not result_index.empty:
             gene_version=df_ensg.loc[result_index[0],'gene_id_version']
             indice=int(result_index[0])
@@ -109,14 +103,18 @@ def gene_mirna_proteina(gene, cartella,control):
 
 
         #controllo df miRNA
-        with open(miRNA_name) as f:
-            miRNA_names = f.read().splitlines()
-            for mirna in miRNA_names:
-                if mirna.lower() == gene.lower():
-                    os.mkdir(cartella)
-                    return(['miRNA',"miRNA_ID",miRNA_dataframe,mirna])
-            else:
-                return(0) #la ricerca non è disponibile per il nome inserito
+        if gene in open(miRNA_name).read().split("\n"):
+            os.mkdir(cartella)
+            return(['miRNA',"miRNA_ID",miRNA_dataframe,gene])
+        
+
+    # #controllo df proteina
+    # if gene in open(protein_name).read().split("\n"):
+    #     os.mkdir(cartella)
+    #     return(['protein', "peptide_target",protein_dataframe,gene])
+    
+        else:
+            return(0) #la ricerca non è disponibile per il nome inserito
 
 
 
@@ -137,6 +135,9 @@ def open_dataframe_gene_boxplot_all_tumor(gene,listanomi01, path_dataframe, inde
     else: 
         #print("per il nome inserito non è disponibile la ricerca")
         return 0
+
+
+
 
 
 
@@ -249,31 +250,26 @@ def p_value(df, cartella,feature,gene):
 
 def what_is_my_object_gene(gene,control):
     if control=='protein':
-        with open(protein_name) as f:
-            protein_names = f.read().splitlines()
-        for protein in protein_names:
-            if protein.lower() == gene.lower():
-                return(protein,'protein','peptide_target',protein_dataframe)
+        if gene in open(protein_name).read().split("\n"):
+            return(gene,'protein','peptide_target',protein_dataframe)
         else:
             return(0) #nome errato
    
     else:
          #implementato per prendere in input anche l'ENSG inserito senza versione.
         df_ensg= pd.read_csv(gene_name_ENSG,sep='\t')
-        result_index = df_ensg[(df_ensg['gene_id_version'].str.lower() == gene.lower()) | (df_ensg['gene_id'].str.lower() == gene.lower()) | (df_ensg['gene_symbol'].str.lower() == gene.lower())].index
-        #result_index = df_ensg[(df_ensg['gene_id_version'] == gene) | (df_ensg['gene_id'] == gene) | (df_ensg['gene_symbol'] == gene)].index
+        
+        result_index = df_ensg[(df_ensg['gene_id_version'] == gene) | (df_ensg['gene_id'] == gene) | (df_ensg['gene_symbol'] == gene)].index
         if not result_index.empty:
             gene_version=df_ensg.loc[result_index[0],'gene_id_version']
+
             return (gene_version,'gene','gene_id',int(result_index[0]))
     
-       #controllo df miRNA
-        with open(miRNA_name) as f:
-            miRNA_names = f.read().splitlines()
-            for mirna in miRNA_names:
-                if mirna.lower() == gene.lower():
-                    return (mirna,'miRNA','miRNA_ID',miRNA_dataframe)
-            else:
-                return(0) #nome errato
+        if gene in open(miRNA_name).read().split("\n"):
+            return (gene,'miRNA','miRNA_ID',miRNA_dataframe)
+
+        else:
+            return(0) #nome errato
     
 def open_df_gene(input,tumor,feature,cartella):
     if feature == 'patient_status':
@@ -490,8 +486,7 @@ def plotly_volcano(df,cartella,tumor):
 
 def open_dataframe_gene_overall(gene,tumor):
     df_ensg= pd.read_csv(gene_name_ENSG,sep='\t')
-    result_index = df_ensg[(df_ensg['gene_id_version'].str.lower() == gene.lower()) | (df_ensg['gene_id'].str.lower() == gene.lower()) | (df_ensg['gene_symbol'].str.lower() == gene.lower())].index
-    #result_index = df_ensg[(df_ensg['gene_id_version'] == gene) | (df_ensg['gene_id'] == gene) | (df_ensg['gene_symbol'] == gene)].index
+    result_index = df_ensg[(df_ensg['gene_id_version'] == gene) | (df_ensg['gene_id'] == gene) | (df_ensg['gene_symbol'] == gene)].index
     if not result_index.empty:
         gene_version=df_ensg.loc[result_index[0],'gene_id_version']
         indice=int(result_index[0])
@@ -499,32 +494,18 @@ def open_dataframe_gene_overall(gene,tumor):
         df=pd.read_csv(gene_dataframe_FPKM_tumor)
         df=df.set_index("gene_id")
         return(df,gene_version)
-    
-    
-    with open(miRNA_name) as f:
-        miRNA_names = f.read().splitlines()
-        for mirna in miRNA_names:
-            if mirna.lower() == gene.lower():
-                df=pd.read_csv(miRNA_dataframe)
-                df=df.set_index('miRNA_ID')
-                return(df,mirna)
-                    
+    if gene in open(miRNA_name).read().split("\n"):
+        df=pd.read_csv(miRNA_dataframe)
+        df=df.set_index('miRNA_ID')
+        return(df,gene)
+   
     if gene in open(protein_name).read().split("\n"):
         df=pd.read_csv(protein_dataframe)
         df=df.set_index('peptide_target')
         return (df,gene)
-    
-
-    with open(protein_name) as f:
-        protein_names = f.read().splitlines()
-        for protein in protein_names:
-            if protein.lower() == gene.lower():  # Use case-insensitive comparison to find if gene is in the list
-                df=pd.read_csv(protein_dataframe)
-                df=df.set_index('peptide_target')
-                return (df,protein)
-        
-    print("analysis is not available for the entered name")
-    return 0
+    else: 
+        print("analysis is not available for the entered name")
+        return 0
 
 
 
