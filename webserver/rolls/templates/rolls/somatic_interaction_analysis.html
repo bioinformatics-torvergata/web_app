@@ -41,14 +41,22 @@
         </div> 
         </div>
         {%if go == 'Valid' %}        
-        <h3>Results:</h3> 
-
+        <h3 class="d-flex justify-content-between align-items-center">
+          <span>Results</span>
+          
+          <div class="text-end">
+              <span style="font-size: 14px;">Click here to download all the results of this analysis</span>
+              <a href="{% url 'download_zip' subdirectory=dir zip_name='results.zip' %}" download target="blank" title="Click here to download all the results of this analysis">
+                  <button class="btn btn-sm"><i class="fa-solid fa-download"></i></button>
+              </a>
+          </div>
+      </h3>
 
         <hr>
         <div class="row">
           <div class="col mx-3">
-            <p>Tumor: {{tumor}}</p>
-            <p>Gene selected: {{number}}</p>
+            <p><b>Tumor:</b> {{tumor}}</p>
+            <p><b>Gene selected:</b> {{number}}</p>
           </div>
         <br>
         <div class="row">
@@ -57,7 +65,8 @@
             <a href="{%static image_interact%}" target="_blank"><img src= '{%static image_interact %}' width="700"></a>
         </div> 
         <br>
-        <p>You can download the results of this analysis shown in the table  <a href="{% static dir %}" download target="_blank"><button class="btn"><i class="fa-solid fa-download"></i></button></a></p>
+        <p>The table shows the results calculated for this analysis: </p>
+        
         <div class="table-responsive" >
           <table id="Mytable" class="table table-hover table-sm" style="width: 100%; margin: 0 auto; text-align: left; border-collapse: collapse; border: 1px solid white;">
               <thead style="position: sticky; top: 0; background-color: white; z-index: auto;">

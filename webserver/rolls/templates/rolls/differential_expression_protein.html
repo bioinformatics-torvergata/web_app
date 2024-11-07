@@ -44,11 +44,22 @@
                   </div>
                   {%if go == 'Valid' %}
                   
-                  <h3>Results:</h3> 
+                  <h3 class="d-flex justify-content-between align-items-center">
+                    <span>Results</span>
+                    
+                    <div class="text-end">
+                        <span style="font-size: 14px;">Click here to download all the results of this analysis</span>
+                        <a href="{% url 'download_zip' subdirectory=dir zip_name='results.zip' %}" download target="blank" title="Click here to download all the results of this analysis">
+                            <button class="btn btn-sm"><i class="fa-solid fa-download"></i></button>
+                        </a>
+                    </div>
+                </h3>
                    
                   <hr>
-                  <p>Protein: {{gene}}</p>
-                  <p>Feature: {{feature}}</p>
+                  <p><b>Protein:</b> {{gene}}</p>
+                  <p><b>Feature:</b> {{feature}}</p>
+                  <p><b>Parameters compared:</b> {{parametri}}</p>
+
                   <br>
                   <div class="row">
                    <div class="mb-3 bg-body rounded" style="max-width: 800px;">
@@ -56,7 +67,7 @@
                   </div> 
                   <br>
                   <br>
-                  <p>You can download the p-value results calculated for this analysis <a href="{% static dir %}" download target="blank" ><button class="btn"><i class="fa-solid fa-download"></i></button></a></p>
+                  <p>The table shows the results of the p-values calculated for this analysis: </p>
                   
                   <div class="table-responsive" >
                     <table id="Mytable" class="table table-hover table-sm" style="width: 100%; margin: 0 auto; text-align: left; border-collapse: collapse; border: 1px solid white;">

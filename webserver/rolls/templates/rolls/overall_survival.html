@@ -53,11 +53,21 @@
                 </div>
                   {%if go == 'Valid' %}
                 
-                  <h3>Results: </h3>
+                  <h3 class="d-flex justify-content-between align-items-center">
+                    <span>Results</span>
+                    
+                    <div class="text-end">
+                        <span style="font-size: 14px;">Click here to download all the results of this analysis</span>
+                        <a href="{% url 'download_zip' subdirectory=dir zip_name='results.zip' %}" download target="blank" title="Click here to download all the results of this analysis">
+                            <button class="btn btn-sm"><i class="fa-solid fa-download"></i></button>
+                        </a>
+                    </div>
+                </h3>
+                  
                   <hr>
-                  <p>Gene: {{gene}}</p>
-                  <p>Tumor: {{tumor}}</p>
-                  <p>Method: {{method}}</p>
+                  <p><b>Gene:</b> {{gene}}</p>
+                  <p><b>Tumor:</b> {{tumor}}</p>
+                  <p><b>Method:</b> {{method}}</p>
                   <p><b>P-value:</b> {{formresult}}</p>
                   <div class="row">
                    

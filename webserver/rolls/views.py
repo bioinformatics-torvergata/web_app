@@ -18,7 +18,7 @@ import pandas as pd
 from decimal import Decimal
 from django.http import JsonResponse
 from rolls.models import Gene,Pathway,Protein, Gene_symbol
-
+from django.http import FileResponse, HttpResponseNotFound
 import subprocess
 
 
@@ -221,472 +221,35 @@ def get_features(request):
 
 
 
+def download_zip(request, subdirectory, zip_name):
+    # Componi il percorso completo del file ZIP usando il terzo parametro
+    zip_file_path = os.path.join(output_data, subdirectory, zip_name)
+    print(zip_file_path)
+
+    # Verifica se il file esiste e se è all'interno di una directory sicura
+    # Controlla se il file è all'interno della directory 'output_data' per prevenire attacchi di directory traversal
+    if os.path.commonprefix([os.path.realpath(zip_file_path), os.path.realpath(output_data)]) == os.path.realpath(output_data):
+        if os.path.exists(zip_file_path):
+            return FileResponse(open(zip_file_path, 'rb'), as_attachment=True, filename=zip_name)
+        else:
+            return HttpResponseNotFound("File non trovato.")
+    else:
+        return HttpResponseNotFound("Accesso non autorizzato al file.")
 
 
+############################################
+#                                          #
+#             TRANSCRIPTOMIC               #
+#                                          #
+############################################
+
+# analisi: 
+#1. Deseq2 (cartella ZIP PROBLEMI)
+#2. Differential expression single tumor (OK)
+#3. Differential expression all tumor (OK)
 
 
-######### OVERALL SURVIVAL ################
-def overall_survival(request):
-    count = get_counter()
-    if request.method == 'POST':
-        form = formSurvival(request.POST)
-        if form.is_valid():
-            gene=form.cleaned_data['gene']
-            tumor=form.cleaned_data['tumor']
-            
-            methods=form.cleaned_data['Methods']
-
-            print(gene, tumor,methods)
-            inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
-            dir= os.path.join(output_data, inp3)
-            
-            out=run([sys.executable,'script/overall_survival.py',gene,tumor,dir,methods],shell=False, stdout=PIPE)
-            print(out)
-            count = increment_counter()
-
-            if os.path.isdir(dir): 
-                files=os.listdir(dir)
-                for file in files:
-                    if 'jpeg' in file:
-                        image=os.path.join('media/saveanalisi',inp3,file)
-                        
-                        form=formSurvival()
-
-                        return render(request, 'rolls/overall_survival.html', {
-                            'form':form, 
-                            'formresult': out.stdout.decode('ascii'),
-                            'image': image,
-                            'go':'Valid',
-                            'gene':gene ,
-                            'tumor':tumor,
-                            'method':methods,
-                            'count': count,
-                            'dir':inp3})
-
-            else:
-                form=formSurvival()
-                return render(request, 'rolls/overall_survival.html', {'form':form,
-                'formresult': out.stdout.decode('ascii'),
-                'gene':gene,
-                'tumor':tumor, 
-                'count': count,
-                'go':'error'})
-
-
-    form=formSurvival()
-    return render(request, 'rolls/overall_survival.html', {'form':form,'count': count,})
-
-
-###########Overall survival con pathway activity score######
-def os_pathway(request):
-    count = get_counter()
-    if request.method == 'POST':
-        form = Analisipath(request.POST)
-        if form.is_valid():
-            pathway=form.cleaned_data['pathway']
-            tumor=form.cleaned_data['tumor']
-            method=form.cleaned_data['Methods']
-            inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
-            dir= os.path.join(output_data, inp3)
-            out=run([sys.executable,'script/OS_pathway.py',tumor,pathway,dir,method],shell=False, stdout=PIPE)
-            print(out)
-            count = increment_counter()
-            dir='rolls/static/media/saveanalisi/'+inp3+'/'
-            if os.path.isdir(dir): 
-                files=os.listdir(dir)
-                for file in files:
-                    if file[-3:]=='png':
-                        image='/media/saveanalisi/'+inp3+'/'+file
-                form=Analisipath()
-                return render(request, 'rolls/OS_pathway.html', {
-                    'form':form, 
-                    'formresult': out.stdout.decode('ascii'),
-                    'image': image,
-                    'go':'Valid',
-                    'pathway':pathway ,
-                    'tumor':tumor,
-                    'count': count,
-                    'method':method,
-                    })
-            else:
-                form=Analisipath()
-                return render(request, 'rolls/OS_pathway.html', {'form':form,
-                'pathway':pathway ,
-                'tumor':tumor, 
-                'count': count,
-                'go':'error'})
-
-
-    form=Analisipath()
-    return render(request, 'rolls/OS_pathway.html', {'form':form,'count': count,})
-
-
-######### survival with gene mutation status ######### 
-
-def survival_with_gene_mutation_status(request):
-    count = get_counter()
-    if request.method == 'POST':
-
-        form = tumorGeneform(request.POST)
-        if form.is_valid(): 
-            tumor=request.POST['tumor'] 
-            gene=request.POST['gene'] 
-            inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
-            dir=os.path.join(output_data, inp3)
-            # print
-            # os.makedirs(dir)
-            
-            out = subprocess.run(['Rscript', 'script/survival_with_gene_mutation_status.R',tumor,gene,dir], capture_output=True, text=True)
-            print(out)
-            count = increment_counter()
-            if os.path.isdir(dir): 
-                files=os.listdir(dir)
-                for file in files:
-                    if 'png' in file:
-                        image=os.path.join('media/saveanalisi',inp3,file)    
-                
-                form=tumorGeneform()
-                return render(request, 'rolls/survival_with_gene_mutation_status.html', {'form':form, 
-                    'gene':gene,
-                    'tumor':tumor,
-                    'image':image,
-                    'go':'Valid',
-                    'dir':inp3,
-                    'count': count,
-                    })
-
-            else:
-                
-                form=tumorGeneform()
-                return render(request, 'rolls/survival_with_gene_mutation_status.html', {
-                'form':form,
-                'formresult':'analysis is not available for the entered name',                                                                      
-                'tumor':tumor,
-                'count': count, 
-                'go':'error'})
-
-
-
-    form = tumorGeneform()       
-    return render(request, 'rolls/survival_with_gene_mutation_status.html', {'form':form,'count': count,})
-
-
-
-
-
-
-############     DIFFERENTIAL EXPRESSION SINGLE TUMOR  TRASCRITTOMIC   ############
-def diff_exp_single_tumor(request):
-    count = get_counter()
-    if request.method == 'POST':
-            form = Analisiformcompleto(request.POST)
-            if form.is_valid():
-                gene=form.cleaned_data['gene']
-                tumor=form.cleaned_data['tumor']
-                feature=form.cleaned_data['feature']
-                
-                time_dir=(time.strftime("%Y-%m-%d-%H-%M-%S"))
-                dir= os.path.join(output_data, time_dir)
-                control=''
-                os.makedirs(dir)
-                out=run([sys.executable,'script/Differential_expression_boxplot_plotly_new.py',gene,tumor,feature,dir,control],shell=False, stdout=PIPE)
-                debug_error=out.stdout.decode().strip()
-                print((debug_error))
-
-                count = increment_counter()
-                
-                if debug_error=='0':
-                    form=Analisiformcompleto()
-                    return render(request, 'rolls/diff_exp_single_tumor.html', {'form':form,
-                    'formresult': out.stdout.decode('ascii'),
-                    'gene':gene,
-                    'count': count,
-                    'go':'error_name'})
-                
-                if debug_error=='2':
-                    form=Analisiformcompleto()
-                    return render(request, 'rolls/diff_exp_single_tumor.html', {'form':form,
-                    'formresult': out.stdout.decode('ascii'),
-                    'gene':gene,
-                    'tumor':tumor,
-                    'feature':feature,
-                    'count': count,
-                    'go':'error'})
-                else:
-                    
-                    if os.path.isdir(dir): 
-                        files=os.listdir(dir)
-                        n=0
-                        for file in files:
-                            
-                            if 'html' in file :
-                                image=os.path.join('media/saveanalisi',time_dir,file)
-                                n+=1
-
-                            if 'Result' in file:
-                               
-                                result_data=os.path.join(output_data,dir,file)
-                                result=read_table_comma(result_data)
-                                n+=1
-                            # image='/media/saveanalisi/'+time_dir+'/'+file
-                        
-                        # Crea il file ZIP della directory per il download
-                        # zip_name = f"{time_dir}.zip"
-                        # zip_path = os.path.join('media', 'saveanalisi', zip_name)
-                        # shutil.make_archive(zip_path.replace('.zip', ''), 'zip', dir)
-
-                    
-                        
-                        if n>0:       
-                            form=Analisiformcompleto()
-                            return render(request, 'rolls/diff_exp_single_tumor.html', {
-                                        'form':form, 
-                                        'formresult': out.stdout.decode('ascii'),
-                                        'image': image,
-                                        'go':'Valid',
-                                        'gene':gene,
-                                        'tumor':tumor,
-                                        'feature':feature,
-                                        'parametri': parametri[feature],
-                                        'dati':result,
-                                        'count': count,
-                                        # 'zip_path': f"/media/saveanalisi/{zip_name}",
-                                        
-                                        })
-                        if n==0:
-                        
-                            form=Analisiformcompleto()
-                            return render(request, 'rolls/diff_exp_single_tumor.html', {'form':form,
-                            'formresult': out,
-                            'feature': feature,
-                            'tumor':tumor, 
-                            'gene':gene,
-                            'count': count,
-                            'go':'error'})
-                
-
-
-    form=Analisiformcompleto()
-    return render(request, 'rolls/diff_exp_single_tumor.html', {'form':form, 'count': count,})
-
-
-
-#############      DIFFERENTIAL EXPRESSION ANALYSIS ALL TUMOR FOR FEATURE TRASCRITTOMIC   #############
-def differential_expression(request):
-    count = get_counter()
-    if request.method == 'POST':
-        form = Analisiform(request.POST)
-        if form.is_valid():
-            gene=form.cleaned_data['gene']
-            feature=form.cleaned_data['feature']
-            
-            inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
-            control=''
-            dir= os.path.join(output_data, inp3)
-            out=run([sys.executable,'script/boxplot_all_tumor_giusto_new.py',gene,feature,dir,control],shell=False, stdout=PIPE)
-            print(out)
-            count = increment_counter()
-            debug_error=out.stdout.decode().strip()
-            print((debug_error))
-            
-            if debug_error=='0':
-                form=Analisiform()
-                return render(request, 'rolls/differential_expression.html', {'form':form,
-                'formresult': out.stdout.decode('ascii'),
-                'gene':gene,
-                'count': count,
-                'go':'error_name'})
-            
-            if os.path.isdir(dir): 
-                files=os.listdir(dir)
-                for file in files:
-                    if file[-3:]=='jpg':
-                        image=os.path.join('media/saveanalisi',inp3,file)
-                        #image='media/saveanalisi/'+inp3+'/'+file
-
-                    if 'result' in file:
-                        result_data=os.path.join(output_data,inp3,file)
-                        result=read_table(result_data)
-                    
-                form=Analisiform()
-                return render(request, 'rolls/differential_expression.html', {
-                    'form':form, 
-                    'formresult': out.stdout.decode('ascii'),
-                    'image': image,
-                    'go':'Valid',
-                    'gene':gene,
-                    'feature':feature,
-                    'parametri': parametri[feature],
-                    'dir':'media/saveanalisi/'+inp3+'/result.txt',
-                    'dati':result,
-                    'count': count,
-                    })
-            else:
-                form=Analisiform()
-                return render(request, 'rolls/differential_expression.html', {
-                    'form':form,
-                    'formresult': out.stdout.decode('ascii'),
-                    'feature': feature,
-                    'gene':gene,
-                    'count': count, 
-                    'go':'error'})
-
-
-    form=Analisiform()
-    return render(request, 'rolls/differential_expression.html', {'form':form,'count': count,})
-
-
-
-
-
-
-#############      DIFFERENTIAL EXPRESSION ANALYSIS ALL TUMOR FOR FEATURE   PROTEOMIC   ############# 
-def differential_expression_protein(request):
-    count = get_counter()
-    if request.method == 'POST':
-        form = Analisiform_protein(request.POST)
-        if form.is_valid():
-            gene=form.cleaned_data['protein']
-            feature=form.cleaned_data['feature']
-            
-            inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
-            control='protein'
-            dir= os.path.join(output_data, inp3)
-            out=run([sys.executable,'script/boxplot_all_tumor_giusto_new.py',gene,feature,dir,control],shell=False, stdout=PIPE)
-            print(out)
-            count = increment_counter()
-            debug_error=out.stdout.decode().strip()
-            print(debug_error)
-            
-            if debug_error=='0':
-                form=Analisiform_protein()
-                return render(request, 'rolls/differential_expression_protein.html', {'form':form,
-                'formresult': out.stdout.decode('ascii'),
-                'gene':gene,
-                'count': count,
-                'go':'error_name'})
-            
-            if os.path.isdir(dir): 
-                files=os.listdir(dir)
-                for file in files:
-                    if file[-3:]=='jpg':
-                        image=os.path.join('media/saveanalisi',inp3,file)
-                        #image='media/saveanalisi/'+inp3+'/'+file
-                    if 'txt' in file:
-                        result_data=os.path.join(output_data,inp3,file)
-                        result=read_table(result_data)
-                form=Analisiform_protein()
-                return render(request, 'rolls/differential_expression_protein.html', {
-                    'form':form, 
-                    'formresult': out.stdout.decode('ascii'),
-                    'image': image,
-                    'go':'Valid',
-                    'gene':gene,
-                    'feature':feature,
-                    'parametri': parametri[feature],
-                    'dir':'media/saveanalisi/'+inp3+'/result.txt',
-                    'dati':result,
-                    'count': count,
-                    })
-            else:
-                form=Analisiform_protein()
-                return render(request, 'rolls/differential_expression_protein.html', {
-                    'form':form,
-                    'formresult': out.stdout.decode('ascii'),
-                    'feature': feature,
-                    'gene':gene, 
-                    'count': count,
-                    'go':'error'})
-
-
-    form=Analisiform_protein()
-    return render(request, 'rolls/differential_expression_protein.html', {'form':form,'count': count,})
-
-
-############     DIFFERENTIAL EXPRESSION SINGLE TUMOR PROTEOMIC   ############
-def diff_exp_single_tumor_protein(request):
-    count = get_counter()
-    if request.method == 'POST':
-            form = Analisiformcompleto_protein(request.POST)
-            if form.is_valid():
-                gene=form.cleaned_data['protein']
-                tumor=form.cleaned_data['tumor']
-                feature=form.cleaned_data['feature']
-                control='protein'
-                time_dir=(time.strftime("%Y-%m-%d-%H-%M-%S"))
-                dir= os.path.join(output_data, time_dir)
-               # dir=os.path.join(settings.BASE_DIR, 'rolls', 'static', 'media', 'saveanalisi', time_dir)
-                os.makedirs(dir)
-                out=run([sys.executable,'script/Differential_expression_boxplot_plotly_new.py',gene,tumor,feature,dir,control],shell=False, stdout=PIPE)
-                print(out)
-                count = increment_counter()
-                debug_error=out.stdout.decode().strip()
-                print((debug_error))
-                
-                if debug_error=='0':
-                    form=Analisiformcompleto()
-                    return render(request, 'rolls/diff_exp_single_tumor_protein.html', {'form':form,
-                    'formresult': out.stdout.decode('ascii'),
-                    'gene':gene,
-                    'count': count,
-                    'go':'error_name'})
-                
-                if debug_error=='2':
-                    form=Analisiformcompleto()
-                    return render(request, 'rolls/diff_exp_single_tumor_protein.html', {'form':form,
-                    'formresult': out.stdout.decode('ascii'),
-                    'gene':gene,
-                    'tumor':tumor,
-                    'feature':feature,
-                    'count': count,
-                    'go':'error'})
-                else:
-                
-                    if os.path.isdir(dir): 
-                        files=os.listdir(dir)
-                        n=0
-                        for file in files:
-                            
-                            if 'html' in file :
-                                image=os.path.join('media/saveanalisi',time_dir,file)
-                                n+=1
-
-                            if 'Result' in file:
-                               
-                                result_data=os.path.join(output_data,dir,file)
-                                result=read_table_comma(result_data)
-                                n+=1
-                           
-                        if n>0:       
-                            form=Analisiformcompleto_protein()
-                            return render(request, 'rolls/diff_exp_single_tumor_protein.html', {
-                                'form':form, 
-                                'formresult': out.stdout.decode('ascii'),
-                                'image': image,
-                                'go':'Valid',
-                                'gene':gene,
-                                'tumor':tumor,
-                                'feature':feature,
-                                'parametri': parametri[feature],
-                                'count': count,
-                                'dati':result,})
-                    else:
-                        form=Analisiformcompleto_protein()
-                        return render(request, 'rolls/diff_exp_single_tumor_protein.html', {'form':form,
-                        'feature': feature,
-                        'tumor':tumor, 
-                        'gene':gene,
-                        'count': count,
-                        'go':'error'})
-
-
-    form=Analisiformcompleto_protein()
-    return render(request, 'rolls/diff_exp_single_tumor_protein.html', {'form':form,'count': count,})
-
-
-
-
-####### DESEQ2 analisi###############
+#############      DESEQ2 analisi     ###############  
 
 def choseimage(tumor,pathfiles,dir_saveresults):
     print(' i file li pesca da qui ', dir_saveresults)
@@ -762,7 +325,10 @@ def deseq2(request):
                 file_txt=os.path.join(output_data,inp3,result_file)
                 print(file_txt)
                 result=read_table_deseq(file_txt)
-                form=Deseq2form()                         
+                
+                # #zip folder analisi -> results.zip gia creato nella cartella precalcolata
+                
+                form=Deseq2form()
                 return render(request, 'rolls/deseq2.html', {'form':form, 
                     'feature': feature,
                     'tumor':tumor,
@@ -773,7 +339,8 @@ def deseq2(request):
                     'image_plotly':os.path.join('media/saveanalisi',inp3,images[4]),
                     'go':'Valid',
                     'parametri': parametri[feature],
-                    'dir':'media/saveanalisi/'+inp3+'/'+result_file, 
+                    'table':'media/saveanalisi/'+inp3+'/'+result_file,
+                    'dir':inp3,
                     'dati':result,
                     'count': count,
                     })
@@ -792,10 +359,527 @@ def deseq2(request):
     return render(request, 'rolls/deseq2.html', {'form':form,'count': count,})
 
 
+#############      DIFFERENTIAL EXPRESSION SINGLE TUMOR  TRASCRITTOMIC   ############
+def diff_exp_single_tumor(request):
+    count = get_counter()
+    if request.method == 'POST':
+            form = Analisiformcompleto(request.POST)
+            if form.is_valid():
+                gene=form.cleaned_data['gene']
+                tumor=form.cleaned_data['tumor']
+                feature=form.cleaned_data['feature']
+                
+                time_dir=(time.strftime("%Y-%m-%d-%H-%M-%S"))
+                dir= os.path.join(output_data, time_dir)
+                control=''
+                os.makedirs(dir)
+                out=run([sys.executable,'script/Differential_expression_boxplot_plotly_new.py',gene,tumor,feature,dir,control],shell=False, stdout=PIPE)
+                debug_error=out.stdout.decode().strip()
+                print((debug_error))
+
+                count = increment_counter()
+                
+                if debug_error=='0':
+                    form=Analisiformcompleto()
+                    return render(request, 'rolls/diff_exp_single_tumor.html', {'form':form,
+                    'formresult': out.stdout.decode('ascii'),
+                    'gene':gene,
+                    'count': count,
+                    'go':'error_name'})
+                
+                if debug_error=='2':
+                    form=Analisiformcompleto()
+                    return render(request, 'rolls/diff_exp_single_tumor.html', {'form':form,
+                    'formresult': out.stdout.decode('ascii'),
+                    'gene':gene,
+                    'tumor':tumor,
+                    'feature':feature,
+                    'count': count,
+                    'go':'error'})
+                else:
+                    
+                    if os.path.isdir(dir): 
+                        files=os.listdir(dir)
+                        n=0
+                        for file in files:
+                            
+                            if 'html' in file :
+                                image=os.path.join('media/saveanalisi',time_dir,file)
+                                n+=1
+
+                            if 'Result' in file:
+                               
+                                result_data=os.path.join(output_data,dir,file)
+                                result=read_table_comma(result_data)
+                                n+=1
+                            # image='/media/saveanalisi/'+time_dir+'/'+file
+                        
+                        if n>0: 
+                            #zip folder analisi -> results.zip
+                            folder_to_zip=os.path.join(dir,"results.zip")
+                            subprocess.run(["zip", "-r", folder_to_zip, "."],cwd=dir) 
+
+                            form=Analisiformcompleto()
+                            return render(request, 'rolls/diff_exp_single_tumor.html', {
+                                        'form':form, 
+                                        'formresult': out.stdout.decode('ascii'),
+                                        'image': image,
+                                        'go':'Valid',
+                                        'gene':gene,
+                                        'tumor':tumor,
+                                        'feature':feature,
+                                        'parametri': parametri[feature],
+                                        'dati':result,
+                                        'count': count,
+                                        'dir':time_dir,
+                                        'parametri': parametri[feature],
+                                        })
+                        if n==0:
+                        
+                            form=Analisiformcompleto()
+                            return render(request, 'rolls/diff_exp_single_tumor.html', {'form':form,
+                            'formresult': out,
+                            'feature': feature,
+                            'tumor':tumor, 
+                            'gene':gene,
+                            'count': count,
+                            'go':'error'})
+                
+
+
+    form=Analisiformcompleto()
+    return render(request, 'rolls/diff_exp_single_tumor.html', {'form':form, 'count': count,})
+
+
+#############      DIFFERENTIAL EXPRESSION ANALYSIS ALL TUMOR FOR FEATURE TRASCRITTOMIC   #############
+def differential_expression(request):
+    count = get_counter()
+    if request.method == 'POST':
+        form = Analisiform(request.POST)
+        if form.is_valid():
+            gene=form.cleaned_data['gene']
+            feature=form.cleaned_data['feature']
+            
+            inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
+            control=''
+            dir= os.path.join(output_data, inp3)
+            out=run([sys.executable,'script/boxplot_all_tumor_giusto_new.py',gene,feature,dir,control],shell=False, stdout=PIPE)
+            print(out)
+            count = increment_counter()
+            debug_error=out.stdout.decode().strip()
+            print((debug_error))
+            
+            if debug_error=='0':
+                form=Analisiform()
+                return render(request, 'rolls/differential_expression.html', {'form':form,
+                'formresult': out.stdout.decode('ascii'),
+                'gene':gene,
+                'count': count,
+                'go':'error_name'})
+            
+            if os.path.isdir(dir): 
+                files=os.listdir(dir)
+                for file in files:
+                    if file[-3:]=='jpg':
+                        image=os.path.join('media/saveanalisi',inp3,file)
+                        #image='media/saveanalisi/'+inp3+'/'+file
+
+                    if 'result' in file:
+                        result_data=os.path.join(output_data,inp3,file)
+                        result=read_table(result_data)
+                
+                #zip folder analisi -> results.zip
+                folder_to_zip=os.path.join(dir,"results.zip")
+                subprocess.run(["zip", "-r", folder_to_zip, "."],cwd=dir)   
+
+                form=Analisiform()
+                return render(request, 'rolls/differential_expression.html', {
+                    'form':form, 
+                    'formresult': out.stdout.decode('ascii'),
+                    'image': image,
+                    'go':'Valid',
+                    'gene':gene,
+                    'feature':feature,
+                    'parametri': parametri[feature],
+                    #'dir':'media/saveanalisi/'+inp3+'/result.txt', #download singola tabella
+                    'dir':inp3,
+                    'dati':result,
+                    'count': count,
+                    })
+            else:
+                form=Analisiform()
+                return render(request, 'rolls/differential_expression.html', {
+                    'form':form,
+                    'formresult': out.stdout.decode('ascii'),
+                    'feature': feature,
+                    'gene':gene,
+                    'count': count, 
+                    'go':'error'})
+
+
+    form=Analisiform()
+    return render(request, 'rolls/differential_expression.html', {'form':form,'count': count,})
 
 
 
-########### MUTATION ANALYSES ########### 
+
+
+############################################
+#                                          #
+#                PROTEOMIC                 #
+#                                          #
+############################################
+
+# analisi: 
+#1. Differential expression single tumor (OK)
+#2. Differential expression all tumor (OK -controllare bug NAN)
+
+############     DIFFERENTIAL EXPRESSION SINGLE TUMOR PROTEOMIC   ############
+def diff_exp_single_tumor_protein(request):
+    count = get_counter()
+    if request.method == 'POST':
+            form = Analisiformcompleto_protein(request.POST)
+            if form.is_valid():
+                gene=form.cleaned_data['protein']
+                tumor=form.cleaned_data['tumor']
+                feature=form.cleaned_data['feature']
+                control='protein'
+                time_dir=(time.strftime("%Y-%m-%d-%H-%M-%S"))
+                dir= os.path.join(output_data, time_dir)
+               # dir=os.path.join(settings.BASE_DIR, 'rolls', 'static', 'media', 'saveanalisi', time_dir)
+                os.makedirs(dir)
+                out=run([sys.executable,'script/Differential_expression_boxplot_plotly_new.py',gene,tumor,feature,dir,control],shell=False, stdout=PIPE)
+                print(out)
+                count = increment_counter()
+                debug_error=out.stdout.decode().strip()
+                print((debug_error))
+                
+                if debug_error=='0':
+                    form=Analisiformcompleto()
+                    return render(request, 'rolls/diff_exp_single_tumor_protein.html', {'form':form,
+                    'formresult': out.stdout.decode('ascii'),
+                    'gene':gene,
+                    'count': count,
+                    'go':'error_name'})
+                
+                if debug_error=='2':
+                    form=Analisiformcompleto()
+                    return render(request, 'rolls/diff_exp_single_tumor_protein.html', {'form':form,
+                    'formresult': out.stdout.decode('ascii'),
+                    'gene':gene,
+                    'tumor':tumor,
+                    'feature':feature,
+                    'count': count,
+                    'go':'error'})
+                else:
+                
+                    if os.path.isdir(dir): 
+                        files=os.listdir(dir)
+                        n=0
+                        for file in files:
+                            
+                            if 'html' in file :
+                                image=os.path.join('media/saveanalisi',time_dir,file)
+                                n+=1
+
+                            if 'Result' in file:
+                               
+                                result_data=os.path.join(output_data,dir,file)
+                                result=read_table_comma(result_data)
+                                n+=1
+                           
+                        if n>0: 
+                            #zip folder analisi -> results.zip
+                            folder_to_zip=os.path.join(dir,"results.zip")
+                            subprocess.run(["zip", "-r", folder_to_zip, "."],cwd=dir)
+
+                            form=Analisiformcompleto_protein()
+                            return render(request, 'rolls/diff_exp_single_tumor_protein.html', {
+                                'form':form, 
+                                'formresult': out.stdout.decode('ascii'),
+                                'image': image,
+                                'go':'Valid',
+                                'gene':gene,
+                                'tumor':tumor,
+                                'feature':feature,
+                                'parametri': parametri[feature],
+                                'count': count,
+                                'dir': time_dir,
+                                'dati':result,})
+                    else:
+                        form=Analisiformcompleto_protein()
+                        return render(request, 'rolls/diff_exp_single_tumor_protein.html', {'form':form,
+                        'feature': feature,
+                        'tumor':tumor, 
+                        'gene':gene,
+                        'count': count,
+                        'go':'error'})
+
+
+    form=Analisiformcompleto_protein()
+    return render(request, 'rolls/diff_exp_single_tumor_protein.html', {'form':form,'count': count,})
+
+#############    DIFFERENTIAL EXPRESSION ANALYSIS ALL TUMOR FOR FEATURE   PROTEOMIC   ############# 
+def differential_expression_protein(request):
+    count = get_counter()
+    if request.method == 'POST':
+        form = Analisiform_protein(request.POST)
+        if form.is_valid():
+            gene=form.cleaned_data['protein']
+            feature=form.cleaned_data['feature']
+            
+            inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
+            control='protein'
+            dir= os.path.join(output_data, inp3)
+            out=run([sys.executable,'script/boxplot_all_tumor_giusto_new.py',gene,feature,dir,control],shell=False, stdout=PIPE)
+            print(out)
+            count = increment_counter()
+            debug_error=out.stdout.decode().strip()
+            print(debug_error)
+            
+            if debug_error=='0':
+                form=Analisiform_protein()
+                return render(request, 'rolls/differential_expression_protein.html', {'form':form,
+                'formresult': out.stdout.decode('ascii'),
+                'gene':gene,
+                'count': count,
+                'go':'error_name'})
+            
+            if os.path.isdir(dir): 
+                files=os.listdir(dir)
+                for file in files:
+                    if file[-3:]=='jpg':
+                        image=os.path.join('media/saveanalisi',inp3,file)
+                        #image='media/saveanalisi/'+inp3+'/'+file
+                    if 'txt' in file:
+                        result_data=os.path.join(output_data,inp3,file)
+                        result=read_table(result_data)
+                form=Analisiform_protein()
+
+                #zip folder analisi -> results.zip
+                folder_to_zip=os.path.join(dir,"results.zip")
+                subprocess.run(["zip", "-r", folder_to_zip, "."],cwd=dir) 
+
+                return render(request, 'rolls/differential_expression_protein.html', {
+                    'form':form, 
+                    'formresult': out.stdout.decode('ascii'),
+                    'image': image,
+                    'go':'Valid',
+                    'gene':gene,
+                    'feature':feature,
+                    'parametri': parametri[feature],
+                    #'dir':'media/saveanalisi/'+inp3+'/result.txt', #download singola tabella
+                    'dir':inp3,
+                    'dati':result,
+                    'count': count,
+                    'parametri': parametri[feature],
+                    })
+            else:
+                form=Analisiform_protein()
+                return render(request, 'rolls/differential_expression_protein.html', {
+                    'form':form,
+                    'formresult': out.stdout.decode('ascii'),
+                    'feature': feature,
+                    'gene':gene, 
+                    'count': count,
+                    'go':'error'})
+
+
+    form=Analisiform_protein()
+    return render(request, 'rolls/differential_expression_protein.html', {'form':form,'count': count,})
+
+
+
+############################################
+#                                          #
+#                SURVIVAL                  #
+#                                          #
+############################################
+
+# analisi:
+#1. Overall survival (OK - inserire pvalue nel grafico ? numerosità campionaria?)
+#2. Overall survival con pathway activity score (OK - inserire pvalue nel grafico? numerosità campionaria?)
+#3. Survival with gene mutation status (OK)
+
+
+########### OVERALL SURVIVAL ###########
+def overall_survival(request):
+    count = get_counter()
+    if request.method == 'POST':
+        form = formSurvival(request.POST)
+        if form.is_valid():
+            gene=form.cleaned_data['gene']
+            tumor=form.cleaned_data['tumor']
+            
+            methods=form.cleaned_data['Methods']
+
+            print(gene, tumor,methods)
+            inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
+            dir= os.path.join(output_data, inp3)
+            
+            out=run([sys.executable,'script/overall_survival.py',gene,tumor,dir,methods],shell=False, stdout=PIPE)
+            print(out)
+            count = increment_counter()
+
+            if os.path.isdir(dir): 
+                files=os.listdir(dir)
+                for file in files:
+                    if 'jpeg' in file:
+                        image=os.path.join('media/saveanalisi',inp3,file)
+                        
+                        #zip folder analisi -> results.zip
+                        folder_to_zip=os.path.join(dir,"results.zip")
+                        subprocess.run(["zip", "-r", folder_to_zip, "."],cwd=dir)
+
+                        form=formSurvival()
+                        return render(request, 'rolls/overall_survival.html', {
+                            'form':form, 
+                            'formresult': out.stdout.decode('ascii'),
+                            'image': image,
+                            'go':'Valid',
+                            'gene':gene ,
+                            'tumor':tumor,
+                            'method':methods,
+                            'count': count,
+                            'dir':inp3, 
+                            })
+
+            else:
+                form=formSurvival()
+                return render(request, 'rolls/overall_survival.html', {'form':form,
+                'formresult': out.stdout.decode('ascii'),
+                'gene':gene,
+                'tumor':tumor, 
+                'count': count,
+                'go':'error'})
+
+
+    form=formSurvival()
+    return render(request, 'rolls/overall_survival.html', {'form':form,'count': count,})
+
+
+########### Overall survival con pathway activity score ###########
+def os_pathway(request):
+    count = get_counter()
+    if request.method == 'POST':
+        form = Analisipath(request.POST)
+        if form.is_valid():
+            pathway=form.cleaned_data['pathway']
+            tumor=form.cleaned_data['tumor']
+            method=form.cleaned_data['Methods']
+            inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
+            dir= os.path.join(output_data, inp3)
+            out=run([sys.executable,'script/OS_pathway.py',tumor,pathway,dir,method],shell=False, stdout=PIPE)
+            print(out)
+            count = increment_counter()
+            
+            if os.path.isdir(dir): 
+                files=os.listdir(dir)
+                for file in files:
+                    if file[-3:]=='png':
+                        image='/media/saveanalisi/'+inp3+'/'+file
+                
+                #zip folder analisi -> results.zip
+                folder_to_zip=os.path.join(dir,"results.zip")
+                subprocess.run(["zip", "-r", folder_to_zip, "."],cwd=dir) 
+
+                form=Analisipath()
+                return render(request, 'rolls/OS_pathway.html', {
+                    'form':form, 
+                    'formresult': out.stdout.decode('ascii'),
+                    'image': image,
+                    'go':'Valid',
+                    'pathway':pathway ,
+                    'tumor':tumor,
+                    'count': count,
+                    'method':method,
+                    'dir':inp3,
+                    })
+            else:
+                form=Analisipath()
+                return render(request, 'rolls/OS_pathway.html', {'form':form,
+                'pathway':pathway ,
+                'tumor':tumor, 
+                'count': count,
+                'go':'error'})
+
+
+    form=Analisipath()
+    return render(request, 'rolls/OS_pathway.html', {'form':form,'count': count,})
+
+
+########### Survival with gene mutation status ########### 
+
+def survival_with_gene_mutation_status(request):
+    count = get_counter()
+    if request.method == 'POST':
+
+        form = tumorGeneform(request.POST)
+        if form.is_valid(): 
+            tumor=request.POST['tumor'] 
+            gene=request.POST['gene'] 
+            inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
+            dir=os.path.join(output_data, inp3)
+            # print
+            # os.makedirs(dir)
+            
+            out = subprocess.run(['Rscript', 'script/survival_with_gene_mutation_status.R',tumor,gene,dir], capture_output=True, text=True)
+            print(out)
+            count = increment_counter()
+            if os.path.isdir(dir): 
+                files=os.listdir(dir)
+                for file in files:
+                    if 'png' in file:
+                        image=os.path.join('media/saveanalisi',inp3,file)    
+                
+                        #zip folder analisi -> results.zip
+                        folder_to_zip=os.path.join(dir,"results.zip")
+                        subprocess.run(["zip", "-r", folder_to_zip, "."],cwd=dir)
+
+                        form=tumorGeneform()
+                        return render(request, 'rolls/survival_with_gene_mutation_status.html', {'form':form, 
+                            'gene':gene,
+                            'tumor':tumor,
+                            'image':image,
+                            'go':'Valid',
+                            'dir':inp3,
+                            'count': count,
+                            })
+
+            else:
+                
+                form=tumorGeneform()
+                return render(request, 'rolls/survival_with_gene_mutation_status.html', {
+                'form':form,
+                'formresult':'analysis is not available for the entered name',                                                                      
+                'tumor':tumor,
+                'count': count, 
+                'go':'error'})
+
+
+
+    form = tumorGeneform()       
+    return render(request, 'rolls/survival_with_gene_mutation_status.html', {'form':form,'count': count,})
+
+
+
+
+############################################
+#                                          #
+#                MUTATION                  #
+#                                          #
+############################################
+
+#analisi:
+#1. tumor_mutation_analysis (OK)
+#2. tumor_oncoplot (OK)
+#3. somatic_interaction_analysis (OK)
+#4. gene mutation analysis (OK)
+#5. Differential expression for mutated status - Deseq2 (OK)
+#6. Differential mutated gene by clinical feature
+
+
+########### TUMOR MUTATION ANALYSES ########### 
 def tumor_mutation_analysis(request):
     count = get_counter()
     if request.method == 'POST':
@@ -826,7 +910,11 @@ def tumor_mutation_analysis(request):
                             image_titv=os.path.join('media/saveanalisi',inp3,file)
                         
 
-                        
+                 #zip folder analisi -> results.zip
+                folder_to_zip=os.path.join(dir,"results.zip")
+                subprocess.run(["zip", "-r", folder_to_zip, "."],cwd=dir)
+
+
                 form=FormTumorMutation()
                 return render(request, 'rolls/tumor_mutation_analysis.html', {'form':form, 
                     'tumor':tumor,
@@ -850,7 +938,7 @@ def tumor_mutation_analysis(request):
     return render(request, 'rolls/tumor_mutation_analysis.html', {'form':form,'count': count,})
 
 
-############## oncoplot #############
+########### TUMOR ONCOPLOT  ########### 
 def tumor_oncoplot(request):
     count = get_counter()
     if request.method == 'POST':
@@ -874,7 +962,11 @@ def tumor_oncoplot(request):
                     if file[-3:]=='png':                            
                         if 'oncoplot' in file:
                             image_oncoplot=os.path.join('media/saveanalisi',inp3,file)
-                    
+
+                #zip folder analisi -> results.zip
+                folder_to_zip=os.path.join(dir,"results.zip")
+                subprocess.run(["zip", "-r", folder_to_zip, "."],cwd=dir)
+
                         
                 form=FormMutationChoice()
                 return render(request, 'rolls/tumor_oncoplot.html', {'form':form, 
@@ -898,8 +990,140 @@ def tumor_oncoplot(request):
     return render(request, 'rolls/tumor_oncoplot.html', {'form':form,'count': count,})
 
 
+########### SOMATIC INTERACTION ANALYSIS ########
 
-###########differential expression mutato vs non mutato #############
+def read_table_comma(file_path):
+    txt_data = []
+
+    df = pd.read_csv(file_path, sep=',',dtype=str) 
+    print(df)
+    txt_data.append(df.columns.tolist())
+    
+    # Itera sulle righe del DataFrame e aggiungi ogni riga come lista
+    for index, row in df.iterrows():
+        txt_data.append(row.tolist())
+    return(txt_data)
+
+def somatic_interaction_analysis(request):
+    count = get_counter()
+    if request.method == 'POST':
+
+        form = FormMutationChoice(request.POST)
+        if form.is_valid(): 
+            tumor=request.POST['tumor'] 
+            number=request.POST['number'] 
+            inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
+            dir=os.path.join(output_data, inp3)
+            
+            os.makedirs(dir)
+            
+            out = subprocess.run(['Rscript', 'script/somatic_interaction_analysis.R',tumor,dir,number], capture_output=True, text=True)
+            print(out)
+            count = increment_counter()
+            if os.path.isdir(dir): 
+                files=os.listdir(dir)
+                print(files)
+                for file in files:
+                    if file[-3:]=='png':
+                        if 'somaticInteractions' in file:
+                            image_interact=os.path.join('media/saveanalisi',inp3,file)  
+                    if 'results' in file:
+                        name=file
+                        result_data=os.path.join(output_data,inp3,file)
+                        result=read_table_comma(result_data)
+
+                #zip folder analisi -> results.zip
+                folder_to_zip=os.path.join(dir,"results.zip")
+                subprocess.run(["zip", "-r", folder_to_zip, "."],cwd=dir)
+
+                form=FormMutationChoice()
+                return render(request, 'rolls/somatic_interaction_analysis.html', {'form':form, 
+                    'tumor':tumor,
+                    'number':number,
+                    'image_interact':image_interact,
+                    'go':'Valid',
+                    'dir':inp3,
+                    'dati':result,
+                    #'dir':'media/saveanalisi/'+inp3+'/'+name, #dowload single table
+                    'count': count,
+                    })
+
+            else:
+                form=FormMutationChoice()
+                return render(request, 'rolls/somatic_interaction_analysis.html', {'form':form,
+                'tumor':tumor, 
+                'count': count,
+                'go':'error'})
+
+
+
+    form = FormMutationChoice()       
+    return render(request, 'rolls/somatic_interaction_analysis.html', {'form':form,'count': count,})
+
+
+############ GENE MUTATION ANALYSIS ##############
+def gene_mutation_analysis(request):
+    count = get_counter()
+    if request.method == 'POST':
+
+        form = tumorGeneform(request.POST)
+        if form.is_valid(): 
+            tumor=request.POST['tumor'] 
+            gene=request.POST['gene'] 
+            
+            inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
+            dir=os.path.join(output_data, inp3)
+            print
+            os.makedirs(dir)
+            
+            out = subprocess.run(['Rscript', 'script/gene_mutation_analysis.R',tumor,gene,dir], capture_output=True, text=True)
+            print(out)
+            count = increment_counter()
+            return_code = out.returncode
+            if return_code!=1:
+                if os.path.isdir(dir): 
+                    files=os.listdir(dir)
+                    for file in files:
+                        if file[-3:]=='png':
+                            if 'lollipopPlot' in file:
+                                image_lolli=os.path.join('media/saveanalisi',inp3,file)  
+                        if 'txt' in file:
+                            result_data=os.path.join(output_data,inp3,file)  
+                            result=read_table(result_data)
+                    
+                    #zip folder analisi -> results.zip
+                    folder_to_zip=os.path.join(dir,"results.zip")
+                    subprocess.run(["zip", "-r", folder_to_zip, "."],cwd=dir)
+
+                    
+                    form=tumorGeneform()
+                    return render(request, 'rolls/gene_mutation_analysis.html', {'form':form, 
+                        'tumor':tumor,
+                        'gene':gene,
+                        'dati':result,
+                        'image_lolli':image_lolli,
+                        'go':'Valid',
+                        #'dir':'media/saveanalisi/'+inp3+'/result.txt', #download single table
+                        'dir':inp3,
+                        'count': count,
+                        })
+
+            else:
+                    form=tumorGeneform()
+                    return render(request, 'rolls/gene_mutation_analysis.html', {'form':form,
+                    'gene':gene, 
+                    'tumor':tumor,
+                    'count': count,
+                    'go':'error'})
+
+
+
+    form = tumorGeneform()       
+    return render(request, 'rolls/gene_mutation_analysis.html', {'form':form,'count': count,})
+
+
+
+############ DIFFERENTIAL EXPRESSION MUT VS WT - DESEQ2 #############
 def read_table_deseq_demut(file_path):
     txt_data = []
 
@@ -947,9 +1171,9 @@ def de_mut(request):
                     if 'res' in file:
                         dir_saveresults= os.path.join(output_data, inp3)
                         out_plotly=run([sys.executable,'script/MUT_deseq2_volcano_plotly.py',tumor,file,dir_saveresults],shell=False, stdout=PIPE)
-                        #print(out_plotly)
+                       
                         #dir=os.path.join('media/saveanalisi',inp3,file)
-                        dir=os.path.join('media/saveanalisi',inp3,'result.txt')
+                        table=os.path.join('media/saveanalisi',inp3,'result.txt')
 
                         file_txt=os.path.join(output_data,inp3,'result.txt')
                         result=read_table_deseq_demut(file_txt)
@@ -972,25 +1196,26 @@ def de_mut(request):
                             image4=os.path.join('media/saveanalisi',inp3,file)
                             n+=1
                 
-                # files=os.listdir(dir)
-                # for file in files:
-                #     if 'html' in file:
-                #         image_plotly=os.path.join('media/saveanalisi',inp3,file)
-                #         print(image_plotly)
+               #zip folder analisi -> results.zip
+                folder_to_zip=os.path.join(dir,"results.zip")
+                subprocess.run(["zip", "-r", folder_to_zip, "."],cwd=dir)
                 if n>1:
+                    
+
                     form=tumorGeneform()
                     return render(request, 'rolls/de_mut.html', {'form':form, 
                         'tumor':tumor,
                         'gene':gene,
                         'image_plotly':image_plotly,
-                        #'image1':image1,
                         'image2':image2,
                         'image3':image3,
                         'image4':image4,
                         'go':'Valid',
-                        'dir':dir,
+                        'dir':inp3,
+                        'table':table,
                         'dati':result,
                         'count': count,
+                        'parametri':'Mutated gene vs WT'
                         })
                 else:
                     form=tumorGeneform()
@@ -1014,7 +1239,7 @@ def de_mut(request):
     return render(request, 'rolls/de_mut.html', {'form':form,'go':'base','count': count,})
 
 
-#DE_mutated gene by clinical feature
+############ DIFFERENTIAL EXPRESSION mutated gene by clinical feature #############
 TUMOR_FEATURE_MAPPING_R = {
     "ACC":['gender','person_neoplasm_cancer_status','radiation_therapy'],
     "BLCA":['gender','person_neoplasm_cancer_status','radiation_therapy'],
@@ -1121,128 +1346,13 @@ def de_mut_clinical_feature(request):
 
 
 
-############somatic_interaction_analysis ########
-
-def read_table_comma(file_path):
-    txt_data = []
-
-    df = pd.read_csv(file_path, sep=',',dtype=str) 
-    print(df)
-    txt_data.append(df.columns.tolist())
-    
-    # Itera sulle righe del DataFrame e aggiungi ogni riga come lista
-    for index, row in df.iterrows():
-        txt_data.append(row.tolist())
-    return(txt_data)
-
-def somatic_interaction_analysis(request):
-    count = get_counter()
-    if request.method == 'POST':
-
-        form = FormMutationChoice(request.POST)
-        if form.is_valid(): 
-            tumor=request.POST['tumor'] 
-            number=request.POST['number'] 
-            inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
-            dir=os.path.join(output_data, inp3)
-            
-            os.makedirs(dir)
-            
-            out = subprocess.run(['Rscript', 'script/somatic_interaction_analysis.R',tumor,dir,number], capture_output=True, text=True)
-            print(out)
-            count = increment_counter()
-            if os.path.isdir(dir): 
-                files=os.listdir(dir)
-                print(files)
-                for file in files:
-                    if file[-3:]=='png':
-                        if 'somaticInteractions' in file:
-                            image_interact=os.path.join('media/saveanalisi',inp3,file)  
-                    if 'results' in file:
-                        name=file
-                        result_data=os.path.join(output_data,inp3,file)
-                        result=read_table_comma(result_data)
-                        
-                form=FormMutationChoice()
-                return render(request, 'rolls/somatic_interaction_analysis.html', {'form':form, 
-                    'tumor':tumor,
-                    'number':number,
-                    'image_interact':image_interact,
-                    'go':'Valid',
-                    'dir':inp3,
-                    'dati':result,
-                    'dir':'media/saveanalisi/'+inp3+'/'+name,
-                    'count': count,
-                    })
-
-            else:
-                form=FormMutationChoice()
-                return render(request, 'rolls/somatic_interaction_analysis.html', {'form':form,
-                'tumor':tumor, 
-                'count': count,
-                'go':'error'})
 
 
-
-    form = FormMutationChoice()       
-    return render(request, 'rolls/somatic_interaction_analysis.html', {'form':form,'count': count,})
-
-
-
-############ gene mutation analysis ##############
-def gene_mutation_analysis(request):
-    count = get_counter()
-    if request.method == 'POST':
-
-        form = tumorGeneform(request.POST)
-        if form.is_valid(): 
-            tumor=request.POST['tumor'] 
-            gene=request.POST['gene'] 
-            
-            inp3=(time.strftime("%Y-%m-%d-%H-%M-%S"))
-            dir=os.path.join(output_data, inp3)
-            print
-            os.makedirs(dir)
-            
-            out = subprocess.run(['Rscript', 'script/gene_mutation_analysis.R',tumor,gene,dir], capture_output=True, text=True)
-            print(out)
-            count = increment_counter()
-            return_code = out.returncode
-            if return_code!=1:
-                if os.path.isdir(dir): 
-                    files=os.listdir(dir)
-                    for file in files:
-                        if file[-3:]=='png':
-                            if 'lollipopPlot' in file:
-                                image_lolli=os.path.join('media/saveanalisi',inp3,file)  
-                        if 'txt' in file:
-                            result_data=os.path.join(output_data,inp3,file)  
-                            result=read_table(result_data)
-                    form=tumorGeneform()
-                    return render(request, 'rolls/gene_mutation_analysis.html', {'form':form, 
-                        'tumor':tumor,
-                        'gene':gene,
-                        'dati':result,
-                        'image_lolli':image_lolli,
-                        'go':'Valid',
-                        'dir':'media/saveanalisi/'+inp3+'/result.txt',
-                        'count': count,
-                        })
-
-            else:
-                    form=tumorGeneform()
-                    return render(request, 'rolls/gene_mutation_analysis.html', {'form':form,
-                    'gene':gene, 
-                    'tumor':tumor,
-                    'count': count,
-                    'go':'error'})
-
-
-
-    form = tumorGeneform()       
-    return render(request, 'rolls/gene_mutation_analysis.html', {'form':form,'count': count,})
-
-
+############################################
+#                                          #
+#                CELL TYPES                #
+#                                          #
+############################################
 
 ########### DECONVOLUTION ########### 
 def deconvolution(request):
@@ -1299,6 +1409,8 @@ def deconvolution(request):
     return render(request, 'rolls/deconvolution.html', {'form':form,'count': count,})
 
 
+
+########### CORRELATION CELL PATHWAY ########### 
 def corr_cell_pathway(request):
     count = get_counter()
     if request.method == 'POST':

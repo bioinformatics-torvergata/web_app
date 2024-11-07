@@ -56,16 +56,7 @@
         <form method="post" id="analysis-form">
             {%csrf_token%}
             {{form|crispy}}
-            <!-- <div class="d-grid gap-2 d-md-flex justify-content-md">
-              <button class="btn btn-primary me-md-2 my-3" data-toggle="tooltip" data-placement="right" title="Click here for search features" type="submit" name="features"><i class="fa-solid fa-magnifying-glass"></i> Features</button>
-          </div> -->
-          <!-- <label class="mr-sm-2" for="inlineFormCustomSelect">Select feature:*</label>
-          <select name='feature' class="custom-select mr-sm-2" id="inlineFormCustomSelect">
-              {%for el in lista%}
-              <option value={{el}}>{{el}}</option>    
-              {%endfor%}
-                     
-          </select> -->
+           
             <div class="d-grid gap-2 d-md-flex justify-content-md">
                 <button class="btn btn-primary me-md-2 my-3" type="Submit" name="Submit">Submit</button>
             </div>
@@ -80,7 +71,16 @@
             </div> 
           </div>
           {%if go == 'Valid' %}
-          <h3>Results:</h3>
+          <h3 class="d-flex justify-content-between align-items-center">
+            <span>Results</span>
+            
+            <div class="text-end">
+                <span style="font-size: 14px;">Click here to download all the results of this analysis</span>
+                <a href="{% url 'download_zip' subdirectory=dir zip_name='results.zip' %}" download target="blank" title="Click here to download all the results of this analysis">
+                    <button class="btn btn-sm"><i class="fa-solid fa-download"></i></button>
+                </a>
+            </div>
+        </h3>
           <hr>
           <div class="row">
             <div class="col mx-3">
@@ -120,7 +120,7 @@
         </div>
         {%if go == 'Valid' %}
         <br>
-        <p>The table shows the significant genes, you can download the full table <a href="{% static dir %}" download target="_blank">
+        <p>The table shows the significant genes, you can download the full table <a href="{% static table %}" download target="_blank">
           <button class="btn"><i class="fa-solid fa-download"></i></button></a>
       </p>
       
