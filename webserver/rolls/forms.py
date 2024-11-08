@@ -167,8 +167,8 @@ class formSurvival(forms.ModelForm):
     )
     Methods = forms.ChoiceField(
         choices=[
-            ('OS.time', 'OS.time'),
-            ('DFI.time', 'DFI.time'),
+            ('OS.time', 'Overall survival (OS.time)'),
+            ('DFI.time', 'Disease-free interval (DFI.time)'),
         ],
          widget=forms.RadioSelect
     )
@@ -233,8 +233,8 @@ class Analisipath(forms.ModelForm):
                 }))
     Methods = forms.ChoiceField(
         choices=[
-            ('OS.time', 'OS.time'),
-            ('DFI.time', 'DFI.time'),
+            ('OS.time', 'Overall survival (OS.time)'),
+            ('DFI.time', 'Disease-free interval (DFI.time)'),
         ],
          widget=forms.RadioSelect
     )
