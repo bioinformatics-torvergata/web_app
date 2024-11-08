@@ -199,7 +199,12 @@
                           <div class="accordion-body">
                            <h5>Deconvolution</h5>
                             <p>
-                              add text
+                              <p>To estimate cellular proportions, we applied a computational deconvolution method using gene expression profiles from bulk tissue samples.</p> 
+                              <p>The core of this approach is the use of a pre-defined <strong>"basis matrix"</strong>, which contains gene expression profiles of specific cell types and their corresponding marker genes. These marker genes, which are either uniquely or predominantly expressed by particular cell types, serve to identify and quantify the relative abundance of each cell type in the mixed sample.</p>
+                              
+                              <p>We used the <strong>ImmunoStates basis matrix</strong> from the <em>MetaIntegrator R package</em>, which includes profiles for 20 immune cell types, to estimate the proportions of these cell types in our samples.</p>
+                              <p>Mathematically, the deconvolution process involves solving a linear regression model, where the observed bulk expression values are modeled as a weighted sum of the reference expression profiles in the basis matrix. The weights correspond to the estimated proportions of each cell type, providing a cellular composition profile for each sample.</p>
+                              
                             </p>
                             <br>
                           </div>
@@ -216,7 +221,13 @@
                           <div class="accordion-body">
                            <h5>Correlation cell type and pathways</h5>
                             <p>
-                              add text
+                              <p>This function serves to calculate the association between cellular abundance and pathway activity within tumor samples.</p>
+                              <p>For cellular composition, we first estimated the relative proportions of immune cell types using cell-mixture deconvolution. This approach relies on the <strong>ImmunoStates basis matrix</strong>, which contains predefined gene expression profiles for 20 immune cell types.</p>
+                              
+                              <p>To assess pathway activity, we applied <strong>single-sample Gene Set Enrichment Analysis (ssGSEA)</strong>, which calculates an activity score for each pathway based on the expression of genes within a predefined set of cancer-related and immune-associated pathways. These pathway activity scores provide a quantitative measure of pathway activation in each tumor sample.</p>
+                              
+                              <p>By correlating the cell-type proportions with the ssGSEA scores, we were able to identify significant associations between specific immune cell types and the activity of relevant biological pathways, offering insights into how cellular composition may influence tumor biology.</p>
+                              
                             </p>
                             <br>
                           </div>
