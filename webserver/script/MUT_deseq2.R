@@ -12,7 +12,8 @@ tcga_avail = tcgaAvailable()
 args <- commandArgs(trailingOnly = TRUE)
 
 tumor <- args[1]
-gene <- args[2]
+gene <- toupper(args[2])
+#gene <- args[2]
 outdir <- args[3]
 input_file <- args[4]
 

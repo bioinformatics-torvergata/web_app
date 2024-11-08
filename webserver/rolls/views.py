@@ -1399,8 +1399,8 @@ def deconvolution(request):
 
 
             #zip folder analisi -> results.zip
-            folder_to_zip=os.path.join(dir,"results.zip")
-            subprocess.run(["zip", "-r", folder_to_zip, "."],cwd=dir)
+            folder_to_zip=os.path.join(dir_saveresults,"results.zip")
+            subprocess.run(["zip", "-r", folder_to_zip, "."],cwd=dir_saveresults)
 
             form=deconvolution_form()                         
             return render(request, 'rolls/deconvolution.html', {'form':form, 
@@ -1460,8 +1460,8 @@ def corr_cell_pathway(request):
                     result=read_table(result_data)
             
             #zip folder analisi -> results.zip
-            folder_to_zip=os.path.join(dir,"results.zip")
-            subprocess.run(["zip", "-r", folder_to_zip, "."],cwd=dir)
+            folder_to_zip=os.path.join(dir_saveresults,"results.zip")
+            subprocess.run(["zip", "-r", folder_to_zip, "."],cwd=dir_saveresults)
 
             form=formcorrelation()                         
             return render(request, 'rolls/corr_cell_pathway.html', {'form':form, 

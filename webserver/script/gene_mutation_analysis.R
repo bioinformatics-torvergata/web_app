@@ -6,7 +6,8 @@ library(maftools)
 args <- commandArgs(trailingOnly = TRUE)
 tumore <- args[1]
 #print(tumore)
-gene_input <- args[2]
+gene_input <- toupper(args[2])
+#gene_input <- args[2]
 output_dir <- args[3]
 
 
