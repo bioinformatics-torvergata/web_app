@@ -85,19 +85,20 @@ def dataset(request):
     file_path_genetype=os.path.join(output_data_Table,'table','gene_type.txt')
     file_feature_tumor=os.path.join(output_data_Table,'table','Features_tumor.txt')
     file_tumor=os.path.join(output_data_Table,'table','tumor_abbreviations.txt')
-
+    file_parameters=os.path.join(output_data_Table,'table','feature_parameters.txt')
 
     txt_data_clinical=read_table(file_path)
 
     txt_data_typegene=read_table(file_path_genetype)   
     txt_feature_tumor= read_table(file_feature_tumor)
     txt_tumor= read_table(file_tumor) 
-
+    txt_parameters=read_table(file_parameters)
     return render(request, 'rolls/dataset.html', {
         'dati': txt_data_clinical, 
         'dati_genetype':txt_data_typegene,
         'dati_feature':txt_feature_tumor,
         'dati_tumor':txt_tumor,
+        'dati_parametri':txt_parameters,
         'count': count,
  })
 
@@ -244,7 +245,7 @@ def download_zip(request, subdirectory, zip_name):
 ############################################
 
 # analisi: 
-#1. Deseq2 (cartella ZIP PROBLEMI)
+#1. Deseq2 (OK)
 #2. Differential expression single tumor (OK)
 #3. Differential expression all tumor (OK)
 
@@ -325,9 +326,9 @@ def deseq2(request):
                 file_txt=os.path.join(output_data,inp3,result_file)
                 print(file_txt)
                 result=read_table_deseq(file_txt)
-                
-                # #zip folder analisi -> results.zip gia creato nella cartella precalcolata
-                
+        
+
+
                 form=Deseq2form()
                 return render(request, 'rolls/deseq2.html', {'form':form, 
                     'feature': feature,
@@ -876,7 +877,7 @@ def survival_with_gene_mutation_status(request):
 #3. somatic_interaction_analysis (OK)
 #4. gene mutation analysis (OK)
 #5. Differential expression for mutated status - Deseq2 (OK)
-#6. Differential mutated gene by clinical feature
+#6. Differential mutated gene by clinical feature (OK)
 
 
 ########### TUMOR MUTATION ANALYSES ########### 
@@ -1196,7 +1197,7 @@ def de_mut(request):
                             image4=os.path.join('media/saveanalisi',inp3,file)
                             n+=1
                 
-               #zip folder analisi -> results.zip
+                #zip folder analisi -> results.zip
                 folder_to_zip=os.path.join(dir,"results.zip")
                 subprocess.run(["zip", "-r", folder_to_zip, "."],cwd=dir)
                 if n>1:
@@ -1320,7 +1321,11 @@ def de_mut_clinical_feature(request):
                             image_coBarplot=os.path.join('media/saveanalisi',inp3,file)
                         
 
-                        
+                #zip folder analisi -> results.zip
+                folder_to_zip=os.path.join(dir,"results.zip")
+                subprocess.run(["zip", "-r", folder_to_zip, "."],cwd=dir)
+
+
                 form=featuremutationform()
                 return render(request, 'rolls/de_mut_clinical_feature.html', {'form':form, 
                     'tumor':tumor,
@@ -1328,7 +1333,8 @@ def de_mut_clinical_feature(request):
                     'image_forest':image_forest,
                     'image_coBarplot':image_coBarplot,
                     'go':'Valid',
-                    'dir':'media/saveanalisi/'+inp3+'/'+result,
+                    'table':'media/saveanalisi/'+inp3+'/'+result,
+                    'dir':inp3,
                     'count': count,
                     })
 
@@ -1353,6 +1359,11 @@ def de_mut_clinical_feature(request):
 #                CELL TYPES                #
 #                                          #
 ############################################
+
+#analisi:
+# 1. Deconvolutio (OK)
+# 2. Correlation cell pathway (OK)
+
 
 ########### DECONVOLUTION ########### 
 def deconvolution(request):
@@ -1385,7 +1396,12 @@ def deconvolution(request):
                     result_tsv=os.path.join('media/saveanalisi',inp3,file)
                     result_data=os.path.join(output_data,inp3,file)
                     result=read_table(result_data)
-                    
+
+
+            #zip folder analisi -> results.zip
+            folder_to_zip=os.path.join(dir,"results.zip")
+            subprocess.run(["zip", "-r", folder_to_zip, "."],cwd=dir)
+
             form=deconvolution_form()                         
             return render(request, 'rolls/deconvolution.html', {'form':form, 
                 'tumor':tumor,
@@ -1393,7 +1409,8 @@ def deconvolution(request):
                 'count': count,
                 'dati':result,
                 'go':'Valid',
-                'dir':result_tsv,
+                'table':result_tsv,
+                'dir':inp3,
                 })
 
         else:
@@ -1441,7 +1458,11 @@ def corr_cell_pathway(request):
                     result_tsv=os.path.join('media/saveanalisi',inp3,file)
                     result_data=os.path.join(output_data,inp3,file)
                     result=read_table(result_data)
-                    
+            
+            #zip folder analisi -> results.zip
+            folder_to_zip=os.path.join(dir,"results.zip")
+            subprocess.run(["zip", "-r", folder_to_zip, "."],cwd=dir)
+
             form=formcorrelation()                         
             return render(request, 'rolls/corr_cell_pathway.html', {'form':form, 
                 'tumor':tumor,
@@ -1449,7 +1470,8 @@ def corr_cell_pathway(request):
                 'image2':image_heat,
                 'dati':result,
                 'go':'Valid',
-                'dir':result_tsv,
+                #'dir':result_tsv,
+                'dir':inp3,
                 'count': count,
                 })
 
@@ -1470,7 +1492,7 @@ def corr_cell_pathway(request):
 
 
 
-#### bozze da revisionare##########################
+########################## bozze di analisi non in produzione ##########################
 
 ############# CORRELATION ANALYSIS ###################
 

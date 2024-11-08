@@ -445,6 +445,9 @@ def copyfile(tumor,pathfiles,dir_saveresults):
        
             shutil.copy(path_file,copy_filepath )
 
+    #copy file zip:
+    result_zip=os.path.join(pathfiles,'results.zip')
+    subprocess.run(["cp", result_zip, dir_saveresults])#,cwd=dir) 
 
 def plotly_volcano(df,cartella,tumor):
 

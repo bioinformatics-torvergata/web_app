@@ -1,0 +1,10 @@
+Feature	group1	group2
+patient_status	Tumor	Ctrl
+gender	Female	Male
+pathologic_stage	Stage III-IV	Stage I-II
+radiation_therapy	YES	NO
+diabetes	YES	NO
+tobacco_smoking_history	Smoker	Non_Smoker
+menopause_status	Post-menopause	Pre-menopause
+alcohol_history_documented	YES	NO
+age_at_initial_pathologic_diagnosis	Above the median	Below the median 
