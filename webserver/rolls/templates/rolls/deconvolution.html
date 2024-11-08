@@ -3,7 +3,7 @@
 {%block content%}
 {% load static %}
 <h4 style="color:navy">Cell types analyses</h4>
-<h2> Deconvolution Analysis </h2>
+<h2>Cell-mixture deconvolution</h2>
    
     <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapsedescription" role="button" aria-expanded="false" aria-controls="collapsedescription">
       Description
@@ -14,7 +14,13 @@
   </p>
   <div class="collapse" id="collapsedescription">
     <div class="card card-body">
-      <p>text</p>
+    <p>To estimate cellular proportions, we applied a computational deconvolution method using gene expression profiles from bulk tissue samples.</p> 
+    <p>The core of this approach is the use of a pre-defined <strong>"basis matrix"</strong>, which contains gene expression profiles of specific cell types and their corresponding marker genes. These marker genes, which are either uniquely or predominantly expressed by particular cell types, serve to identify and quantify the relative abundance of each cell type in the mixed sample.</p>
+    
+    <p>We used the <strong>ImmunoStates basis matrix</strong> from the <em>MetaIntegrator R package</em>, which includes profiles for 20 immune cell types, to estimate the proportions of these cell types in our samples.</p>
+    <p>Mathematically, the deconvolution process involves solving a linear regression model, where the observed bulk expression values are modeled as a weighted sum of the reference expression profiles in the basis matrix. The weights correspond to the estimated proportions of each cell type, providing a cellular composition profile for each sample.</p>
+    
+    <p>For more details go to <a href="{% url 'documentation' %}" target="_blank">PANDA Documentation</a></p>
     </div>
   </div>
 

@@ -14,7 +14,13 @@
   </p>
   <div class="collapse" id="collapsedescription">
     <div class="card card-body">
-      <p>text</p>
+      <p>This function serves to calculate the association between cellular abundance and pathway activity within tumor samples.</p>
+    <p>For cellular composition, we first estimated the relative proportions of immune cell types using cell-mixture deconvolution. This approach relies on the <strong>ImmunoStates basis matrix</strong>, which contains predefined gene expression profiles for 20 immune cell types.</p>
+    
+    <p>To assess pathway activity, we applied <strong>single-sample Gene Set Enrichment Analysis (ssGSEA)</strong>, which calculates an activity score for each pathway based on the expression of genes within a predefined set of cancer-related and immune-associated pathways. These pathway activity scores provide a quantitative measure of pathway activation in each tumor sample.</p>
+    
+    <p>By correlating the cell-type proportions with the ssGSEA scores, we were able to identify significant associations between specific immune cell types and the activity of relevant biological pathways, offering insights into how cellular composition may influence tumor biology.</p>
+    <p>For more details go to <a href="{% url 'documentation' %}" target="_blank">PANDA Documentation</a></p>
     </div>
   </div>
 
