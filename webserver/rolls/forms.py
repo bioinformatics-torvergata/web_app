@@ -7,20 +7,7 @@ class Gene(forms.ModelForm):
         model=Analisi
         fields=('gene','tumor')
 
-# class Analisiformcompleto_old(forms.ModelForm):
-#     #gene=forms.CharField(widget=forms.TextInput(attrs={"placeHolder":"gene(ENSG)/miRNA/protein"}))
-#     gene = forms.CharField(
-#         widget=forms.TextInput(
-#             attrs={
-#                 "placeholder": "ENSG/Gene symbol/miRNA",
-#                 "id": "gene-input",  # Aggiungi l'id qui per collegarlo all'autocomplete
-#                 "autocomplete": "on",  # Disabilita l'autocomplete del browser
-#             }
-#         )
-#     )
-#     class Meta:
-#         model= Analisi
-#         fields=('gene', 'tumor','feature')
+
 
 ###new
 class Analisiformcompleto(forms.ModelForm):
@@ -44,7 +31,8 @@ class Analisiformcompleto(forms.ModelForm):
     )
     
     feature = forms.ChoiceField(
-        choices=FEATURES,
+        #choices=FEATURES,
+        choices=[('', 'Please select a tumor type first')] + FEATURES, 
         widget=forms.Select(
             attrs={
                 "id": "feature-select"  # ID per il campo feature
@@ -127,7 +115,8 @@ class Analisiformcompleto_protein(forms.ModelForm):
     )
     
     feature = forms.ChoiceField(
-        choices=FEATURES,
+        #choices=FEATURES,
+        choices=[('', 'Please select a tumor type first')] + FEATURES, 
         widget=forms.Select(
             attrs={
                 "id": "feature-select"  # ID per il campo feature
@@ -190,10 +179,12 @@ class Deseq2form(forms.ModelForm):
         )
     )
     feature = forms.ChoiceField(
-        choices=FEATURES,
+        #choices=FEATURES,
+        choices=[('', 'Please select a tumor type first')] + FEATURES,
         widget=forms.Select(
             attrs={
-                "id": "feature-select"  # ID per il campo feature
+                "id": "feature-select", # ID per il campo feature
+                #"disabled": "disabled", 
             }
         ),
         label="Select clinical feature"
@@ -203,6 +194,7 @@ class Deseq2form(forms.ModelForm):
     class Meta:
         model=Analisi
         fields=('tumor','feature')
+
 
 
 class deconvolution_form(forms.ModelForm): 
@@ -284,7 +276,7 @@ class tumorGeneform(forms.ModelForm):
 
 class featuremutationform(forms.ModelForm):
     FEATURE_R=[
-            (None,'Choice..'),
+            (None,'Please select a tumor type first'),
             ('gender','Gender'),
             ('alcohol_history_documented','Alcohol history documented'),
             # ('history_of_diabetes', 'Diabetes'),

@@ -86,11 +86,15 @@ if __name__ == "__main__":
             d[gene]=lista_exp
 
         #plt
-        plotly_plot(feature,d, gene,cartella,ogg)
+        #plotly_plot(feature,d, gene,cartella,ogg)
         
         if error!=2:
             #p-value
-            print(ranksum_test(gene,d,feature,cartella,tumor))
+            r=ranksum_test(gene,d,feature,cartella,tumor)
+            if r!=2:  
+                plotly_plot(feature,d, gene,cartella,ogg)
+            else: #la funzione ritorna 2 se entrambi i gruppi hanno valori == 0.0 e quindi non uscirebbe fuori il grafico - > Error: non ci sono abbastanza dati per calcolare...
+                print(2)
         else: 
             print(2)
     else:

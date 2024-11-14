@@ -113,7 +113,7 @@
           {%if go == 'error' %}
           <div class="alert alert-danger text-center" role="alert">
             <h5><b>There are no results for {{tumor}} - {{feature}}</b></h5>
-            <p> After entering the tumour of interest, click on "<i class="fa-solid fa-magnifying-glass"></i> Features" to select a feature from those available</p>
+            <!-- <p> After entering the tumour of interest, click on "<i class="fa-solid fa-magnifying-glass"></i> Features" to select a feature from those available</p> -->
           </div> 
           {%endif%}
             
@@ -194,7 +194,7 @@
 
 
 <!-- per selezionare la feature del tumore -->
-
+<!-- 
 <script>
   $(document).ready(function() {
       $('#id_tumor').change(function() {
@@ -220,7 +220,63 @@
           });
       });
   });
+</script> -->
+
+
+
+<!-- new selezione prima tumore e dopo feature -->
+
+<script>
+  $(document).ready(function() {
+      // Disabilita il campo feature all'inizio
+      $('#feature-select').prop('disabled', true);
+
+      $('#id_tumor').change(function() {
+          var tumor = $(this).val();  // Ottieni il tumore selezionato
+          
+          // Nascondi il messaggio di errore quando cambia la selezione del tumore
+          $('#tumor-error').hide();
+
+          // Verifica se è stato selezionato un valore per il tumore
+          if (tumor) {
+              // Invia la richiesta AJAX per ottenere le feature corrispondenti
+              $.ajax({
+                  url: "{% url 'get_features' %}",  // Assicurati che l'URL punti alla vista giusta
+                  data: {
+                      'tumor': tumor  // Passa il tumore selezionato come parametro
+                  },
+                  success: function(data) {
+                      // Svuota il campo feature
+                      $('#feature-select').empty();
+
+                      // Aggiungi le nuove opzioni delle feature
+                      $.each(data, function(index, feature) {
+                          $('#feature-select').append(
+                              $('<option></option>').val(feature[0]).html(feature[1])
+                          );
+                      });
+
+                      // Abilita il campo feature dopo il caricamento delle opzioni
+                      $('#feature-select').prop('disabled', false);
+                  }
+              });
+          } else {
+              // Se nessun tumore è selezionato, disabilita il campo feature e mostra un messaggio di errore
+              $('#feature-select').prop('disabled', true);
+              $('#feature-select').empty();  // Svuota eventuali opzioni precedenti
+              $('#tumor-error').show(); // Mostra il messaggio di errore
+          }
+      });
+
+      // Se l'utente prova a interagire con feature-select quando è disabilitato
+      $('#feature-select').focus(function() {
+          if ($('#feature-select').prop('disabled')) {
+              $('#tumor-error').show(); // Mostra il messaggio di errore
+          }
+      });
+  });
 </script>
+
 
 {%endblock%}
     

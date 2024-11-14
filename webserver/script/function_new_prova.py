@@ -290,6 +290,7 @@ def open_df_gene(input,tumor,feature,cartella):
         path=os.path.join(gene_dataframe_FPKM,path_df)
         return(path)
 
+
 def open_dataframe(gene,tumor,feature,cartella,control):
     input=what_is_my_object_gene(gene,control)
     if input!=0:
@@ -336,28 +337,35 @@ def ranksum_test(gene,d,feature,cartella,tumor):
     
     # Dimensione dei campioni
     size_dp0 = len(dp0)
+    values_dp0=(list(dp0[gene]))
     size_dp1 = len(dp1)
-    p_value_scientific = '%.2E' %Decimal(p_value)
-    # Creazione del dizionario dei risultati
-    results = {
-        "Gene": gene,
-        "Tumor":tumor,
-        "Feature": feature,
-        "Group 1":p[0],
-        "Group 2":p[1],
-        "n.Sample Group 1": size_dp0,
-        "n.Sample Group 2": size_dp1,
-        "P-value": p_value_scientific
-    }
-    
-    # Creazione di un DataFrame per facilitare l'output
-    results_df = pd.DataFrame([results])
-    
-    # Scrittura su file CSV
-    output_file=os.path.join(cartella,'Result.txt')
-    results_df.to_csv(output_file, index=False)
-    
-    return(p_value)
+    values_dp1=(list(dp1[gene]))
+
+    if all(value == 0.0 for value in values_dp0) and all(value == 0.0 for value in values_dp1):
+        return(2)
+
+    else:
+        p_value_scientific = '%.2E' %Decimal(p_value)
+        # Creazione del dizionario dei risultati
+        results = {
+            "Gene": gene,
+            "Tumor":tumor,
+            "Feature": feature,
+            "Group 1":p[0],
+            "Group 2":p[1],
+            "n.Sample Group 1": size_dp0,
+            "n.Sample Group 2": size_dp1,
+            "P-value": p_value_scientific
+        }
+        
+        # Creazione di un DataFrame per facilitare l'output
+        results_df = pd.DataFrame([results])
+        
+        # Scrittura su file CSV
+        output_file=os.path.join(cartella,'Result.txt')
+        results_df.to_csv(output_file, index=False)
+        
+        return(p_value)
 
 
 
