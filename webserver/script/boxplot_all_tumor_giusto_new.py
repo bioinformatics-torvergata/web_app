@@ -30,7 +30,8 @@ if __name__ == "__main__":
     cartella=sys.argv[3]
     control=sys.argv[4]
     x=read_clinical_data()
-   
+    
+    gene_input=gene
     if feature=="age_at_initial_pathologic_diagnosis":
         x1=df_feature_age(x,feature)
     else:
@@ -100,7 +101,7 @@ if __name__ == "__main__":
 
 
 
-        box_plot_all_tumor(df, cartella, gene, feature,ogg_analisi[0])
+        box_plot_all_tumor(df, cartella, gene, feature,ogg_analisi[0],gene_input)
         p_value(df, cartella,feature,gene)
 
     else:

@@ -140,7 +140,7 @@ def open_dataframe_gene_boxplot_all_tumor(gene,listanomi01, path_dataframe, inde
 
 
 
-def box_plot_all_tumor(df1, cartella, gene, feature,type_gene):
+def box_plot_all_tumor(df1, cartella, gene, feature,type_gene,gene_input):
     
     sns.set_theme(rc={'figure.figsize':(25.7,8.27)})
     sns.set_style("white")
@@ -150,7 +150,8 @@ def box_plot_all_tumor(df1, cartella, gene, feature,type_gene):
     if type_gene == 'miRNA':
         ax.set_yscale("log")
     
-    plt.savefig(cartella+'/'+gene+'_'+feature+'.jpg')
+    ax.set_ylabel(f"{gene_input}", fontsize=14) 
+    plt.savefig(cartella+'/'+gene_input+'_'+feature+'.jpg',dpi=300)
 
 
 def df_feature_age(x,feature):
@@ -309,12 +310,13 @@ def open_dataframe(gene,tumor,feature,cartella,control):
         return(0)
     
 
-def plotly_plot(feature,d, gene,cartella,ogg):
+def plotly_plot(feature,d, gene,cartella,ogg,gene_input):
         fig = px.scatter(x=range(10), y=range(10))
         fig=px.box(d,y=gene,x=feature,color=feature) #points = 'all'
         if ogg[1]== "miRNA":
                 fig.update_layout(yaxis_type="log")
-        fig.write_html(cartella+'/'+gene+'_'+feature+'.html')
+        fig.update_layout(yaxis_title=gene_input)    
+        fig.write_html(cartella+'/'+gene_input+'_'+feature+'.html')
 
 
 
@@ -593,7 +595,7 @@ def overall_survival_analysis(m,tumor,cartella,df1,OS1,gene):
       
      
         #print(cartella+"/overallsurvival_"+gene+"_"+tumor+".jpeg")
-        plt.savefig(cartella+"/overallsurvival_"+gene+"_"+tumor+".jpeg")
+        plt.savefig(cartella+"/overallsurvival_"+gene+"_"+tumor+".jpeg",dpi=300)
         
     else:
        

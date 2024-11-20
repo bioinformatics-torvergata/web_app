@@ -33,6 +33,7 @@ if __name__ == "__main__":
     control=sys.argv[5]
     error=1
     #df di interesse:
+    gene_input=gene
     ogg=open_dataframe(gene,tumor,feature,cartella,control)
    
     if ogg!=0:
@@ -92,7 +93,7 @@ if __name__ == "__main__":
             #p-value
             r=ranksum_test(gene,d,feature,cartella,tumor)
             if r!=2:  
-                plotly_plot(feature,d, gene,cartella,ogg)
+                plotly_plot(feature,d, gene,cartella,ogg,gene_input)
             else: #la funzione ritorna 2 se entrambi i gruppi hanno valori == 0.0 e quindi non uscirebbe fuori il grafico - > Error: non ci sono abbastanza dati per calcolare...
                 print(2)
         else: 

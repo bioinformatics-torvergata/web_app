@@ -453,6 +453,26 @@ def diff_exp_single_tumor(request):
 
 
 #############      DIFFERENTIAL EXPRESSION ANALYSIS ALL TUMOR FOR FEATURE TRASCRITTOMIC   #############
+def read_table_all_tumor(file_path):
+    txt_data = []
+
+    df = pd.read_csv(file_path, sep='\t',dtype=str) 
+
+    df['p-value'] = pd.to_numeric(df['p-value'], errors='coerce')
+    df = df.dropna(subset=['p-value'])
+    df = df.sort_values(by='p-value', ascending=True)
+    
+    df['p-value']=['%.2E' % Decimal(x) for x in df['p-value']]
+     # Aggiungi l'intestazione (nomi delle colonne, incluso l'indice) alla lista
+    txt_data.append(df.columns.tolist())
+    
+    # Itera sulle righe del DataFrame e aggiungi ogni riga come lista
+    for index, row in df.iterrows():
+        txt_data.append(row.tolist())
+    return(txt_data)
+    
+
+
 def differential_expression(request):
     count = get_counter()
     if request.method == 'POST':
@@ -487,7 +507,7 @@ def differential_expression(request):
 
                     if 'result' in file:
                         result_data=os.path.join(output_data,inp3,file)
-                        result=read_table(result_data)
+                        result=read_table_all_tumor(result_data)
                 
                 #zip folder analisi -> results.zip
                 folder_to_zip=os.path.join(dir,"results.zip")
@@ -654,7 +674,7 @@ def differential_expression_protein(request):
                         #image='media/saveanalisi/'+inp3+'/'+file
                     if 'txt' in file:
                         result_data=os.path.join(output_data,inp3,file)
-                        result=read_table(result_data)
+                        result=read_table_all_tumor(result_data)
                 form=Analisiform_protein()
 
                 #zip folder analisi -> results.zip
