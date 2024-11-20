@@ -22,7 +22,7 @@ if __name__ == "__main__":
     column=sys.argv[4]
 
     feature='median'
-
+    gene_input=gene
 
 
     ogg=open_dataframe_gene_overall(gene,tumor)
@@ -46,7 +46,7 @@ if __name__ == "__main__":
 
     OS1=OS.loc[oslist,:]
 
-    overall_survival_analysis(gene,tumor,cartella,df1,OS1,gene)
+    overall_survival_analysis(gene,tumor,cartella,df1,OS1,gene,gene_input)
 
 
 

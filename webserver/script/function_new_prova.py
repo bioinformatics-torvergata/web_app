@@ -555,7 +555,7 @@ def dataframe_OStime(tumor,column):
 
 
 
-def overall_survival_analysis(m,tumor,cartella,df1,OS1,gene):
+def overall_survival_analysis(m,tumor,cartella,df1,OS1,gene,gene_input):
     
     
     i1=df1.loc[m,:] > df1.loc[m,:].median()
@@ -595,7 +595,7 @@ def overall_survival_analysis(m,tumor,cartella,df1,OS1,gene):
       
      
         #print(cartella+"/overallsurvival_"+gene+"_"+tumor+".jpeg")
-        plt.savefig(cartella+"/overallsurvival_"+gene+"_"+tumor+".jpeg",dpi=300)
+        plt.savefig(cartella+"/overallsurvival_"+gene_input+"_"+tumor+".jpeg",dpi=300)
         
     else:
        
@@ -646,7 +646,7 @@ def overall_survival_analysis_pathway(m,tumor,df1,OS1,cartella):
         plt.legend(loc='best', frameon=False)
 
         
-        plt.savefig(cartella+"/"+m+"_"+tumor+".png")
+        plt.savefig(cartella+"/"+m+"_"+tumor+".png",dpi=300)
 
     else:
         print("Not enough survival data to calculate the analysis")
