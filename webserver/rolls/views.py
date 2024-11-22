@@ -1273,7 +1273,7 @@ def de_mut(request):
 TUMOR_FEATURE_MAPPING_R = {
     "ACC":['gender','person_neoplasm_cancer_status','radiation_therapy'],
     "BLCA":['gender','person_neoplasm_cancer_status','radiation_therapy'],
-    "BRCA":['person_neoplasm_cancer_status','radiation_therapy'],
+    "BRCA":['person_neoplasm_cancer_status'], #'radiation_therapy'
     "CESC":['radiation_therapy'],
     "CHOL":['gender','person_neoplasm_cancer_status'],
     "COAD":['gender','person_neoplasm_cancer_status','radiation_therapy'],

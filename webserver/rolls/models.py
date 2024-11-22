@@ -85,6 +85,14 @@ FEATURES=[
     ('pathologic_stage','Pathologic stage'),
     ]
 
+FEATURE_R=[
+    (None,'Please select a tumor type first'),
+    ('gender','Gender'),
+    ('alcohol_history_documented','Alcohol history documented'),
+    # ('history_of_diabetes', 'Diabetes'),
+    ('radiation_therapy','Radiation therapy'),
+    ('person_neoplasm_cancer_status','Neoplasm cancer status'),
+    ]
 
 CHOICE_FEATURE =[
     ('Menopause status',(
@@ -125,7 +133,7 @@ class Analisi_mutation(models.Model):
 
     feature=models.CharField(
         max_length=50,
-        choices= FEATURES,
+        choices= FEATURE_R,
         default= 'Choice..',) 
 
     NUMBER_CHOICES = [

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Analisi, Analisi_mutation,TUMOR_MUTATION, FEATURES
+from .models import Analisi, Analisi_mutation,TUMOR_MUTATION, FEATURES,FEATURE_R
 
 class Gene(forms.ModelForm):
     gene=forms.CharField(widget=forms.TextInput(attrs={"placeHolder":"gene symbol/ENSG"}))
@@ -274,15 +274,16 @@ class tumorGeneform(forms.ModelForm):
         fields=('gene','tumor')
 
 
+
 class featuremutationform(forms.ModelForm):
-    FEATURE_R=[
-            (None,'Please select a tumor type first'),
-            ('gender','Gender'),
-            ('alcohol_history_documented','Alcohol history documented'),
-            # ('history_of_diabetes', 'Diabetes'),
-            ('radiation_therapy','Radiation therapy'),
-            ('person_neoplasm_cancer_status','Neoplasm cancer status'),
-        ]
+    # FEATURE_R=[
+    #         (None,'Please select a tumor type first'),
+    #         ('gender','Gender'),
+    #         ('alcohol_history_documented','Alcohol history documented'),
+    #         # ('history_of_diabetes', 'Diabetes'),
+    #         ('radiation_therapy','Radiation therapy'),
+    #         ('person_neoplasm_cancer_status','Neoplasm cancer status'),
+    #     ]
 
     tumor = forms.ChoiceField(
         choices=TUMOR_MUTATION,

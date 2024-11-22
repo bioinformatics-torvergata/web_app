@@ -168,7 +168,7 @@
           if (tumor) {
               // Invia la richiesta AJAX per ottenere le feature corrispondenti
               $.ajax({
-                  url: "{% url 'get_features' %}",  // Assicurati che l'URL punti alla vista giusta
+                  url: "{% url 'get_features_R' %}",  // Assicurati che l'URL punti alla vista giusta
                   data: {
                       'tumor': tumor  // Passa il tumore selezionato come parametro
                   },
