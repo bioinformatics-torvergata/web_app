@@ -846,11 +846,13 @@ def survival_with_gene_mutation_status(request):
             
             out = subprocess.run(['Rscript', 'script/survival_with_gene_mutation_status.R',tumor,gene,dir], capture_output=True, text=True)
             print(out)
+            n=0
             count = increment_counter()
             if os.path.isdir(dir): 
                 files=os.listdir(dir)
                 for file in files:
                     if 'png' in file:
+                        n+=1
                         image=os.path.join('media/saveanalisi',inp3,file)    
                 
                         #zip folder analisi -> results.zip
@@ -866,7 +868,14 @@ def survival_with_gene_mutation_status(request):
                             'dir':inp3,
                             'count': count,
                             })
-
+                if n==0:
+                    form=tumorGeneform()
+                    return render(request, 'rolls/survival_with_gene_mutation_status.html', {
+                    'form':form,
+                    'formresult':'analysis is not available for the entered name',                                                                      
+                    'tumor':tumor,
+                    'count': count, 
+                    'go':'error'})
             else:
                 
                 form=tumorGeneform()
