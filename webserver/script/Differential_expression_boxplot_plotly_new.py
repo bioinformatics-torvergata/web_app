@@ -99,5 +99,6 @@ if __name__ == "__main__":
         else: 
             print(2)
     else:
+        #errore nome inserito non corretto 
         print(0)
        

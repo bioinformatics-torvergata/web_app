@@ -33,6 +33,7 @@ first.cond <- subsetMaf(cx, genes = tipo[1])
 P_mut <- first.cond@data$Tumor_Sample_Barcode
 P_mut <- Reduce(intersect,list(cx@data$Tumor_Sample_Barcode, P_mut))
 
+
 P <- setdiff(cx@data$Tumor_Sample_Barcode, P_mut)
 
 #apro il dataframe che contiene l'espressione dei geni
@@ -50,6 +51,16 @@ P <- Reduce(intersect,list(colnames(df), P))
 
 #seleziono dai pazienti mut tutti quelli per cui ho i dati di trascrittomica
 P_mut <- Reduce(intersect,list(colnames(df), P_mut))
+
+
+
+#exit with error if sample sizes are too small
+if(length(P_mut)<5){ #non ci sono abbastanza campioni mutati
+    quit(status=1) 
+} else if (length(P)<5){
+    quit(status=2) #non ci sono campioni abbastanza campioni non mutati
+}
+
 
 sample_type <- c(rep(c("MUT"),times=c(length(P_mut))),rep(c("WT"),times=c(length(P))))
 sample_id <- c(colnames(cts))

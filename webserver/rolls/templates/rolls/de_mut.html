@@ -112,7 +112,20 @@
   
         {%if go == 'error'%}
         <div class="alert alert-danger text-center" role="alert">
-          <h5>There are no mutations for this gene {{gene}} in the tumor {{tumor}}</h5>
+          <h5>There are no mutation data for this {{gene}} gene in the {{tumor}} tumor.</h5>
+        </div> 
+
+        {%endif%}
+
+        {%if go == 'error1'%}
+        <div class="alert alert-danger text-center" role="alert">
+          <h5>For this gene {{gene}} in the tumor {{tumor}}, there are not enough data for mutated samples</h5>
+        </div> 
+        {%endif%}
+
+        {%if go == 'error2'%}
+        <div class="alert alert-danger text-center" role="alert">
+          <h5>For this {{gene}} gene in the {{tumor}} tumor, there are insufficient data for unmutated samples</h5>
         </div> 
 
         {%endif%}

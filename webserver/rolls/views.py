@@ -1191,62 +1191,83 @@ def de_mut(request):
             os.makedirs(dir)
             
             out = subprocess.run(['Rscript', 'script/MUT_deseq2.R',tumor,gene,dir,input_file], capture_output=True, text=True)
-            print(out)
+            print(out.returncode)
             count = increment_counter()
-            if os.path.isdir(dir): 
-                files=os.listdir(dir)
-                print(files)
-                n=0
-                for file in files:
-                    if 'res' in file:
-                        dir_saveresults= os.path.join(output_data, inp3)
-                        out_plotly=run([sys.executable,'script/MUT_deseq2_volcano_plotly.py',tumor,file,dir_saveresults],shell=False, stdout=PIPE)
-                       
-                        #dir=os.path.join('media/saveanalisi',inp3,file)
-                        table=os.path.join('media/saveanalisi',inp3,'result.txt')
 
-                        file_txt=os.path.join(output_data,inp3,'result.txt')
-                        result=read_table_deseq_demut(file_txt)
-                        
-                        file_html=tumor+'.html'
-                        image_plotly=os.path.join('media/saveanalisi',inp3,file_html)
-
-                    if 'png' in file:
-                        
-                        if 'Enhanced' in file:
-                            image1=os.path.join('media/saveanalisi',inp3,file)  
-                            n+=1
-                        if 'heatmap' in file:
-                            image2=os.path.join('media/saveanalisi',inp3,file)
-                            n+=1
-                        if 'PCA' in file:
-                            image3=os.path.join('media/saveanalisi',inp3,file)
-                            n+=1
-                        if 'Top50genes' in file:
-                            image4=os.path.join('media/saveanalisi',inp3,file)
-                            n+=1
+            if out.returncode == 1:
+                #Errore: non ci sono abbastanza campioni mutati
+                form=tumorGeneform()
+                return render(request, 'rolls/de_mut.html', {'form':form,
+                'tumor':tumor, 
+                'gene':gene,
+                'count': count,
+                'go':'error1'})
                 
-                #zip folder analisi -> results.zip
-                folder_to_zip=os.path.join(dir,"results.zip")
-                subprocess.run(["zip", "-r", folder_to_zip, "."],cwd=dir)
-                if n>1:
-                    
+            elif out.returncode == 2:
+                #"Errore: non ci sono abbastanza campioni non mutati.
+                form=tumorGeneform()
+                return render(request, 'rolls/de_mut.html', {'form':form,
+                'tumor':tumor, 
+                'gene':gene,
+                'count': count,
+                'go':'error2'})
+                
+            elif out.returncode == 0:
+                #Lo script R è stato eseguito correttamente
+                if os.path.isdir(dir): 
+                    files=os.listdir(dir)
+                    print(files)
+                    n=0
+                    for file in files:
+                        if 'res' in file:
+                            dir_saveresults= os.path.join(output_data, inp3)
+                            out_plotly=run([sys.executable,'script/MUT_deseq2_volcano_plotly.py',tumor,file,dir_saveresults],shell=False, stdout=PIPE)
+                        
+                            #dir=os.path.join('media/saveanalisi',inp3,file)
+                            table=os.path.join('media/saveanalisi',inp3,'result.txt')
 
-                    form=tumorGeneform()
-                    return render(request, 'rolls/de_mut.html', {'form':form, 
-                        'tumor':tumor,
-                        'gene':gene,
-                        'image_plotly':image_plotly,
-                        'image2':image2,
-                        'image3':image3,
-                        'image4':image4,
-                        'go':'Valid',
-                        'dir':inp3,
-                        'table':table,
-                        'dati':result,
-                        'count': count,
-                        'parametri':'Mutated gene vs WT'
-                        })
+                            file_txt=os.path.join(output_data,inp3,'result.txt')
+                            result=read_table_deseq_demut(file_txt)
+                            
+                            file_html=tumor+'.html'
+                            image_plotly=os.path.join('media/saveanalisi',inp3,file_html)
+
+                        if 'png' in file:
+                            
+                            if 'Enhanced' in file:
+                                image1=os.path.join('media/saveanalisi',inp3,file)  
+                                n+=1
+                            if 'heatmap' in file:
+                                image2=os.path.join('media/saveanalisi',inp3,file)
+                                n+=1
+                            if 'PCA' in file:
+                                image3=os.path.join('media/saveanalisi',inp3,file)
+                                n+=1
+                            if 'Top50genes' in file:
+                                image4=os.path.join('media/saveanalisi',inp3,file)
+                                n+=1
+                    
+                    #zip folder analisi -> results.zip
+                    folder_to_zip=os.path.join(dir,"results.zip")
+                    subprocess.run(["zip", "-r", folder_to_zip, "."],cwd=dir)
+                    if n>1:
+                        
+
+                        form=tumorGeneform()
+                        return render(request, 'rolls/de_mut.html', {'form':form, 
+                            'tumor':tumor,
+                            'gene':gene,
+                            'image_plotly':image_plotly,
+                            'image2':image2,
+                            'image3':image3,
+                            'image4':image4,
+                            'go':'Valid',
+                            'dir':inp3,
+                            'table':table,
+                            'dati':result,
+                            'count': count,
+                            'parametri':'Mutated gene vs WT'
+                            })
                 else:
                     form=tumorGeneform()
                     return render(request, 'rolls/de_mut.html', {'form':form,
