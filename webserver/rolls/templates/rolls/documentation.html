@@ -9,7 +9,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-headingOne">
                           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                            DESeq2 analisys
+                            DESeq2 Analysis
                           </button>
                         </h2>
                         <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
@@ -70,12 +70,12 @@
                     <div class="accordion-item">
                       <h2 class="accordion-header" id="flush-headingTwo">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-                        Differential expression analysis
+                          Differential Expression Analysis Single Tumor
                         </button>
                       </h2>
                       <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
                         <div class="accordion-body">
-                            <h5>Single-gene differential expression analysis</h5>
+                            <h5>Differential Expression Analysis Single Tumor</h5>
 
                             <p>This analysis allows users to explore differences in the expression of a gene, miRNA, or protein between patients in two distinct conditions (based on the selected feature) within a given tumor type. The analysis leverages TCGA Gene Expression Quantification data (FPKM, normalized counts) to assess these differences.</p>
                             <p> The results are visualized in a box plot, where the x-axis represents the two conditions under comparison (e.g., male vs. female), and the y-axis displays the expression levels of the specified gene, miRNA, or protein.</p>
@@ -89,12 +89,12 @@
                     <div class="accordion-item">
                       <h2 class="accordion-header" id="flush-headingSix">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseThree">
-                        Differential expression analysis all tumor
+                        Pan-Cancer Differential Expression Analysis
                         </button>
                       </h2>
                       <div id="flush-collapseSix" class="accordion-collapse collapse" aria-labelledby="flush-headingSix" data-bs-parent="#accordionFlushExample">
                         <div class="accordion-body">
-                            <h5>Differential expression analysis all tumor</h5>
+                            <h5>Pan-Cancer Differential Expression Analysis</h5>
                             <p>This analysis is the differential expression under two conditions of a gene, miRNA, or protein for all tumors for which data for the selected feature is available. 
                                 <br>This gives the user an overview of the expression of that particular gene in different tumors.
                                 <br>On the x-axis are shown all tumors for which analysis is available. On the y-axis the expression of the gene, miRNA or protein is shown.
@@ -130,7 +130,7 @@
                         </h2>
                         <div id="flush-collapseFour" class="accordion-collapse collapse" aria-labelledby="flush-headingFour" data-bs-parent="#accordionFlushExample">
                           <div class="accordion-body">
-                            <h4>Analysis of overall survival</h4>
+                            <h4>Overall Survival</h4>
                             <p>The analysis presented involves the investigation of overall survival (OS) data using Kaplan-Meier survival curves and log-rank tests to evaluate the association between gene, miRNA, and protein expression levels with patient outcomes. Specifically, OS data provided by The Cancer Genome Atlas (TCGA) is used as time-to-event information. The survival time, expressed in days, measures the duration from diagnosis or treatment initiation until the event of interest, such as death or last follow-up.</p>
                             <p>The expression data used are Gene Expression Quantification HTSeq - FPKM, miRNA Expression Quantification and Protein Expression Quantification</p>
                             <p><b>Choice of Time Variables:</b>Users have the flexibility to select the time variable for the analysis based on their specific research needs. The two available options are:</p>
@@ -156,12 +156,12 @@
                       <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-headingFive">
                           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive">
-                            Overall survival with Pathway activity score
+                            Overall Survival with Pathway Activity Score
                           </button>
                         </h2>
                         <div id="flush-collapseFive" class="accordion-collapse collapse" aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushExample">
                           <div class="accordion-body">
-                            <h4>Overall survival with Pathway activity score</h4>
+                            <h4>Overall Survival with Pathway Activity Score</h4>
                             <p>This analysis offers the opportunity to perform an overall survival analysis by going to study instead of the expression of a single gene, the expression of a set of genes (pathways).
                             <br><br>The analysis for a given tumor consists of dividing samples into two groups based on pathway activity score (PAS) values pre-calculated with <a href='https://bioconductor.org/packages/devel/bioc/vignettes/GSVA/inst/doc/GSVA.html' target="_blank">GSVA</a> (Gene Set Variation Analysis).
                             The PAS describes how active that pathway is in that given sample. GSVA is a nonparametric, unsupervised method for estimating the variation in gene set enrichment across samples in an expression dataset.
@@ -174,12 +174,12 @@
                       <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-headingSeven">
                           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapsSeven">
-                            Survival analysis with gene mutation status
+                            Survival Analysis with Gene Mutation Status
                           </button>
                         </h2>
                         <div id="flush-collapseSeven" class="accordion-collapse collapse" aria-labelledby="flush-headingSeven" data-bs-parent="#accordionFlushExample">
                           <div class="accordion-body">
-                            <h5>Survival analysis with gene mutation status</h5>
+                            <h5>Survival Analysis with Gene Mutation Status</h5>
                             <p>This analysis examines the overall survival (OS) of patients by evaluating the impact of specific gene mutations on survival outcomes within a particular tumor type. Utilizing the maftools R package, the analysis leverages mutation data from The Cancer Genome Atlas (TCGA) to provide insights into how the mutation status of a selected gene influences patient prognosis.</p>
      
                             <p></p>
@@ -189,60 +189,17 @@
                       </div>
 
 
-                      <div class="accordion-item">
-                        <h2 class="accordion-header" id="flush-heading8">
-                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse8" aria-expanded="false" aria-controls="flush-collapse8">
-                            Deconvolution
-                          </button>
-                        </h2>
-                        <div id="flush-collapse8" class="accordion-collapse collapse" aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushExample">
-                          <div class="accordion-body">
-                           <h5>Deconvolution</h5>
-                            <p>
-                              <p>To estimate cellular proportions, we applied a computational deconvolution method using gene expression profiles from bulk tissue samples.</p> 
-                              <p>The core of this approach is the use of a pre-defined <strong>"basis matrix"</strong>, which contains gene expression profiles of specific cell types and their corresponding marker genes. These marker genes, which are either uniquely or predominantly expressed by particular cell types, serve to identify and quantify the relative abundance of each cell type in the mixed sample.</p>
-                              
-                              <p>We used the <strong>ImmunoStates basis matrix</strong> from the <em>MetaIntegrator R package</em>, which includes profiles for 20 immune cell types, to estimate the proportions of these cell types in our samples.</p>
-                              <p>Mathematically, the deconvolution process involves solving a linear regression model, where the observed bulk expression values are modeled as a weighted sum of the reference expression profiles in the basis matrix. The weights correspond to the estimated proportions of each cell type, providing a cellular composition profile for each sample.</p>
-                              
-                            </p>
-                            <br>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="accordion-item">
-                        <h2 class="accordion-header" id="flush-heading9">
-                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse9" aria-expanded="false" aria-controls="flush-collapse9">
-                            Correlation cell type and pathways
-                          </button>
-                        </h2>
-                        <div id="flush-collapse9" class="accordion-collapse collapse" aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushExample">
-                          <div class="accordion-body">
-                           <h5>Correlation cell type and pathways</h5>
-                            <p>
-                              <p>This function serves to calculate the association between cellular abundance and pathway activity within tumor samples.</p>
-                              <p>For cellular composition, we first estimated the relative proportions of immune cell types using cell-mixture deconvolution. This approach relies on the <strong>ImmunoStates basis matrix</strong>, which contains predefined gene expression profiles for 20 immune cell types.</p>
-                              
-                              <p>To assess pathway activity, we applied <strong>single-sample Gene Set Enrichment Analysis (ssGSEA)</strong>, which calculates an activity score for each pathway based on the expression of genes within a predefined set of cancer-related and immune-associated pathways. These pathway activity scores provide a quantitative measure of pathway activation in each tumor sample.</p>
-                              
-                              <p>By correlating the cell-type proportions with the ssGSEA scores, we were able to identify significant associations between specific immune cell types and the activity of relevant biological pathways, offering insights into how cellular composition may influence tumor biology.</p>
-                              
-                            </p>
-                            <br>
-                          </div>
-                        </div>
-                      </div>
+                      
 
                       <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-heading10">
                           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse10" aria-expanded="false" aria-controls="flush-collapse10">
-                            Tumor mutation analysis
+                            Tumor Mutation Analysis
                           </button>
                         </h2>
                         <div id="flush-collapse10" class="accordion-collapse collapse" aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushExample">
                           <div class="accordion-body">
-                           <h5>Tumor mutation analysis</h5>
+                           <h5>Tumor Mutation Analysis</h5>
                            <p> This analysis uses the maftools library to analyze genomic data of a specific tumour from the TCGA database. It generates a mutation summary image (maf summary) and a graph comparing mutation transitions and transversions (TiTv). Each graph provides a visual analysis of the mutations, highlighting key statistics and distributions characteristic of the selected tumour.
                           </p>
                             <br>
@@ -270,12 +227,12 @@
                       <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-heading12">
                           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse12" aria-expanded="false" aria-controls="flush-collapse12">
-                            Somatic interaction analysis
+                            Somatic Interaction Analysis
                           </button>
                         </h2>
                         <div id="flush-collapse12" class="accordion-collapse collapse" aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushExample">
                           <div class="accordion-body">
-                           <h5>Somatic interaction analysis</h5>
+                           <h5>Somatic Interaction Analysis</h5>
                            <p>
                             This analysis generates a graph of somatic interactions using the somaticInteractions function of the maftools library to analyse the interactions between mutated genes in a selected specific tumor. You can select the number of genes to be analysed
                         </p>
@@ -288,12 +245,12 @@
                       <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-heading13">
                           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse13" aria-expanded="false" aria-controls="flush-collapse13">
-                            Gene mutation analysis
+                            Gene Mutation Analysis
                           </button>
                         </h2>
                         <div id="flush-collapse13" class="accordion-collapse collapse" aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushExample">
                           <div class="accordion-body">
-                           <h5> Gene mutation analysis</h5>
+                           <h5> Gene Mutation Analysis</h5>
                            <p>
                             This analysis produces a lollipop graph using the maftools library to visualise mutations in a specific gene within a tumour selected from the TCGA genomic data. Mutations are annotated according to the Protein_Change column, which indicates the types of amino acid changes. The graph represents the frequency of mutations along the length of the gene, highlighting significant mutations at the corresponding points.
                         </p>
@@ -305,12 +262,12 @@
                       <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-heading14">
                           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse14" aria-expanded="false" aria-controls="flush-collapse14">
-                            Differential expression for mutated status - Deseq2
+                            Differential Expression for Mutated Status - Deseq2
                           </button>
                         </h2>
                         <div id="flush-collapse14" class="accordion-collapse collapse" aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushExample">
                           <div class="accordion-body">
-                           <h5> Differential expression for mutated status - Deseq2</h5>
+                           <h5> Differential Expression for Mutated Status - Deseq2</h5>
                             <p>
                               <p>This analysis investigates the expression differences between mutated and wild-type samples of a specific gene in a chosen tumor type using TCGA data. It employs the DESeq2 package to perform differential expression analysis, generating results saved as a text file. Visualization includes a heatmap of sample distances, PCA plots, a heatmap of the top 50 most variable genes, and an Enhanced Volcano plot to highlight significant gene expression changes. The results provide insights into the impact of mutations on gene expression within the tumor context.</p>
                             </p>
@@ -322,12 +279,12 @@
                       <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-heading15">
                           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse15" aria-expanded="false" aria-controls="flush-collapse15">
-                            Differentially mutated gene by clinical feature
+                            Differentially Mutated Gene by Clinical Feature
                           </button>
                         </h2>
                         <div id="flush-collapse15" class="accordion-collapse collapse" aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushExample">
                           <div class="accordion-body">
-                           <h5> Differentially mutated gene by clinical feature</h5>
+                           <h5> Differentially Mutated Gene by Clinical Feature</h5>
                             <p>
                                 <p>
                                     This analysis compares two cohorts of cancer patients using genomic data from TCGA to analyze genetic mutations by stratifying patients by clinical characteristics. It generates a forest plot highlighting the 10 genes with the most significant mutations between the groups, showing differences in mutational profiles. It also produces a coBarplot illustrating the distribution of mutations in the two groups. 
@@ -335,6 +292,51 @@
                                 <p>
                                     These graphs provide a clear view of mutational differences, helping to identify key genes associated with different clinical responses. The results are also saved in a CSV file for further analysis.
                                 </p></p>
+                            </p>
+                            <br>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-heading8">
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse8" aria-expanded="false" aria-controls="flush-collapse8">
+                            Cell-mixture Deconvolution
+                          </button>
+                        </h2>
+                        <div id="flush-collapse8" class="accordion-collapse collapse" aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushExample">
+                          <div class="accordion-body">
+                           <h5>Cell-mixture deconvolution</h5>
+                            <p>
+                              <p>To estimate cellular proportions, we applied a computational deconvolution method using gene expression profiles from bulk tissue samples.</p> 
+                              <p>The core of this approach is the use of a pre-defined <strong>"basis matrix"</strong>, which contains gene expression profiles of specific cell types and their corresponding marker genes. These marker genes, which are either uniquely or predominantly expressed by particular cell types, serve to identify and quantify the relative abundance of each cell type in the mixed sample.</p>
+                              
+                              <p>We used the <strong>ImmunoStates basis matrix</strong> from the <em>MetaIntegrator R package</em>, which includes profiles for 20 immune cell types, to estimate the proportions of these cell types in our samples.</p>
+                              <p>Mathematically, the deconvolution process involves solving a linear regression model, where the observed bulk expression values are modeled as a weighted sum of the reference expression profiles in the basis matrix. The weights correspond to the estimated proportions of each cell type, providing a cellular composition profile for each sample.</p>
+                              
+                            </p>
+                            <br>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-heading9">
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse9" aria-expanded="false" aria-controls="flush-collapse9">
+                            Correlation Cell Type and Pathways
+                          </button>
+                        </h2>
+                        <div id="flush-collapse9" class="accordion-collapse collapse" aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushExample">
+                          <div class="accordion-body">
+                           <h5>Correlation Cell Type and Pathways</h5>
+                            <p>
+                              <p>This function serves to calculate the association between cellular abundance and pathway activity within tumor samples.</p>
+                              <p>For cellular composition, we first estimated the relative proportions of immune cell types using cell-mixture deconvolution. This approach relies on the <strong>ImmunoStates basis matrix</strong>, which contains predefined gene expression profiles for 20 immune cell types.</p>
+                              
+                              <p>To assess pathway activity, we applied <strong>single-sample Gene Set Enrichment Analysis (ssGSEA)</strong>, which calculates an activity score for each pathway based on the expression of genes within a predefined set of cancer-related and immune-associated pathways. These pathway activity scores provide a quantitative measure of pathway activation in each tumor sample.</p>
+                              
+                              <p>By correlating the cell-type proportions with the ssGSEA scores, we were able to identify significant associations between specific immune cell types and the activity of relevant biological pathways, offering insights into how cellular composition may influence tumor biology.</p>
+                              
                             </p>
                             <br>
                           </div>

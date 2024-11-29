@@ -5,12 +5,12 @@
 <button class="category-toggle mx-3" style="font-size: 16px; color: navy; display: flex; align-items: center; padding: 10px; text-align: left; width: 100%; background-color: white;  border-radius: 5px;" 
 onclick="toggleCategory('category1', this)" onmouseover="this.style.backgroundColor='rgb(208,231,231,255)';" onmouseout="this.style.backgroundColor='white';"data-category="category1">
 <span class="arrow" style="transition: transform 0.3s; color: navy;padding-right: 10px;"><i class="fa-solid fa-angle-down"></i></span>
-Transcriptomic analyses
+Transcriptomic Analyses
 </button>
 <ul id="category1" style="display: none; padding-left: 20px;"> 
-    <li><a href="{%url 'deseq2'%}"><i class="fas fa-solid fa-square-poll-vertical"></i> DESeq2 analysis</a></li>
-    <li><a href="{%url 'diff_exp_single_tumor'%}"><i class="fas fa-solid fa-square-poll-vertical"></i> Differential expression analysis single tumor</a></li>
-    <li><a href="{%url 'differential_expression'%}"><i class="fas fa-solid fa-square-poll-vertical"></i> Differential expression analysis all tumor</a></li>
+    <li><a href="{%url 'deseq2'%}"><i class="fas fa-solid fa-square-poll-vertical"></i> DESeq2 Analysis</a></li>
+    <li><a href="{%url 'diff_exp_single_tumor'%}"><i class="fas fa-solid fa-square-poll-vertical"></i> Differential Expression Analysis Single Tumor</a></li>
+    <li><a href="{%url 'differential_expression'%}"><i class="fas fa-solid fa-square-poll-vertical"></i> Pan-Cancer Differential Expression Analysis</a></li>
     <!-- <li><a href="{%url 'rna_interactor'%}"><i class="fa-solid fa-square-poll-horizontal"></i> Correlation Analysis RNA interactor</a></li>  -->
 </ul>
 
@@ -22,11 +22,11 @@ Transcriptomic analyses
 <button class="category-toggle mx-3" style="font-size: 16px; color: navy; display: flex; align-items: center; padding: 10px; text-align: left; width: 100%; background-color: white;  border-radius: 5px;" 
 onclick="toggleCategory('category2', this)" onmouseover="this.style.backgroundColor='rgb(208,231,231,255)';" onmouseout="this.style.backgroundColor='white';"data-category="category2">
 <span class="arrow" style="transition: transform 0.3s; color: navy;padding-right: 10px;"><i class="fa-solid fa-angle-down"></i></span>
-Proteomic analyses 
+Proteomic Analyses 
 </button>
 <ul id="category2" style="display: none; padding-left: 20px;"> 
-    <li><a href="{%url 'diff_exp_single_tumor_protein'%}"><i class="fas fa-solid fa-square-poll-vertical"></i> Differential expression analysis single tumor</a></li>
-    <li><a href="{%url 'differential_expression_protein'%}"><i class="fas fa-solid fa-square-poll-vertical"></i> Differential expression analysis all tumor</a></li>
+    <li><a href="{%url 'diff_exp_single_tumor_protein'%}"><i class="fas fa-solid fa-square-poll-vertical"></i> Differential Expression Analysis Single Tumor</a></li>
+    <li><a href="{%url 'differential_expression_protein'%}"><i class="fas fa-solid fa-square-poll-vertical"></i> Pan-Cancer Differential Expression Analysis</a></li>
 </ul>
 
 <br>
@@ -41,8 +41,8 @@ Survival Analysis
 </button>
 <ul id="category3" style="display: none; padding-left: 20px;">
     <li><a href="{%url 'overall_survival'%}"><i class="fas fa-solid fa-chart-line"></i> Overall Survival</a></li>
-    <li><a href="{%url 'OS_pathway'%}"><i class="fas fa-solid fa-chart-line"></i> Overall Survival with Pathway activity score</a></li>
-    <li><a href="{%url 'survival_with_gene_mutation_status'%}"><i class="fas fa-solid fa-chart-line"></i> Overall Survival with gene mutation status</a></li>
+    <li><a href="{%url 'OS_pathway'%}"><i class="fas fa-solid fa-chart-line"></i> Overall Survival with Pathway Activity Score</a></li>
+    <li><a href="{%url 'survival_with_gene_mutation_status'%}"><i class="fas fa-solid fa-chart-line"></i> Overall Survival with Gene Mutation Status</a></li>
 </ul>
 <br>
 
@@ -51,16 +51,16 @@ Survival Analysis
 <button class="category-toggle mx-3" style="font-size: 16px; color: navy; display: flex; align-items: center; padding: 10px; text-align: left; width: 100%; background-color: white;  border-radius: 5px;" 
 onclick="toggleCategory('category4', this)" onmouseover="this.style.backgroundColor='rgb(208,231,231,255)';" onmouseout="this.style.backgroundColor='white';"data-category="category4">
 <span class="arrow" style="transition: transform 0.3s; color: navy;padding-right: 10px;"><i class="fa-solid fa-angle-down"></i></span>
-Mutational analyses
+Mutational Analyses
 
 </button>
 <ul id="category4" style="display: none; padding-left: 20px;">
-    <li><a href="{%url 'tumor_mutation_analysis'%}"><i class="fas fa-solid fa-square-poll-horizontal"></i> Tumour mutation analysis</a></li>
+    <li><a href="{%url 'tumor_mutation_analysis'%}"><i class="fas fa-solid fa-square-poll-horizontal"></i> Tumour Mutation Analysis</a></li>
     <li><a href="{% url 'tumor_oncoplot' %}"><i class="fas fa-solid fa-square-poll-horizontal"></i>Oncoplot</a></li>
-    <li><a href="{% url 'somatic_interaction_analysis' %}"><i class="fas fa-solid fa-square-poll-horizontal"></i>Somatic interaction analysis</a></li>
-    <li><a href="{%url 'gene_mutation_analysis'%}"><i class="fas fa-solid fa-square-poll-horizontal"></i> Gene mutation analysis</a></li>
-    <li><a href="{% url 'de_mut' %}"><i class="fas fa-solid fa-square-poll-horizontal"></i>Differential expression for mutated status - Deseq2</a></li>
-    <li><a href="{% url 'de_mut_clinical_feature' %}"><i class="fas fa-solid fa-square-poll-horizontal"></i>Differentially mutated gene by clinical feature</a></li>
+    <li><a href="{% url 'somatic_interaction_analysis' %}"><i class="fas fa-solid fa-square-poll-horizontal"></i>Somatic Interaction Analysis</a></li>
+    <li><a href="{%url 'gene_mutation_analysis'%}"><i class="fas fa-solid fa-square-poll-horizontal"></i> Gene Mutation Analysis</a></li>
+    <li><a href="{% url 'de_mut' %}"><i class="fas fa-solid fa-square-poll-horizontal"></i>Differential Expression for Mutated Status - Deseq2</a></li>
+    <li><a href="{% url 'de_mut_clinical_feature' %}"><i class="fas fa-solid fa-square-poll-horizontal"></i>Differentially Mutated Gene by Clinical Feature</a></li>
    
 </ul>
 <br>
@@ -70,12 +70,12 @@ Mutational analyses
 <button class="category-toggle mx-3" style="font-size: 16px; color: navy; display: flex; align-items: center; padding: 10px; text-align: left; width: 100%; background-color: white;  border-radius: 5px;" 
 onclick="toggleCategory('category5', this)" onmouseover="this.style.backgroundColor='rgb(208,231,231,255)';" onmouseout="this.style.backgroundColor='white';"data-category="category5">
 <span class="arrow" style="transition: transform 0.3s; color: navy;padding-right: 10px;"><i class="fa-solid fa-angle-down"></i></span>
-Cell types analyses
+Cell Types Analyses
 </button>
 
  <ul id="category5" style="display: none; padding-left: 20px;">
-    <li><a href="{%url 'deconvolution'%}"><i class="fas fa-solid fa-square-poll-horizontal"></i> Cell-mixture deconvolution</a></li>
-    <li><a href="{%url 'corr_cell_pathway'%}"><i class="fas fa-solid fa-square-poll-horizontal"></i> Correlation cell type and Pathways</a></li>
+    <li><a href="{%url 'deconvolution'%}"><i class="fas fa-solid fa-square-poll-horizontal"></i> Cell-mixture Deconvolution</a></li>
+    <li><a href="{%url 'corr_cell_pathway'%}"><i class="fas fa-solid fa-square-poll-horizontal"></i> Correlation Cell Type and Pathways</a></li>
 </ul>
 
 

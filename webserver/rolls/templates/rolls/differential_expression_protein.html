@@ -2,8 +2,8 @@
 {%load crispy_forms_tags%}
 {%block content%}
 {% load static %}
-<h4 style="color:navy">Proteomic analyses</h4>
-  <h2>Differential expression analysis with all tumor</h2>
+<h4 style="color:navy">Proteomic Analyses</h4>
+  <h2>Pan-Cancer Differential Expression Analysis</h2>
       <p>
         <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapsedescription" role="button" aria-expanded="false" aria-controls="collapsedescription">
           Description
@@ -14,6 +14,7 @@
       </p>
       <div class="collapse" id="collapsedescription">
         <div class="card card-body">
+          <h4>Pan-Cancer Differential Expression Analysis</h4>
           <p>This analysis evaluates the differential expression of a protein under two conditions across all tumors for which data on the selected feature is available. It provides an overview of protein varies across different tumor types.
 
             <p>On the x-axis, the available tumor types are displayed, while the y-axis represents the expression levels of the gene, miRNA, or protein in each tumor type.</p>

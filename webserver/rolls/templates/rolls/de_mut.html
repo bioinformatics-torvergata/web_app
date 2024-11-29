@@ -4,7 +4,7 @@
 {% load static %}
 
 <h4 style="color:navy">Mutation Analyses</h4>
-<h2> Differential expression for mutated status - Deseq2 </h2>
+<h2> Differential Expression for Mutated Status - Deseq2 </h2>
    
     <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapsedescription" role="button" aria-expanded="false" aria-controls="collapsedescription">
       Description
@@ -15,6 +15,7 @@
   </p>
   <div class="collapse" id="collapsedescription">
     <div class="card card-body">
+      <h4>Differential Expression for Mutated Status - Deseq2</h4>
       <p>This analysis investigates the expression differences between mutated and wild-type samples of a specific gene in a chosen tumor type using TCGA data. It employs the DESeq2 package to perform differential expression analysis, generating results saved as a text file. Visualization includes a heatmap of sample distances, PCA plots, a heatmap of the top 50 most variable genes, and an Enhanced Volcano plot to highlight significant gene expression changes. The results provide insights into the impact of mutations on gene expression within the tumor context.</p>
       <p>For more details go to <a href="{% url 'documentation' %}" target="_blank">PANDA Documentation</a></p>
     </div>
@@ -113,19 +114,22 @@
         {%if go == 'error'%}
         <div class="alert alert-danger text-center" role="alert">
           <h5>There are no mutation data for this {{gene}} gene in the {{tumor}} tumor.</h5>
-        </div> 
+            </div> 
 
         {%endif%}
 
         {%if go == 'error1'%}
         <div class="alert alert-danger text-center" role="alert">
-          <h5>For this gene {{gene}} in the tumor {{tumor}}, there are not enough data for mutated samples</h5>
+          <!-- <h5>For this gene {{gene}} in the tumor {{tumor}}, there are not enough data for mutated samples</h5> -->
+          <h5>There are not enough transcriptomics data for patients who have the mutation in the gene {{gene}} in the {{tumor}}.</h5>
+      
         </div> 
         {%endif%}
 
         {%if go == 'error2'%}
         <div class="alert alert-danger text-center" role="alert">
-          <h5>For this {{gene}} gene in the {{tumor}} tumor, there are insufficient data for unmutated samples</h5>
+          <!-- <h5>For this {{gene}} gene in the {{tumor}} tumor, there are insufficient data for unmutated samples</h5> -->
+          <h5>There are not enough transcriptomics data for patients unmutated in the gene {{gene}} in the {{tumor}}.</h5>
         </div> 
 
         {%endif%}

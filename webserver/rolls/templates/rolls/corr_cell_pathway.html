@@ -2,8 +2,8 @@
 {%load crispy_forms_tags%}
 {%block content%}
 {% load static %}
-<h4 style="color:navy">Cell types analyses</h4>
-<h2> Correlation cell type and Pathways </h2>
+<h4 style="color:navy">Cell Types Analyses</h4>
+<h2> Correlation Cell Type and Pathways </h2>
    
     <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapsedescription" role="button" aria-expanded="false" aria-controls="collapsedescription">
       Description
@@ -14,6 +14,7 @@
   </p>
   <div class="collapse" id="collapsedescription">
     <div class="card card-body">
+      <h4>Correlation Cell Type and Pathways</h4>
       <p>This function serves to calculate the association between cellular abundance and pathway activity within tumor samples.</p>
     <p>For cellular composition, we first estimated the relative proportions of immune cell types using cell-mixture deconvolution. This approach relies on the <strong>ImmunoStates basis matrix</strong>, which contains predefined gene expression profiles for 20 immune cell types.</p>
     

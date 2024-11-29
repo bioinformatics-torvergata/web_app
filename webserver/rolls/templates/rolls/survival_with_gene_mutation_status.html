@@ -3,7 +3,7 @@
 {%block content%}
 {% load static %}
 <h4 style="color:navy">Survival Analyses</h4>
-<h2> Overall Survival with gene mutation status</h2>
+<h2>Overall Survival with Gene Mutation Status</h2>
    
     <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapsedescription" role="button" aria-expanded="false" aria-controls="collapsedescription">
       Description
@@ -14,6 +14,7 @@
   </p>
   <div class="collapse" id="collapsedescription">
     <div class="card card-body">
+      <h4>Overall Survival with Gene Mutation Status</h4>
       <p>This analysis examines the overall survival (OS) of patients by evaluating the impact of specific gene mutations on survival outcomes within a particular tumor type. Utilizing the maftools R package, the analysis leverages mutation data from The Cancer Genome Atlas (TCGA) to provide insights into how the mutation status of a selected gene influences patient prognosis.</p>
       <p>For more details go to <a href="{% url 'documentation' %}" target="_blank">PANDA Documentation</a></p>
 

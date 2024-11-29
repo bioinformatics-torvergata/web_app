@@ -2,8 +2,8 @@
 {%load crispy_forms_tags%}
 {%block content%}
 {% load static %}
-<h4 style="color:navy">Cell types analyses</h4>
-<h2>Cell-mixture deconvolution</h2>
+<h4 style="color:navy">Cell Types Analyses</h4>
+<h2>Cell-mixture Deconvolution</h2>
    
     <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapsedescription" role="button" aria-expanded="false" aria-controls="collapsedescription">
       Description
@@ -14,6 +14,7 @@
   </p>
   <div class="collapse" id="collapsedescription">
     <div class="card card-body">
+      <h4>Cell-mixture Deconvolution</h4>
     <p>To estimate cellular proportions, we applied a computational deconvolution method using gene expression profiles from bulk tissue samples.</p> 
     <p>The core of this approach is the use of a pre-defined <strong>"basis matrix"</strong>, which contains gene expression profiles of specific cell types and their corresponding marker genes. These marker genes, which are either uniquely or predominantly expressed by particular cell types, serve to identify and quantify the relative abundance of each cell type in the mixed sample.</p>
     

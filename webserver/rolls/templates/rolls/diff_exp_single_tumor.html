@@ -2,8 +2,8 @@
 {%load crispy_forms_tags%}
 {%block content%}
 {% load static %}
-<h4 style="color:navy">Transcriptomic analyses</h4>
-  <h2>Differential expression analysis single tumor</h2>
+<h4 style="color:navy">Transcriptomic Analyses</h4>
+  <h2>Differential Expression Analysis Single Tumor</h2>
       <p>
         <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapsedescription" role="button" aria-expanded="false" aria-controls="collapsedescription">
           Description
@@ -14,7 +14,7 @@
       </p>
       <div class="collapse" id="collapsedescription">
         <div class="card card-body">
-          <h4>Single-gene differential expression analysis</h4>
+          <h4>Differential Expression Analysis Single Tumor</h4>
           <p>This analysis allows users to explore differences in the expression of a gene or miRNA between patients in two distinct conditions (based on the selected feature) within a given tumor type. The analysis leverages TCGA Gene Expression Quantification data (FPKM, normalized counts) to assess these differences.</p>
           <p>The results are visualized in a box plot, where the x-axis represents the two conditions under comparison (e.g., male vs. female), and the y-axis displays the expression levels of the specified gene or miRNA.</p>
         
