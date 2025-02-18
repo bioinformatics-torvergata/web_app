@@ -1297,7 +1297,7 @@ TUMOR_FEATURE_MAPPING_R = {
     "BRCA":['person_neoplasm_cancer_status'], #'radiation_therapy'
     "CESC":['radiation_therapy'],
     "CHOL":['gender','person_neoplasm_cancer_status'],
-    "COAD":['gender','person_neoplasm_cancer_status','radiation_therapy'],
+    "COAD":['gender','person_neoplasm_cancer_status'],#,'radiation_therapy'],
     "DLBC":['gender','radiation_therapy'],
     "ESCA":['alcohol_history_documented','gender','person_neoplasm_cancer_status','radiation_therapy'],
     "GBM":['gender','radiation_therapy'],
