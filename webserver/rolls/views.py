@@ -115,9 +115,10 @@ def yourdataset(request):
 # Function for autocomplete
 def gene_suggestions(request):
     if 'term' in request.GET:
-        qs = Gene.objects.filter(gene__icontains=request.GET.get('term'))[:10]  # Limita i risultati a 10
-        genes = list(qs.values_list('gene', flat=True))
+        qs = Gene.objects.filter(gene__istartswith=request.GET.get('term'))
+        genes = sorted(qs.values_list('gene', flat=True), key=len)[:10]  # Ordina per lunghezza e limita a 10
         return JsonResponse(genes, safe=False)
+    
     
 def pathway_suggestions(request):
     if 'term' in request.GET:
@@ -127,14 +128,14 @@ def pathway_suggestions(request):
     
 def protein_suggestions(request):
     if 'term' in request.GET:
-        qs = Protein.objects.filter(protein__icontains=request.GET.get('term'))[:20]  # Limita i risultati a 10
-        protein = list(qs.values_list('protein', flat=True))
+        qs = Protein.objects.filter(protein__istartswith=request.GET.get('term'))
+        protein = sorted(qs.values_list('protein', flat=True), key=len)[:10]  # Ordina per lunghezza e limita a 20
         return JsonResponse(protein, safe=False)
     
 def gene_symbol_suggestions(request):
     if 'term' in request.GET:
-        qs = Gene_symbol.objects.filter(gene_symbol__icontains=request.GET.get('term'))[:20]  # Limita i risultati a 10
-        gene_symbol = list(qs.values_list('gene_symbol', flat=True))
+        qs = Gene_symbol.objects.filter(gene_symbol__istartswith=request.GET.get('term'))
+        gene_symbol = sorted(qs.values_list('gene_symbol', flat=True), key=len)[:10]  # Ordina per lunghezza e limita a 20
         return JsonResponse(gene_symbol, safe=False)
 ##########################################
 
