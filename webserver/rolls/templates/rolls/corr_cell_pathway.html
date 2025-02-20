@@ -43,6 +43,7 @@
         </div> 
         </div>
         {%if go == 'Valid' %}        
+        
         <h3 class="d-flex justify-content-between align-items-center">
           <span>Results</span>
           
@@ -52,49 +53,55 @@
                   <button class="btn btn-sm"><i class="fa-solid fa-download"></i></button>
               </a>
           </div>
-      </h3>
+        </h3>
 
         <hr>
-        <div class="row">
-          <div class="col mx-3">
-            <p><b>Tumor:</b> {{tumor}}</p>
-            <p><b>DB selected:</b> {{db}}</p>
+    
+        <p><b>Tumor:</b> {{tumor}}</p>
+        <p><b>DB selected:</b> {{db}}</p>
+       
+        <br>
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-md-10 text-center"> <!-- Il contenitore si adatta meglio -->
+              <a href="{% static image2 %}" target="_blank">
+                <img src="{% static image2 %}" class="img-fluid" style="max-width: 100%; height: auto;">
+              </a>
+            </div>
           </div>
-        <br>
-        <div class="row">
-          <div class="mx-auto bg-body rounded" style="max-width: 800px;">
-            <a href="{%static image2%}" target="_blank"><img src= '{%static image2 %}' width="900"></a>
-        </div> 
-
-        <br><br>
-        <!-- <p>You can download the calculated cellular proportions for this tumor <a href="{% static dir %}" download target="blank" ><button class="btn"><i class="fa-solid fa-download"></i></button></a></p> -->
-        <div class="table-responsive" >
-          <table id="Mytable" class="table table-hover table-sm" style="width: 100%; margin: 0 auto; text-align: left; border-collapse: collapse; border: 1px solid white;">
-              <thead style="position: sticky; top: 0; background-color: white; z-index: auto;">
-                  <tr>
-                      {% for colonna in dati.0 %}
-                          <th style="border: 1px solid white; font-weight: bold;">{{ colonna }}</th> <!-- Bordo per le intestazioni -->
-                      {% endfor %}
-                  </tr>
-              </thead>
-              <tbody>
-                  {% for riga in dati|slice:"1:" %}
-                      <tr>
-                          {% for colonna in riga %}
-                              <td style="border: 1px solid white;">{{ colonna }}</td>
-                          {% endfor %}
-                      </tr>
-                  {% endfor %}
-              </tbody>
-          </table>
-      </div>
-       
-        <br>
-       
-        
         </div>
-      </div>
+        
+        <br><br>
+        
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="table-responsive" style="max-width: 1000px; overflow-x: auto;">
+                <table id="Mytable" class="table table-hover table-sm" 
+                      style="width: 100%; text-align: left; border-collapse: collapse; border: 1px solid white;">
+                    <thead style="position: sticky; top: 0; background-color: white; z-index: auto;">
+                        <tr>
+                            {% for colonna in dati.0 %}
+                                <th style="border: 1px solid white; font-weight: bold;">{{ colonna }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for riga in dati|slice:"1:" %}
+                            <tr>
+                                {% for colonna in riga %}
+                                    <td style="border: 1px solid white;">{{ colonna }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
         {%endif%}
+
   
         {%if go == 'error'%}
         <div class="alert alert-danger text-center" role="alert">
