@@ -502,7 +502,7 @@ def differential_expression(request):
             if os.path.isdir(dir): 
                 files=os.listdir(dir)
                 for file in files:
-                    if file[-3:]=='jpg':
+                    if 'html' in file:
                         image=os.path.join('media/saveanalisi',inp3,file)
                         #image='media/saveanalisi/'+inp3+'/'+file
 
@@ -670,7 +670,7 @@ def differential_expression_protein(request):
             if os.path.isdir(dir): 
                 files=os.listdir(dir)
                 for file in files:
-                    if file[-3:]=='jpg':
+                    if 'html' in file:
                         image=os.path.join('media/saveanalisi',inp3,file)
                         #image='media/saveanalisi/'+inp3+'/'+file
                     if 'txt' in file:

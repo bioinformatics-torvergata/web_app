@@ -140,19 +140,40 @@ def open_dataframe_gene_boxplot_all_tumor(gene,listanomi01, path_dataframe, inde
 
 
 
-def box_plot_all_tumor(df1, cartella, gene, feature,type_gene,gene_input):
+# def box_plot_all_tumor(df1, cartella, gene, feature,type_gene,gene_input):
     
-    sns.set_theme(rc={'figure.figsize':(25.7,8.27)})
-    sns.set_style("white")
+#     sns.set_theme(rc={'figure.figsize':(25.7,8.27)})
+#     sns.set_style("white")
 
-    my_order = df1.groupby(by=["tumor"])[gene].median().iloc[::-1].sort_values().index
-    ax=sns.boxplot(x="tumor", y=gene, hue=feature, data=df1, palette="Set2", width=0.7, order=my_order)
+#     my_order = df1.groupby(by=["tumor"])[gene].median().iloc[::-1].sort_values().index
+#     ax=sns.boxplot(x="tumor", y=gene, hue=feature, data=df1, palette="Set2", width=0.7, order=my_order)
+#     if type_gene == 'miRNA':
+#         ax.set_yscale("log")
+    
+#     ax.set_ylabel(f"{gene_input}", fontsize=14) 
+#     plt.savefig(cartella+'/'+gene_input+'_'+feature+'.jpg',dpi=300)
+
+#aggiornato plot html con plotly per conformare alla grafica delle altre differential analysis
+def box_plot_all_tumor(df1, cartella, gene, feature, type_gene, gene_input):
+    # Ordinare i tumori in base alla mediana dei valori del gene
+    my_order = df1.groupby("tumor")[gene].median().sort_values().index
+
+    # Creare il box plot con Plotly Express
+    fig = px.box(df1, 
+                 x="tumor", 
+                 y=gene, 
+                 color=feature, 
+                 category_orders={"tumor": my_order},  # Ordina i tumori in base alla mediana
+                 #title=f"Boxplot di {gene_input} per tipo di tumore",
+                 labels={gene: gene_input})  # Imposta il nome dell'asse Y
+    
+    # Se il gene è un miRNA, applica la scala logaritmica all'asse Y
     if type_gene == 'miRNA':
-        ax.set_yscale("log")
-    
-    ax.set_ylabel(f"{gene_input}", fontsize=14) 
-    plt.savefig(cartella+'/'+gene_input+'_'+feature+'.jpg',dpi=300)
+        fig.update_layout(yaxis_type="log")
 
+    # Salva il grafico in un file
+   # fig.write_image(f"{cartella}/{gene_input}_{feature}.jpg", scale=3)
+    fig.write_html(cartella+'/'+gene_input+'_'+feature+'.html')
 
 def df_feature_age(x,feature):
     if feature=="age_at_initial_pathologic_diagnosis":
